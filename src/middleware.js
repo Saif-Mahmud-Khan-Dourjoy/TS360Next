@@ -10,6 +10,11 @@ export function middleware(request) {
     url.searchParams.set('filter', 'recent');
     return NextResponse.redirect(new URL(`/blog/allPost?${url.searchParams.toString()}`, request.url))
   }
+
+  if (request.nextUrl.pathname==='/demo-video') {
+  
+    return NextResponse.redirect(new URL(`/demo-video/allVideo`, request.url))
+  }
   
 
 

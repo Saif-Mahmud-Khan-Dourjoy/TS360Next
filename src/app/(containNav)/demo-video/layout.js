@@ -1,11 +1,11 @@
 import Common from "@/components/Video/Common";
 
-
-
 export const metadata = {
   title: "Demo Video",
   description: "Experience our all videos related to test automation",
 };
+
+
 
 
 export default function VideoLayout({ children }) {

@@ -80,10 +80,10 @@ const Navbar = () => {
         //   name: 'Automation Articles', link: '/automation-article', parent: 'RESOURCES'
         // },
         {
-          name: 'Demo Videos', link: '/demo-video/allVideo', parent: 'RESOURCES'
+          name: 'Demo Videos', link: '/demo-video', parent: 'RESOURCES'
         },
         {
-          name: 'Blog', link: '/blog/allPost?filter=recent', parent: 'RESOURCES'
+          name: 'Blog', link: '/blog', parent: 'RESOURCES'
         },
 
 
@@ -101,7 +101,7 @@ const Navbar = () => {
       ]
     },
     { name: "Contact", link: "/contact" },
-    { name: "blog", link: "/blog" },
+   
   ];
 
   const handleLinkClick = () => {
