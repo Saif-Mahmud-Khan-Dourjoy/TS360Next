@@ -1,9 +1,6 @@
 import Common from "@/components/Blog/Common";
 
-export const metadata = {
-  title: "Blog",
-  description: "Experience our all blogs related to test automation",
-};
+
 
 export default function BlogLayout({ children }) {
 

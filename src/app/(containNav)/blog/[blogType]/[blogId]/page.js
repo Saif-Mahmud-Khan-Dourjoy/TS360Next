@@ -1,10 +1,13 @@
 import Blog1 from "@/components/Blog/Blog1";
 import Blog2 from "@/components/Blog/Blog2";
 import Blog3 from "@/components/Blog/Blog3";
-export const metadata = {
-    title: "Single Blog",
-    description: "Experience single blog related to test automation",
+export async function generateMetadata() {
+    return {
+      title: "Single Blog",
+      description: "Experience single blog related to test automation",
+    }
   };
+  
 export default function SingleBlog({ params }) {
     return (
         <>
