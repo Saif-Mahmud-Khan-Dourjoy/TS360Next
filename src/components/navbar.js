@@ -101,6 +101,7 @@ const Navbar = () => {
       ]
     },
     { name: "Contact", link: "/contact" },
+    { name: "blog", link: "/blog" },
   ];
 
   const handleLinkClick = () => {
