@@ -1,0 +1,19 @@
+.slick-dots {
+  @apply top-[110%]; /* Tailwind utility for positioning */
+}
+
+.slick-dots li button {
+    @apply p-0 border-none bg-transparent; /* Tailwind utilities */
+  }
+  
+  .slick-dots li button:before {
+    content: ""; /* Empty content */
+    @apply inline-block w-3 h-3; /* Tailwind utilities for size */
+    @apply border-2 border-gray-400 rounded-full; /* Tailwind utilities for border and circle */
+    background-color: transparent; /* Transparent background */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition for hover and active states */
+  }
+  
+  .slick-dots li.slick-active button:before {
+    @apply border-black bg-black; /* Tailwind utilities for active state */
+  }
