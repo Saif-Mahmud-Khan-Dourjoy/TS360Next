@@ -74,18 +74,19 @@ const Navbar = () => {
 
   let Links = [
     // { name: "HOME", link: "/" },
-    // {
-    //   name: "Resources", link: "/resources", children: true, child: [
-    //     {
-    //       name: 'Demo Videos', link: '/demo-video', parent: 'RESOURCES'
-    //     },
-    //     {
-    //       name: 'Blog', link: '/blog', parent: 'RESOURCES'
-    //     },
+    {
+      name: "Resources", link: "/resources", children: true, child: [
+
+        {
+          name: 'Demo Videos', link: '/demo-video', parent: 'RESOURCES'
+        },
+        {
+          name: 'Blog', link: '/blog', parent: 'RESOURCES'
+        },
 
 
-    //   ]
-    // },
+      ]
+    },
     {
       name: "Company", link: "/company", children: true, child: [
         {
@@ -98,8 +99,6 @@ const Navbar = () => {
       ]
     },
     { name: "Contact", link: "/contact" },
-    {  name: 'Demo Videos', link: '/demo-video' },
-    {  name: 'Blog', link: '/blog' },
    
   ];
 
