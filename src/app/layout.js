@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-white font-poppins"  style={{background:'white'}}>{children}</body>
+      <body className="bg-white font-poppins"  style={{background:'white'}}> <NextAuthSessionProvider>{children}</NextAuthSessionProvider> </body>
     </html>
   );
 }
