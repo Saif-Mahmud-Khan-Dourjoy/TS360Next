@@ -72,9 +72,11 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-            <hr className="w-full h-0.5 bg-gray-500 border-0" />
-            <div className="text-center  mt-4 text-sm text-gray-300">
-                &copy; {new Date().getFullYear()} TS360  
+            <hr className="w-full h-[1px] bg-gray-500 border-0" />
+            <div className="flex justify-between  mt-4 text-sm text-gray-300">
+                <div>&copy; {new Date().getFullYear()} TS360</div>  
+               <Link className="cursor-pointer text-gray-400" href='/terms-policy'>
+               Terms & Policy</Link>
             </div>
         </div>
     )
