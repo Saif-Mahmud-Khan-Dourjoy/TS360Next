@@ -9,6 +9,9 @@ import "/public/css/slickSlider.css"
 import Image from "next/image";
 import Link from "next/link";
 
+import { signIn, signOut, useSession } from 'next-auth/react';
+
+
 const settings = {
     dots: true,         // Show dots for navigation
     infinite: true,     // Infinite looping of slides
@@ -21,13 +24,34 @@ const settings = {
 };
 export default function Login() {
     const [keepLogin, setKeepLogin] = useState(false);
+    const { data: session } = useSession();
+
+    console.log(session);
 
     const checkBoxValue = (e) => {
         setKeepLogin(e.target.checked);
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const result = await signIn("credentials", {
+            redirect: false,
+            email: "email@email.com",
+            password: "password", // Hardcoded password for testing
+
+        });
+
+        if (result.error) {
+            console.error("Failed to sign in:", result.error);
+        } else {
+            console.log("Successfully signed in");
+        }
+    };
+
     return (
         <>
+            <h1>Welcome, {session?.user?.id}</h1>
             <Link href='/'>
                 <div className="absolute top-8 lg:left-24 left-7">
                     <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
@@ -49,7 +73,7 @@ export default function Login() {
                     </div>
 
                     <div className="mt-5">
-                        <form>
+                        <form onSubmit={handleSubmit} >
 
 
                             <div className="mb-6">
@@ -89,6 +113,10 @@ export default function Login() {
                     <div className="text-center text-gray-400 ">
                         {`Don’t have an account?`} <Link href='/register' className="text-blue-500">Sign up </Link>
                     </div>
+                    <button onClick={signOut}>
+                        Sign Out
+                    </button>
+
 
 
                 </div>
@@ -107,7 +135,7 @@ export default function Login() {
                                     No Code Test Automation
                                 </div>
                                 <div className="mt-5">
-                                    <Image className=""  width={500}
+                                    <Image className="" width={500}
                                         height={500} src={L1} alt="" />
                                 </div>
                             </div>
@@ -160,4 +188,3 @@ export default function Login() {
         </>
     );
 }
-

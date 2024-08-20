@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env PORT=3001 next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "cross-env PORT=80 next start",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.417.0",
     "next": "14.2.5",
+    "next-auth": "^4.24.7",
     "react": "^18",
     "react-avatar": "^5.0.3",
     "react-copy-to-clipboard": "^5.1.0",
