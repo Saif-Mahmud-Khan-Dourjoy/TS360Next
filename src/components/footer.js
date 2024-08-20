@@ -1,6 +1,6 @@
 import Link from "next/link";
 import logo from "/public/logo.png";
-import { FaEnvelope,FaLocationDot  } from "react-icons/fa6";
+import { FaEnvelope, FaLocationDot } from "react-icons/fa6";
 import Image from "next/image";
 export default function Footer() {
     return (
@@ -8,13 +8,13 @@ export default function Footer() {
             <div className="flex justify-between md:items-center mb-10 flex-col md:flex-row gap-y-10  md:gap-y-0">
                 <div className="hidden lg:block w-fit">
                     <Link href='/'>
-                    <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
-                        <Image className="w-11 h-11" src={logo} alt="logo" />
-                        <h1 className="font-bold text-lg ml-2">
-                            <span className="text-[#82D955]">Test</span>
-                            <span className="text-[#3AB6FF]">Sprint</span> <span className="text-white">360</span>
-                        </h1>
-                    </div>
+                        <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
+                            <Image className="w-11 h-11" src={logo} alt="logo" />
+                            <h1 className="font-bold text-lg ml-2">
+                                <span className="text-[#82D955]">Test</span>
+                                <span className="text-[#3AB6FF]">Sprint</span> <span className="text-white">360</span>
+                            </h1>
+                        </div>
                     </Link>
                 </div>
                 <div className="flex sm:justify-between text-white gap-x-14 md:gap-x-8 xl:gap-x-14 ">
@@ -25,12 +25,12 @@ export default function Footer() {
                         </div>
                         <hr className="w-full h-0.5 bg-gray-500 border-0 sm:hidden block  my-3" />
                         <div>
-                            <div  className="font-bold">
+                            <div className="font-bold">
                                 Resources
                             </div>
                             <div className="mt-2">
-                                <Link className="cursor-pointer text-gray-400" href='/automation-article'>
-                                    Automation Articles</Link>
+                                <Link className="cursor-pointer text-gray-400" href='/blog'>
+                                    Blogs</Link>
                             </div>
                             <div className="mt-2">
                                 <Link className="cursor-pointer text-gray-400" href='/demo-video'>
@@ -42,7 +42,7 @@ export default function Footer() {
                     </div>
                     <div className="sm:flex justify-between gap-x-8 xl:gap-x-14 w-full">
                         <div>
-                            <div  className="font-bold">
+                            <div className="font-bold">
                                 Company
                             </div>
                             <div className="mt-2">
@@ -55,8 +55,8 @@ export default function Footer() {
                             </div>
                         </div>
                         <hr className="w-full h-0.5 bg-gray-500 border-0 sm:hidden block  my-3" />
-                        <div  className="font-bold ">
-                          <Link href='/contact'>Contact</Link>
+                        <div className="font-bold ">
+                            <Link href='/contact'>Contact</Link>
                         </div>
                         <hr className="w-full h-0.5 bg-gray-500 border-0 sm:hidden block  my-3" />
                     </div>
@@ -65,18 +65,18 @@ export default function Footer() {
                 </div>
                 <div className="text-white">
                     <div className="mb-5 flex items-center">
-                      <FaEnvelope  className="mr-2.5 "/> contact@testsprint360.com
+                        <FaEnvelope className="mr-2.5 " /> contact@testsprint360.com
                     </div>
                     <div className="flex items-center">
-                      <FaLocationDot  className=" mr-2.5" /> San Jose, California, USA
+                        <FaLocationDot className=" mr-2.5" /> San Jose, California, USA
                     </div>
                 </div>
             </div>
             <hr className="w-full h-[1px] bg-gray-500 border-0" />
             <div className="flex justify-between  mt-4 text-sm text-gray-300">
-                <div>&copy; {new Date().getFullYear()} TS360</div>  
-               <Link className="cursor-pointer text-gray-400" href='/terms-policy'>
-               Terms & Policy</Link>
+                <div>&copy; {new Date().getFullYear()} TS360</div>
+                <Link className="cursor-pointer text-gray-400" href='/terms-policy'>
+                    Terms & Policy</Link>
             </div>
         </div>
     )
