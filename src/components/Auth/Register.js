@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import logo from "/public/logo.png";
 // import Auth1 from "/public/Auth/auth1.svg"
 import { Registration } from "@/app/(auth)/Api/AuthenticationApi";
@@ -15,6 +15,8 @@ import L2 from "/public/Auth/L2.png";
 import L3 from "/public/Auth/L3.png";
 import "/public/css/slickSlider.css";
 import { showErrorAlert, showSuccessAlert, showSuccessAlertOnReg } from "../Alerts/Alert";
+import CustomModal from "../Custom/Modal";
+import LoaderModal from "../Custom/Loader";
 
 
 // import ReactFlagsSelect from "react-flags-select";
@@ -69,7 +71,7 @@ export default function Register() {
   // const [checked, setChecked] = useState(false);
   const [countries, setCountries] = useState([]);
   const [purposeOptions, setPurposeOptions] = useState(pursposeOpArr);
-  const router = useRouter()
+  const router = useRouter();
   // const [selectedCountry, setSelectedCountry] = useState({});
 
   const [formData, setFormData] = useState({
@@ -85,6 +87,10 @@ export default function Register() {
     agreeToTerms: false,
 
   });
+  const [isLoaderOpen, setIsLoaderOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('success');
+  const [modalMessage, setModalMessage] = useState('Operation was successful!');
 
   useEffect(() => {
     fetch(
@@ -98,6 +104,24 @@ export default function Register() {
 
       });
   }, []);
+
+  const openModal = (type, message) => {
+    setModalType(type);
+    setModalMessage(message);
+    setModalOpen(true);
+  };
+
+  const handleOk = () => {
+   
+    setModalOpen(false);
+    router.push(`/otp-varification?email=${values.email}`);
+    
+  };
+
+  const handleCancel = () => {
+   
+    setModalOpen(false);
+  };
 
   const { handleSubmit, handleChange, values, touched, errors, handleBlur, setValues, resetForm } = useFormik({
     initialValues: formData,
@@ -151,20 +175,24 @@ export default function Register() {
   });
 
   const handleRegistration = async (data) => {
+    setIsLoaderOpen(true)
     Registration(data).then((res) => {
       if (res?.[0]) {
+        setIsLoaderOpen(false)
         console.log(res?.[0])
-        // setSuccessModalVisible(true);
-        showSuccessAlertOnReg('OTP code sent to your registered email', 'center', 2000);
-        // setTimeout(() => {
-        //   router.push('/reset-password');
-        // }, 2000);
-        router.push('/reset-password');
+        
+        // showSuccessAlertOnReg('OTP code sent to your registered email', 'center', 2000);
+        // router.push(`/otp-varification?email=${values.email}`);
+        openModal('success', 'We have Sent you an OTP. Press ok to submit!')
+      
 
       } else {
+        setIsLoaderOpen(false)
         console.log(res[1]?.response?.data?.message || "Something went wrong!");
-        showErrorAlert(res[1]?.response?.data?.message || "Something went wrong!", 'center', 2000);
-        router.push('/reset-password');
+        // showErrorAlert(res[1]?.response?.data?.message || "Something went wrong!", 'center', 2000);
+        openModal('error', res[1]?.response?.data?.message || "Something went wrong!")
+      
+        // router.push(`/otp-varification?email=${values.email}`);
         // setErrorMessage(res[1]?.response?.data?.message || "Something went wrong!");
         // setShowErrorModal(true);
       }
@@ -356,6 +384,16 @@ export default function Register() {
             </Slider>
           </div>
         </div>
+
+        <CustomModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          type={modalType}
+          message={modalMessage}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        />
+        <LoaderModal isOpen={isLoaderOpen} />
 
       </div>
 

@@ -8,8 +8,14 @@ import Slider from "react-slick";
 import "/public/css/slickSlider.css"
 import Image from "next/image";
 import Link from "next/link";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
-import { signIn,signOut,useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import CustomModal from "../Custom/Modal";
+import LoaderModal from "../Custom/Loader";
+import { useRouter } from 'next/navigation';
+
 
 
 const settings = {
@@ -25,6 +31,14 @@ const settings = {
 export default function Login() {
     const [keepLogin, setKeepLogin] = useState(false);
     const { data: session } = useSession();
+    const [isLoaderOpen, setIsLoaderOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalType, setModalType] = useState('success');
+    const [modalMessage, setModalMessage] = useState('Operation was successful!');
+    const router = useRouter();
+
+
+
 
     console.log(session);
 
@@ -32,27 +46,80 @@ export default function Login() {
         setKeepLogin(e.target.checked);
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        const result = await signIn("credentials", {
-            redirect: false,
-            email:"email@email.com",
-            password: "password", // Hardcoded password for testing
-            loginType: "user",  // Hardcoded username for testing
-           
-          });
-      
-          if (result.error) {
-            console.error("Failed to sign in:", result.error);
-          } else {
-            console.log("Successfully signed in");
-          }
-        };
+    const openModal = (type, message) => {
+        setModalType(type);
+        setModalMessage(message);
+        setModalOpen(true);
+    };
 
+    const handleOk = () => {
+
+        setModalOpen(false);
+        // router.push(`/otp-varification?email=${values.email}`);
+
+    };
+
+    const handleCancel = () => {
+
+        setModalOpen(false);
+    };
+
+
+
+    // const handleSubmitLogin = async (e) => {
+    //     e.preventDefault();
+
+    //     const result = await signIn("credentials", {
+    //         redirect: false,
+    //         email: "email@email.com",
+    //         password: "password", // Hardcoded password for testing
+
+
+    //     });
+
+    //     if (result.error) {
+    //         console.error("Failed to sign in:", result.error);
+    //     } else {
+    //         console.log("Successfully signed in");
+    //     }
+    // };
+    const { handleSubmit, handleChange, values, touched, errors, handleBlur, setValues, resetForm } = useFormik({
+        initialValues: {
+            username: '',
+            password: ''
+        },
+        validationSchema: Yup.object({
+            username: Yup.string().required('Username is required'),
+            password: Yup.string().required('Password is Required')
+        }),
+        onSubmit: async (values, { setSubmitting }) => {
+            setIsLoaderOpen(true)
+            console.log(values)
+            // setSubmitting(true);
+
+            const result = await signIn("credentials", {
+                redirect: false,
+                username: values.username,
+                password: values.password,
+            });
+
+            // setSubmitting(false);
+
+            if (result.error) {
+                setIsLoaderOpen(false)
+                openModal('error', "Failed to sign in!")
+                console.error("Failed to sign in:", result.error);
+            } else {
+                // setIsLoaderOpen(false);
+                router.push(`/`);
+
+
+            }
+        }
+    });
     return (
         <>
-         <h1>Welcome, {session?.user?.id}</h1>
+
             <Link href='/'>
                 <div className="absolute top-8 lg:left-24 left-7">
                     <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
@@ -78,8 +145,9 @@ export default function Login() {
 
 
                             <div className="mb-6">
-                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 ">Company Email</label>
-                                <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="you@yourcompany.com" required />
+                                <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 ">Company username</label>
+                                <input type="text" id="email" className={`bg-gray-50 border ${touched?.username && errors?.username ? 'border-red-700' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `} placeholder="Enter Username" value={values?.username} onChange={(e) => { setValues({ ...values, username: e.target.value }) }} onBlur={handleBlur} name="username" />
+                                <p className="text-red-500 text-[12px] mt-1">{touched?.username && errors.username}</p>
                             </div>
 
 
@@ -87,7 +155,8 @@ export default function Login() {
 
                             <div className="mb-3">
                                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">Password</label>
-                                <input type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Enter password" required />
+                                <input type="password" id="password" className={`bg-gray-50 border ${touched?.password && errors?.password ? 'border-red-700' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `} placeholder="Enter password" value={values?.password} onChange={(e) => { setValues({ ...values, password: e.target.value }) }} onBlur={handleBlur} name="password" />
+                                <p className="text-red-500 text-[12px] mt-1">{touched?.password && errors.password}</p>
                             </div>
 
                             <div className="sm:flex justify-between mb-6">
@@ -114,11 +183,6 @@ export default function Login() {
                     <div className="text-center text-gray-400 ">
                         {`Don’t have an account?`} <Link href='/register' className="text-blue-500">Sign up </Link>
                     </div>
-                    <button onClick={signOut}>
-                        Sign Out
-                    </button>
-                   
-
 
                 </div>
 
@@ -136,7 +200,7 @@ export default function Login() {
                                     No Code Test Automation
                                 </div>
                                 <div className="mt-5">
-                                    <Image className=""  width={500}
+                                    <Image className="" width={500}
                                         height={500} src={L1} alt="" />
                                 </div>
                             </div>
@@ -182,7 +246,18 @@ export default function Login() {
 
                     </Slider>
                 </div>
+
+
             </div>
+            <CustomModal
+                isOpen={isModalOpen}
+                onClose={() => setModalOpen(false)}
+                type={modalType}
+                message={modalMessage}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            />
+            <LoaderModal isOpen={isLoaderOpen} />
 
 
 
