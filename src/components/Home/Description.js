@@ -1,5 +1,5 @@
-import infinite from '/public/Home/infinite.png'
-import desktop from '/public/Home/desktop.png'
+import infinite from '../../../public/Home/infinite.png'
+import desktop from '../../../public/Home/desktop.png'
 import Image from 'next/image'
 export default function Description() {
     return (

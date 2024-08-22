@@ -1,11 +1,11 @@
 "use client"
 import { useEffect, useState } from "react";
-import logo from "/public/logo.png";
+import logo from "../../../public/logo.png";
 // import Auth1 from "/public/Auth/auth1.svg"
-import L1 from "/public/Auth/L1.png"
-import L2 from "/public/Auth/L2.png"
-import L3 from "/public/Auth/L3.png"
-import "/public/css/slickSlider.css"
+import L1 from "../../../public/Auth/L1.png"
+import L2 from "../../../public/Auth/L2.png"
+import L3 from "../../../public/Auth/L3.png"
+import "../../../public/css/slickSlider.css"
 import Slider from "react-slick";
 import Image from "next/image";
 import Select from "react-select";

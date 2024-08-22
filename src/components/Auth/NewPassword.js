@@ -1,9 +1,9 @@
 
 
 "use client"
-import logo from "/public/logo.png";
-import Auth2 from "/public/Auth/auth2.png"
-import Auth3 from "/public/Auth/auth3.png"
+import logo from "../../../public/logo.png";
+import Auth2 from "../../../public/Auth/auth2.png"
+import Auth3 from "../../../public/Auth/auth3.png"
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";

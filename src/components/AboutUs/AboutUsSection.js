@@ -2,23 +2,23 @@
 "use client"
 import { useEffect } from "react";
 import AOS from 'aos';
-import 'aos/dist/aos.css'; 
-import target from '/public/AboutUs/Target.png'
-import bulb from '/public/AboutUs/Lightbulb.png'
+import 'aos/dist/aos.css';
+import target from '../../../public/AboutUs/Target.png'
+import bulb from '../../../public/AboutUs/Lightbulb.png'
 import { FaLinkedinIn } from "react-icons/fa";
-import CPic from '/public/AboutUs/CPic.png';
+import CPic from '../../../public/AboutUs/CPic.png';
 import Image from 'next/image';
-import '/public/css/common.css'
+import '../../../public/css/common.css'
 
 export default function AboutUs() {
-    useEffect(()=>{
-        AOS.init({
-            offset: 120, // offset (in px) from the original trigger point
-            delay: 0, // values from 0 to 3000, with step 50ms
-            duration: 2000, // values from 0 to 3000, with step 50ms
-            easing: 'ease',
-          });
-    },[])
+  useEffect(() => {
+    AOS.init({
+      offset: 120, // offset (in px) from the original trigger point
+      delay: 0, // values from 0 to 3000, with step 50ms
+      duration: 2000, // values from 0 to 3000, with step 50ms
+      easing: 'ease',
+    });
+  }, [])
   return (
     <>
       <div className="lg:px-24 px-7 pt-44 overflow-hidden">
@@ -88,7 +88,7 @@ export default function AboutUs() {
               </div>
               <div className='h-1 w-[300px] sm:w-[350px] bg-[#486681] mt-3 rounded relative -z-10'>
                 <div className='bg-[#0077B5] py-1 px-1 rounded-full absolute right-2 top-[-30px]'>
-                  <FaLinkedinIn color='white' className="h-4 w-4"/>
+                  <FaLinkedinIn color='white' className="h-4 w-4" />
                 </div>
               </div>
             </div>
@@ -102,8 +102,8 @@ export default function AboutUs() {
                 Co Founder
               </div>
               <div className='h-1 w-[300px] sm:w-[350px] bg-[#486681] mt-3 rounded relative -z-10'>
-              <div className='bg-[#0077B5] py-1 px-1 rounded-full absolute right-2 top-[-30px]'>
-                  <FaLinkedinIn color='white' className="h-4 w-4"/>
+                <div className='bg-[#0077B5] py-1 px-1 rounded-full absolute right-2 top-[-30px]'>
+                  <FaLinkedinIn color='white' className="h-4 w-4" />
                 </div>
               </div>
             </div>
@@ -118,8 +118,8 @@ export default function AboutUs() {
                 Co Founder
               </div>
               <div className='h-1 w-[300px] sm:w-[350px] bg-[#486681] mt-3 rounded relative -z-10'>
-              <div className='bg-[#0077B5] py-1 px-1 rounded-full absolute right-2 top-[-30px]'>
-                  <FaLinkedinIn color='white' className="h-4 w-4"/>
+                <div className='bg-[#0077B5] py-1 px-1 rounded-full absolute right-2 top-[-30px]'>
+                  <FaLinkedinIn color='white' className="h-4 w-4" />
                 </div>
               </div>
             </div>

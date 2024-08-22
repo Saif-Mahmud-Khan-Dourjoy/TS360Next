@@ -1,12 +1,12 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import BlogImage1 from '/public/Blog/BlogImage1.png';
-import BlogImage2 from '/public/Blog/BlogImage2.jpg';
-import BlogImage3 from '/public/Blog/BlogImage3.jpg';
-import BlogImage4 from '/public/Blog/BlogImage4.png';
-import BlogImage5 from '/public/Blog/BlogImage5.png';
-import Arrow from '/public/Blog/Arrow.png';
+import BlogImage1 from '../../../public/Blog/BlogImage1.png';
+import BlogImage2 from '../../../public/Blog/BlogImage2.jpg';
+import BlogImage3 from '../../../public/Blog/BlogImage3.jpg';
+import BlogImage4 from '../../../public/Blog/BlogImage4.png';
+import BlogImage5 from '../../../public/Blog/BlogImage5.png';
+import Arrow from '../../../public/Blog/Arrow.png';
 import { useSearchParams,useRouter,usePathname } from "next/navigation";
 
 export default function AllPost({ searchParams }) {

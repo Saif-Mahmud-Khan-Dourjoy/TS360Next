@@ -5,16 +5,16 @@ import Link from "next/link";
 import { FaAngleLeft, FaHeart, FaLink, FaCheck, FaCircle, FaStar } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
 import Avatar from "react-avatar";
-import BlogImage1 from '/public/Blog/BlogImage1.png';
-import BlogImage2 from '/public/Blog/BlogImage2.jpg';
-import BlogImage3 from '/public/Blog/BlogImage3.jpg';
-import BlogImage4 from '/public/Blog/BlogImage4.png';
-import BlogImage5 from '/public/Blog/BlogImage5.png';
-import Figure_2_1 from '/public/Blog/Figure_2_1.png';
-import Figure_2_2 from '/public/Blog/Figure_2_2.png';
-import Arrow from '/public/Blog/Arrow.png';
-import Share from '/public/Blog/Share.png';
-import '/public/css/blog.css';
+import BlogImage1 from '../../../public/Blog/BlogImage1.png';
+import BlogImage2 from '../../../public/Blog/BlogImage2.jpg';
+import BlogImage3 from '../../../public/Blog/BlogImage3.jpg';
+import BlogImage4 from '../../../public/Blog/BlogImage4.png';
+import BlogImage5 from '../../../public/Blog/BlogImage5.png';
+import Figure_2_1 from '../../../public/Blog/Figure_2_1.png';
+import Figure_2_2 from '../../../public/Blog/Figure_2_2.png';
+import Arrow from '../../../public/Blog/Arrow.png';
+import Share from '../../../public/Blog/Share.png';
+import '../../../public/css/blog.css';
 import {
   FacebookShareButton,
   FacebookIcon,

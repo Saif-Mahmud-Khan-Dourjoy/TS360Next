@@ -1,5 +1,5 @@
 import Image from "next/image";
-import EmptyBlog_Image from '/public/Blog/EmptyBlog_Image.png';
+import EmptyBlog_Image from '../../../public/Blog/EmptyBlog_Image.png';
 
 export default function News(){
     return(<>

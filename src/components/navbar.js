@@ -1,21 +1,21 @@
 "use client"
 import { useEffect, useRef, useState } from "react";
-import alignRight from "/public/align-right.svg";
+import alignRight from "../../public/align-right.svg";
 import { FaAngleDown } from "react-icons/fa6";
-// import crossIcon from "/public/cross.svg";
-import logo from "/public/logo.png";
-import Pro from '/public/proUser.png'
+// import crossIcon from "../../public/cross.svg";
+import logo from "../../public/logo.png";
+import Pro from '../../public/proUser.png'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp, faXmark, faCaretDown, faUser, faRightFromBracket, faBook } from "@fortawesome/free-solid-svg-icons";
 import Avatar from 'react-avatar';
-import "/public/css/slickSlider.css"
-import "/public/css/slickSlider.css"
+import "../../public/css/slickSlider.css"
+import "../../public/css/slickSlider.css"
 import Slider from "react-slick";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { FaCaretDown } from "react-icons/fa6";
-import { Avatar as AvaterNext, AvatarFallback} from "@/components/ui/avatar"
+import { Avatar as AvaterNext, AvatarFallback } from "@/components/ui/avatar"
 
 
 const settings = {
@@ -99,7 +99,7 @@ const Navbar = () => {
       ]
     },
     { name: "Contact", link: "/contact" },
-   
+
   ];
 
   const handleLinkClick = () => {

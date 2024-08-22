@@ -2,15 +2,15 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import topBG from '/public/Home/topBG.png'
-import bottomBG from '/public/Home/bottomBG.png'
-import TrendUp from '/public/Home/TrendUp.png'
-import Scales from '/public/Home/Scales.svg'
-import Laptop from '/public/Home/Laptop.svg'
-import Gear from '/public/Home/Gear.svg'
-import Handshake from '/public/Home/Handshake.svg'
-import "/public/css/slickSlider.css"
-import "/public/css/slickSlider.css"
+import topBG from '../../..../../../public/Home/topBG.png'
+import bottomBG from '../../../public/Home/bottomBG.png'
+import TrendUp from '../../../public/Home/TrendUp.png'
+import Scales from '../../../public/Home/Scales.svg'
+import Laptop from '../../../public/Home/Laptop.svg'
+import Gear from '../../../public/Home/Gear.svg'
+import Handshake from '../../../public/Home/Handshake.svg'
+import "../../../public/css/slickSlider.css"
+import "../../../public/css/slickSlider.css"
 import Slider from "react-slick";
 import Image from 'next/image'
 

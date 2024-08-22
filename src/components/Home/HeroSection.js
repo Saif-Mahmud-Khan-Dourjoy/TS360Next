@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import laptop from '/public/Home/laptop.png'
+import laptop from '../../../public/Home/laptop.png'
 export default function HeroSection() {
     return (
         <>

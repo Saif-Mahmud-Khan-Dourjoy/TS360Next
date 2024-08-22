@@ -1,6 +1,6 @@
-import bottomBG from '/public/Home/bottomBG.png'
-import Gear2 from '/public/Home/Gear2.png'
-import ellipse from '/public/Home/Ellipse.png'
+import bottomBG from '../../../public/Home/bottomBG.png'
+import Gear2 from '../../../public/Home/Gear2.png'
+import ellipse from '../../../public/Home/Ellipse.png'
 import Image from 'next/image'
 export default function Unleash(){
     return(
