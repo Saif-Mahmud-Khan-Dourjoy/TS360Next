@@ -3,7 +3,7 @@ import "./globals.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
-import '/public/css/common.css'
+import '../../public/css/common.css'
 
 const inter = Inter({ subsets: ["latin"] });
 
