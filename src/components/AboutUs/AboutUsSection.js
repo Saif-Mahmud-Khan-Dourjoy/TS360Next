@@ -8,8 +8,6 @@ import bulb from '../../../public/AboutUs/Lightbulb.png'
 import { FaLinkedinIn } from "react-icons/fa";
 import CPic from '../../../public/AboutUs/CPic.png';
 import Image from 'next/image';
-import '../../../public/css/common.css'
-
 export default function AboutUs() {
   useEffect(() => {
     AOS.init({
