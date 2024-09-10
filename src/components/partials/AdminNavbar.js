@@ -175,16 +175,14 @@ const AdminNavbar = () => {
             </Link>
           </ul>
           <div
-            className={`block lg:hidden h-screen w-full fixed  bg-[#00000080] transition-all duration-500 ease   ${
+            className={`block lg:hidden h-screen w-full fixed  bg-[#00000080] transition-all duration-500 ease    ${
               open
                 ? "top-0 right-0 opacity-100 visible"
                 : " top-0 right-0 invisible opacity-0"
             } `}
           >
             <div
-              className={` overflow-hidden overflow-y-auto h-full ${
-                session ? "w-fit" : "md:max-w-[40%] sm:max-w-[50%] max-w-[65%]"
-              }  ml-auto relative  bg-[#3AB6FF]  rounded-tl-3xl rounded-bl-3xl px-[15px] transition-all duration-500 ease ${
+              className={` overflow-hidden overflow-y-auto h-full w-11/12 max-w-sm  ml-auto relative  bg-[#3AB6FF]  rounded-tl-3xl rounded-bl-3xl px-[15px] transition-all duration-500 ease ${
                 open ? "right-0" : "right-[-100%]"
               } `}
             >
@@ -207,7 +205,7 @@ const AdminNavbar = () => {
                         <Avatar
                           size="60"
                           round={true}
-                          name="Kaushik Das"
+                          name={getInitials(session?.user?.userName)}
                           color="white"
                           fgColor="#3AB6FF"
                           className="font-bold "
@@ -216,16 +214,17 @@ const AdminNavbar = () => {
                       <div className="">
                         <div className="flex gap-1 items-center">
                           <div className="font-semibold text-base text-white">
-                            Koushik Das
+                            {session?.user?.userName.charAt(0).toUpperCase() +
+                              session?.user?.userName.slice(1)}
                           </div>
                           {/* {proUser && (
                             <Image className="h-full" src={Pro} alt="" />
                           )} */}
                         </div>
 
-                        <div className="font-semibold text-sm text-gray-200 mt-1 break-all ">
+                        {/* <div className="font-semibold text-sm text-gray-200 mt-1 break-all ">
                           k_das@test360.com
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div
@@ -344,7 +343,7 @@ const AdminNavbar = () => {
                               : ""
                           }`}
                         >
-                          {link?.name}
+                          {link?.name.toUpperCase()}
                         </Link>
                       </li>
                       <hr className="mt-3" />
