@@ -1,0 +1,51 @@
+.ql-editor {
+    min-height: 150px;
+}
+
+.blog-content {
+    max-width: 800px;
+    /* Set a max-width for better readability */
+    width: 100%;
+    /* Ensures the content takes full width up to the max-width */
+}
+
+.blog-content img {
+    display: block;
+    /* Makes the image a block element */
+    margin: 0 auto;
+    /* Centers the image horizontally */
+}
+
+/* Optional: If you want to add styles to code blocks */
+.blog-content pre {
+    background-color: #2d2d2d;
+    color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: monospace;
+}
+
+.blog-content .hljs-comment {
+    color: #6272a4;
+}
+
+.blog-content .hljs-keyword {
+    color: #ff79c6;
+}
+
+.blog-content .hljs-title.class_ {
+    color: #8be9fd;
+}
+
+.blog-content .hljs-built_in {
+    color: #50fa7b;
+}
+
+.blog-content .hljs-type {
+    color: #ffb86c;
+}
+
+.blog-content .hljs-string {
+    color: #f1fa8c;
+}

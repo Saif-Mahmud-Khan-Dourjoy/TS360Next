@@ -1,5 +1,5 @@
 import Link from "next/link";
-import logo from "../../public/logo.png";
+import logo from "../../../public/logo.png";
 import { FaEnvelope, FaLocationDot } from "react-icons/fa6";
 import Image from "next/image";
 export default function Footer() {
