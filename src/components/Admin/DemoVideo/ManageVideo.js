@@ -504,7 +504,7 @@ export default function ManageVideo() {
                   })
                 }
               />
-              <span className="text-[#818181] ml-2">Make this blog public</span>
+              <span className="text-[#818181] ml-2">Make this video public</span>
             </div>
           </div>
           <div

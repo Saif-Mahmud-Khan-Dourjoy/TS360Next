@@ -96,7 +96,7 @@ export default function AllVideo() {
               return (
                 <div
                   key={video?.id}
-                  className=""
+                  className="relative"
                   style={{
                     borderRadius: "10px",
                     background: "#FFF",
@@ -138,7 +138,7 @@ export default function AllVideo() {
                     </div>
                   </div>
 
-                  <div className="pt-5 px-5 pb-8 relative">
+                  <div className="pt-5 px-5 pb-8">
                     <div className=" text-xl md:text-2xl font-semibold text-gray-950">
                       {video?.title}
                     </div>

@@ -1,7 +1,7 @@
 import Config from "@/Config"
 import axios from "axios"
 export const AddNewFAQ = async (data, token) => {
-  debugger
+
   return axios
     .post(
       `${Config?.baseApi}/subscription/frequently-asked-question/add`,

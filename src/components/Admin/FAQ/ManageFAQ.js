@@ -265,7 +265,7 @@ export default function ManageFAQ() {
                   })
                 }
               />
-              <span className="text-[#818181] ml-2">Make this blog public</span>
+              <span className="text-[#818181] ml-2">Make this FAQ public</span>
             </div>
           </div>
 

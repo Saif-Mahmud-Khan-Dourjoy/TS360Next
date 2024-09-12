@@ -50,7 +50,7 @@ export default function AllBlog() {
   }, [session, reload])
 
   const BlogEdit = (id, status, slug) => {
-    debugger
+ 
     if (status === "DRAFTED") {
       router.push(
         `/admin/blog/manage-blog?id=${id}&status=${status}&slug=${slug}`
