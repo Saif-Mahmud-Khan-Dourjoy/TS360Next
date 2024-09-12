@@ -1,7 +1,5 @@
 const Config = {
-  baseApi: "http://54.85.36.60:8085",
-};
+  baseApi: "http://18.206.88.27:8085",
+}
 
-export default Config;
-
-
+export default Config

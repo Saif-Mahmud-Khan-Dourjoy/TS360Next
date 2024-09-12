@@ -188,7 +188,7 @@ export const UpdateVideo = async (id, videoContent, uploadedFile, token) => {
 }
 
 export const VideoDelete = async (id, token) => {
-  debugger
+ 
   return axios
     .delete(`${Config?.baseApi}/subscription/video-content/${id}/delete`, {
       headers: {

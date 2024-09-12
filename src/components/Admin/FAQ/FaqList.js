@@ -150,18 +150,12 @@ export default function FaqList() {
             {faqData?.map((faq, index) => (
               <div
                 key={`faq-${index}`}
-                className="px-5 py-3 border-[1.7px] rounded-md flex justify-between flex-wrap gap-4 items-center mb-2"
+                className="px-5 py-3 border-[1.7px] rounded-md flex  justify-between  gap-4 items-center mb-2"
               >
                 <div className="text-[#486681] font-semibold text-sm">
                   Q: {ensureQuestionMark(faq.title)}
                 </div>
-                <div className=" flex gap-2 flex-wrap">
-                  {/* <div className="group p-1 border-2 rounded-full w-fit cursor-pointer flex items-center hover:bg-[#0f0f10] transition-all duration-500">
-                  <FaRegStar
-                    size={18}
-                    className="text-[rgb(169,169,169)] group-hover:text-white transition-colors duration-500"
-                  />
-                </div> */}
+                <div className=" flex gap-2 flex-col sm:flex-row justify-end">
                   <div
                     onClick={() => toggleVisibility(faq?.id)}
                     className={`group hover:bg-black transition-all duration-500 p-[6px] border-2 rounded-full w-fit cursor-pointer ${

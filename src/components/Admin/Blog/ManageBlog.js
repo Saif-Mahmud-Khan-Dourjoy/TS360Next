@@ -266,7 +266,7 @@ export default function CreateBlog() {
         .required("Tag is required"),
     }),
     onSubmit: (values) => {
-      debugger
+      
       const blogContent = {
         title: values.title,
         description: values.description,
@@ -279,7 +279,7 @@ export default function CreateBlog() {
       if (id) {
         blogContent.id = Number(id)
         if (!values.coverImage) {
-          blogContent.coverImage = coverImagePrevious
+          blogContent.coverImagePath = coverImagePrevious
         }
         handleFormUpdate(blogContent)
       } else {
@@ -341,10 +341,10 @@ export default function CreateBlog() {
     if (id) {
       blogContent.id = Number(id)
       if (!values.coverImage) {
-        blogContent.coverImage = coverImagePrevious
+        blogContent.coverImagePath = coverImagePrevious
       }
     }
-    debugger
+    
     DraftBlog(blogContent, values?.coverImage, session?.accessToken).then(
       (res) => {
         if (res?.[0]) {
@@ -399,7 +399,7 @@ export default function CreateBlog() {
                   touched.title && errors.title ? "border-b-red-600" : ""
                 } w-full text-gray-500`}
                 name="title"
-                placeholder="Video Title"
+                placeholder="Blog Title"
                 value={values?.title}
                 onChange={(e) => {
                   setValues({ ...values, title: e.target.value })
