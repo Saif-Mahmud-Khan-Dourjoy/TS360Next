@@ -34,7 +34,7 @@ export async function middleware(req) {
   }
 
   if (req.nextUrl.pathname === "/demo-video") {
-    return NextResponse.redirect(new URL(`/demo-video/allVideo`, req.url))
+    return NextResponse.redirect(new URL(`/demo-video/all`, req.url))
   }
 
   const headers = new Headers(req.headers)
@@ -45,7 +45,6 @@ export async function middleware(req) {
 const checkAuth = (req, token) => {
   if (req.nextUrl.pathname.includes("admin")) {
     if (!token) {
-      console.log(token)
       return NextResponse.redirect(new URL("/login", req.url))
     }
   }

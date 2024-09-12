@@ -110,7 +110,7 @@ export default function ManageVideo() {
   }, [id, session])
 
   useEffect(() => {
-    VideoCategory(session?.accessToken).then((res) => {
+    VideoCategory().then((res) => {
       console.log(res)
       if (res?.[0]) {
         let catArr = []

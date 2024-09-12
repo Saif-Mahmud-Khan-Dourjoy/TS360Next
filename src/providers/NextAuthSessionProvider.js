@@ -7,7 +7,7 @@ export default function NextAuthSessionProvider({children}) {
     <>
       <SessionProvider >
           {children}
-        </SessionProvider>
+      </SessionProvider>
     </>
   )
 }

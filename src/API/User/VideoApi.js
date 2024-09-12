@@ -1,12 +1,13 @@
 import Config from "@/Config"
 import axios from "axios"
 
-export const VideoCategory = async () => {
+export const VideoCategory = async (token) => {
   return axios
     .get(`${Config?.baseApi}/subscription/content-category/public/VIDEO/all`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Authorization: "Bearer " + token,
       },
     })
     .then((res) => {
@@ -64,18 +65,13 @@ export const AddNewVideo = async (videoContent, uploadedFile, token) => {
 }
 
 export const GetAllVideo = async (token) => {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  }
-
-  // Add Authorization header if token is provided
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
-  }
   return axios
     .get(`${Config?.baseApi}/subscription/video-content/public/all`, {
-      headers: headers,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
     })
     .then((res) => {
       return [res?.data]
@@ -96,54 +92,14 @@ export const GetAllVideo = async (token) => {
 }
 
 export const GetVideoById = async (id, token) => {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  }
-
-  // Add Authorization header if token is provided
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
-  }
   return axios
     .get(`${Config?.baseApi}/subscription/video-content/public/${id}`, {
-      headers: headers,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
     })
-    .then((res) => {
-      return [res?.data]
-    })
-    .catch((error) => {
-      console.error(error)
-      if (error.response) {
-        // Request made and server responded
-        return [false, error.response.data.message]
-      } else if (error.request) {
-        // The request was made but no response was received
-        return [false, error.message]
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        return [false, error.message]
-      }
-    })
-}
-
-export const GetVideoByCategory = async (catId, token) => {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  }
-
-  // Add Authorization header if token is provided
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
-  }
-  return axios
-    .get(
-      `${Config?.baseApi}/subscription/video-content/public/all?categoryIds=${catId}`,
-      {
-        headers: headers,
-      }
-    )
     .then((res) => {
       return [res?.data]
     })
