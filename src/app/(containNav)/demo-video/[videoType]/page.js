@@ -48,8 +48,8 @@ export default function VideoType({ params }) {
     if (category.length > 0) {
       if (catId) {
         GetVideoByCategory(catId).then((res) => {
-          console.log(res)
           if (res?.[0]) {
+            console.log(res?.[0])
             setLoader(false)
             setAllVideo([...res?.[0]])
           } else {
@@ -59,8 +59,8 @@ export default function VideoType({ params }) {
         })
       } else {
         GetAllVideo().then((res) => {
-          console.log(res)
           if (res?.[0]) {
+            console.log(res?.[0])
             setLoader(false)
             setAllVideo([...res?.[0]])
           } else {
@@ -101,11 +101,18 @@ export default function VideoType({ params }) {
                     <div
                       className="relative hover:scale-110 transition-all duration-500 cursor-pointer"
                       onClick={() => {
-                        setVideoId("hAdT_0O7TI8")
+                        setVideoId(video?.uniqueValue)
                         setOpen(true)
                       }}
                     >
-                      <Image src={V1} className="w-full h-[200px]" alt="" />
+                      <div className="relative w-full h-[200px]">
+                        <Image
+                          src={video?.thumbnailPath}
+                          alt="video thumbnail"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                       <div className="bg-gray-400/50 absolute top-0 left-0 right-0 bottom-0"></div>
                       <FaRegCirclePlay className="shadow-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500  text-[50px] hover:text-[60px]" />
                     </div>
@@ -113,11 +120,10 @@ export default function VideoType({ params }) {
 
                   <div className="pt-5 px-5 pb-8">
                     <div className=" text-xl md:text-2xl font-semibold text-gray-950">
-                      Getting started with TS360 Web
+                      {video?.title}
                     </div>
                     <div className="mt-3 text-base md:text-xl">
-                      Get familiar with the basics of using TS360 and create
-                      test cases with ease
+                      {video?.description}
                     </div>
                   </div>
                 </div>
