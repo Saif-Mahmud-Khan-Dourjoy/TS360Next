@@ -26,13 +26,12 @@ export const UploadPublicImage = async (formData, token) => {
     })
 }
 
-export const BlogCategory = async (token) => {
+export const BlogCategory = async () => {
   return axios
     .get(`${Config?.baseApi}/subscription/content-category/public/BLOG/all`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: "Bearer " + token,
       },
     })
     .then((res) => {
@@ -307,6 +306,67 @@ export const BlogDelete = async (id, token) => {
     })
     .then((res) => {
       return [true]
+    })
+    .catch((error) => {
+      console.error(error)
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
+      }
+    })
+}
+
+export const PublicAllBlog = async () => {
+  return axios
+    .get(`${Config?.baseApi}/subscription/blog/public/dashboard-all`, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+    .then((res) => {
+      return [res?.data]
+    })
+    .catch((error) => {
+      console.error(error)
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
+      }
+    })
+}
+
+export const GetBlogByCategory = async (catId, token) => {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  }
+
+  // Add Authorization header if token is provided
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
+  return axios
+    .get(
+      `${Config?.baseApi}/subscription/blog/public/all?categoryIds=${catId}`,
+      {
+        headers: headers,
+      }
+    )
+    .then((res) => {
+      return [res?.data]
     })
     .catch((error) => {
       console.error(error)

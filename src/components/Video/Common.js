@@ -100,47 +100,19 @@ export default function Common() {
                 }  pr-5 h-fit ${
                   decodeURIComponent(pathname).includes(item?.name)
                     ? "text-[#3AB6FF]"
-                    : "text-gray-900"
+                    : "text-[#A6A6A6]"
                 }`}
                 onClick={() => setSelectedTab(item?.name)}
               >
                 {item?.name}
               </div>
             ))}
-
-            {/* <div
-              className={`cursor-pointer text-lg border-r-2 pr-5 h-fit ${
-                pathname.includes("advance")
-                  ? "text-[#3AB6FF]"
-                  : "text-gray-900"
-              }`}
-              onClick={() => setSelectedTab("advance")}
-            >
-              Advanced Features
-            </div>
-            <div
-              className={`cursor-pointer text-lg border-r-2 pr-5 h-fit ${
-                pathname.includes("web") ? "text-[#3AB6FF]" : "text-gray-900"
-              }`}
-              onClick={() => setSelectedTab("web")}
-            >
-              Web
-            </div>
-            <div
-              className={`cursor-pointer text-lg  ${
-                pathname.includes("mobile") ? "text-[#3AB6FF]" : "text-gray-900"
-              }`}
-              onClick={() => setSelectedTab("mobile")}
-            >
-              Mobile
-            </div> */}
           </div>
           <div className="block lg:hidden">
             <select
               name=""
               id=""
               className="text-[#8d8b8b]"
-           
               onChange={(e) => setSelectedTab(e.target.value)}
             >
               <option value="All">All Videos</option>
@@ -149,10 +121,6 @@ export default function Common() {
                   {cat?.name}
                 </option>
               ))}
-              {/* 
-              <option value="advance">Advance Features</option>
-              <option value="web">Web</option>
-              <option value="mobile">Mobile</option> */}
             </select>
           </div>
           <div className="flex justify-end" style={{ zIndex: "0" }}>

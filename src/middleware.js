@@ -22,14 +22,14 @@ export async function middleware(req) {
   }
   const filterValue = req.nextUrl.searchParams.get("filter")
   if (
-    (req.nextUrl.pathname === "/blog/allPost" ||
+    (req.nextUrl.pathname === "/blog/All" ||
       req.nextUrl.pathname === "/blog") &&
     !filterValue
   ) {
     const url = req.nextUrl.clone()
     url.searchParams.set("filter", "recent")
     return NextResponse.redirect(
-      new URL(`/blog/allPost?${url.searchParams.toString()}`, req.url)
+      new URL(`/blog/All?${url.searchParams.toString()}`, req.url)
     )
   }
 
