@@ -127,6 +127,7 @@ export default function CreateBlog() {
     }),
     onSubmit: (values) => {
       const blogContent = {
+        
         title: values.title,
         description: values.description,
         blogCategories: values.blogCategories,
@@ -135,8 +136,13 @@ export default function CreateBlog() {
         featured: values.featured,
         tags: values.tags,
       }
-      if (id) {
+
+      if(id){
         blogContent.id = Number(id)
+      }
+
+      if (status == "PUBLISHED") {
+        
         if (!values.coverImage) {
           blogContent.coverImagePath = coverImagePrevious
         }
