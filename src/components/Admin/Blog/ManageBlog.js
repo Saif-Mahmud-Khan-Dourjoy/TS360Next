@@ -127,7 +127,6 @@ export default function CreateBlog() {
     }),
     onSubmit: (values) => {
       const blogContent = {
-        
         title: values.title,
         description: values.description,
         blogCategories: values.blogCategories,
@@ -137,15 +136,14 @@ export default function CreateBlog() {
         tags: values.tags,
       }
 
-      if(id){
+      if (id) {
         blogContent.id = Number(id)
+      }
+      if (!values.coverImage) {
+        blogContent.coverImagePath = coverImagePrevious
       }
 
       if (status == "PUBLISHED") {
-        
-        if (!values.coverImage) {
-          blogContent.coverImagePath = coverImagePrevious
-        }
         handleFormUpdate(blogContent)
       } else {
         handleFormSubmit(blogContent)
@@ -156,7 +154,6 @@ export default function CreateBlog() {
   useEffect(() => {
     if (slug) {
       GetBlogBySlug(slug, session?.accessToken).then((res) => {
-       
         if (res?.[0]) {
           const newArr = { ...res?.[0] }
 
