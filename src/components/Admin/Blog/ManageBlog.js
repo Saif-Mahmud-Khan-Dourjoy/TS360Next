@@ -41,19 +41,6 @@ const options = [
   },
 ]
 
-// const customStyles = {
-//   control: (provided, state) => ({
-//     ...provided,
-//     zIndex: 9999,
-//     border: "none", // Remove all borders
-//     borderBottom: state.isFocused ? "1px solid black" : "1px solid #ccc", // Only bottom border with color change on focus
-//     borderRadius: 0, // Remove border radius to avoid rounded corners
-//     boxShadow: "none", // Remove default box-shadow
-//     "&:hover": {
-//       borderBottom: state.isFocused ? "1px solid black" : "1px solid #999", // Change bottom border color on hover
-//     },
-//   }),
-// }
 const customStyles = (error) => ({
   control: (provided, state) => ({
     ...provided,
@@ -89,7 +76,7 @@ export default function CreateBlog() {
   const [inputValue, setInputValue] = useState("")
   const searchParams = useSearchParams()
   const id = searchParams.get("id")
- 
+
   const status = searchParams.get("status")
   const slug = searchParams.get("slug")
   const [coverImagePrevious, setCoverImagePrevious] = useState("")
@@ -107,30 +94,98 @@ export default function CreateBlog() {
     featured: false,
   })
 
+  const {
+    handleSubmit,
+    handleChange,
+    values,
+    touched,
+    errors,
+    handleBlur,
+    setValues,
+    resetForm,
+    setFieldValue,
+  } = useFormik({
+    initialValues: formData,
+    enableReinitialize: true,
+    validationSchema: Yup.object().shape({
+      title: Yup.string().required("Title is required"),
+      description: Yup.string().required("Description is required"),
+      timeRequiredToRead: Yup.string().required(
+        "time required ro read is required"
+      ),
+      featured: Yup.boolean(),
+      visible: Yup.boolean(),
+      coverImage: id
+        ? Yup.string().nullable()
+        : Yup.mixed().required("Cover Image is required"),
+      blogCategories: Yup.array()
+        .min(1, "At least one Category must be selected")
+        .required("Category is required"),
+      tags: Yup.array()
+        .min(1, "At least one tag must be selected")
+        .required("Tag is required"),
+    }),
+    onSubmit: (values) => {
+      const blogContent = {
+        
+        title: values.title,
+        description: values.description,
+        blogCategories: values.blogCategories,
+        timeRequiredToRead: values.timeRequiredToRead,
+        visible: values.visible,
+        featured: values.featured,
+        tags: values.tags,
+      }
+
+      if(id){
+        blogContent.id = Number(id)
+      }
+
+      if (status == "PUBLISHED") {
+        
+        if (!values.coverImage) {
+          blogContent.coverImagePath = coverImagePrevious
+        }
+        handleFormUpdate(blogContent)
+      } else {
+        handleFormSubmit(blogContent)
+      }
+    },
+  })
+
   useEffect(() => {
     if (slug) {
       GetBlogBySlug(slug, session?.accessToken).then((res) => {
+       
         if (res?.[0]) {
-          console.log(res?.[0])
+          const newArr = { ...res?.[0] }
+
+          const blogCat = newArr.blogCategories?.map((item) => ({
+            label: item.name,
+            value: item.id,
+            id: item.id,
+          }))
+
+          const tags = newArr.tags?.map((item) => ({
+            label: item,
+            value: item,
+          }))
+
+          // Set all form values initially
           setValues({
-            title: res?.[0].title,
-            description: res?.[0].description,
-            timeRequiredToRead: res?.[0].timeRequiredToRead,
-            featured: res?.[0].featured,
-            visible: res?.[0].visible,
-            coverImage: null,
-            blogCategories: res?.[0].blogCategories?.map((item) => {
-              return { label: item.name, value: item.id, id: item.id }
-            }),
-            tags: res?.[0].tags,
+            title: newArr?.title || "",
+            description: newArr?.description || "", // Set the large content
+            timeRequiredToRead: newArr?.timeRequiredToRead || "",
+            featured: newArr?.featured || false,
+            visible: newArr?.visible || false,
+            coverImage: null, // Handle cover image separately
+            blogCategories: blogCat || [],
+            tags: newArr?.tags || [],
           })
-          setSelectedFile(res?.[0].coverImagePath)
-          setCoverImagePrevious(res?.[0].coverImagePath)
-          setSelectedOptions(
-            res?.[0].tags?.map((item) => {
-              return { label: item, value: item }
-            })
-          )
+
+          setSelectedOptions(tags)
+          setSelectedFile(newArr.coverImagePath) // Set cover image
+          setCoverImagePrevious(newArr.coverImagePath)
         } else {
           setValues({
             title: "",
@@ -182,7 +237,7 @@ export default function CreateBlog() {
   }, [session])
 
   const quillText = (value) => {
-    setValues({ ...values, description: value })
+    setFieldValue("description", value)
   }
   const handleInputChange = (newValue) => {
     console.log(newValue)
@@ -190,7 +245,7 @@ export default function CreateBlog() {
   }
 
   const handleMultiCategory = (selected) => {
-    setValues({ ...values, blogCategories: selected })
+    setFieldValue("blogCategories", selected)
   }
   const handleMulti = (selected) => {
     console.log(selected)
@@ -199,7 +254,7 @@ export default function CreateBlog() {
     let selectedTags = options.map((item) => {
       return item?.value
     })
-    setValues({ ...values, tags: selectedTags })
+    setFieldValue("tags", selectedTags)
   }
 
   const handleCreateOption = (inputValue) => {
@@ -235,58 +290,6 @@ export default function CreateBlog() {
       }
     }
   }
-
-  const {
-    handleSubmit,
-    handleChange,
-    values,
-    touched,
-    errors,
-    handleBlur,
-    setValues,
-    resetForm,
-  } = useFormik({
-    initialValues: formData,
-    validationSchema: Yup.object().shape({
-      title: Yup.string().required("Title is required"),
-      description: Yup.string().required("Description is required"),
-      timeRequiredToRead: Yup.string().required(
-        "time required ro read is required"
-      ),
-      featured: Yup.boolean(),
-      visible: Yup.boolean(),
-      coverImage: id
-        ? Yup.string().nullable()
-        : Yup.mixed().required("Cover Image is required"),
-      blogCategories: Yup.array()
-        .min(1, "At least one Category must be selected")
-        .required("Category is required"),
-      tags: Yup.array()
-        .min(1, "At least one tag must be selected")
-        .required("Tag is required"),
-    }),
-    onSubmit: (values) => {
-      
-      const blogContent = {
-        title: values.title,
-        description: values.description,
-        blogCategories: values.blogCategories,
-        timeRequiredToRead: values.timeRequiredToRead,
-        visible: values.visible,
-        featured: values.featured,
-        tags: values.tags,
-      }
-      if (id) {
-        blogContent.id = Number(id)
-        if (!values.coverImage) {
-          blogContent.coverImagePath = coverImagePrevious
-        }
-        handleFormUpdate(blogContent)
-      } else {
-        handleFormSubmit(blogContent)
-      }
-    },
-  })
 
   useEffect(() => {
     if (values?.title) {
@@ -344,7 +347,7 @@ export default function CreateBlog() {
         blogContent.coverImagePath = coverImagePrevious
       }
     }
-    
+
     DraftBlog(blogContent, values?.coverImage, session?.accessToken).then(
       (res) => {
         if (res?.[0]) {
@@ -401,9 +404,7 @@ export default function CreateBlog() {
                 name="title"
                 placeholder="Blog Title"
                 value={values?.title}
-                onChange={(e) => {
-                  setValues({ ...values, title: e.target.value })
-                }}
+                onChange={(e) => setFieldValue("title", e.target.value)}
                 onBlur={handleBlur}
               />
               {((touched.title && errors.title) || titleError) && (
@@ -421,10 +422,7 @@ export default function CreateBlog() {
               <FileUploader
                 handleChange={(e) => {
                   handleFileChange(e)
-                  setValues({
-                    ...values,
-                    coverImage: e,
-                  })
+                  setFieldValue("coverImage", e)
                 }}
                 name="file"
                 types={allowedFileTypes}
@@ -598,12 +596,7 @@ export default function CreateBlog() {
                 name="featured"
                 type="checkbox"
                 className={` w-3 h-3 border rounded bg-gray-50 focus:ring-3 focus:ring-blue-300`}
-                onChange={(e) =>
-                  setValues({
-                    ...values,
-                    featured: !values.featured,
-                  })
-                }
+                onChange={() => setFieldValue("featured", !values.featured)}
               />
               <span className="text-[#818181] ml-2">Featured Post</span>
             </div>
@@ -613,12 +606,7 @@ export default function CreateBlog() {
                 name="visible"
                 type="checkbox"
                 className={`w-3 h-3 border rounded bg-gray-50 focus:ring-3 focus:ring-blue-300`}
-                onChange={(e) =>
-                  setValues({
-                    ...values,
-                    visible: !values.visible,
-                  })
-                }
+                onChange={() => setFieldValue("visible", !values.visible)}
               />
               <span className="text-[#818181] ml-2">Make this blog public</span>
             </div>
@@ -638,9 +626,9 @@ export default function CreateBlog() {
                   name="timeRequiredToRead"
                   placeholder="Time in min/sec/hr"
                   value={values?.timeRequiredToRead}
-                  onChange={(e) => {
-                    setValues({ ...values, timeRequiredToRead: e.target.value })
-                  }}
+                  onChange={(e) =>
+                    setFieldValue("timeRequiredToRead", e.target.value)
+                  }
                   onBlur={handleBlur}
                 />
                 {touched.timeRequiredToRead && errors.timeRequiredToRead && (
