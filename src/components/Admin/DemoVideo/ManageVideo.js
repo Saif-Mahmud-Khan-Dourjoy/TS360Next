@@ -193,10 +193,9 @@ export default function ManageVideo() {
       }
 
       if (id) {
-         videoContent.id = id
+        videoContent.id = id
         if (!values.thumbnail) {
           videoContent.thumbnailPath = thumbnailPrevious
-         
         }
 
         handleFormUpdate(videoContent)
@@ -416,7 +415,7 @@ export default function ManageVideo() {
                     <div className=" mb-1">File Type: {selectedFile?.type}</div>
                     <div className=" mb-1">
                       Last Modified:{" "}
-                      {selectedFile?.lastModifiedDate?.toString()}
+                      {selectedFile?.creationDate?.toString()}
                     </div>
                   </div> */}
                     <Image
@@ -480,7 +479,9 @@ export default function ManageVideo() {
                 isClearable
                 menuPortalTarget={menuTarget}
                 menuPlacement="auto"
-                styles={customStyles(errors.videoCategories && touched.videoCategories)}
+                styles={customStyles(
+                  errors.videoCategories && touched.videoCategories
+                )}
               />
               {errors.videoCategories && touched.videoCategories && (
                 <p className="text-red-500 text-[12px] mt-1">
@@ -504,7 +505,9 @@ export default function ManageVideo() {
                   })
                 }
               />
-              <span className="text-[#818181] ml-2">Make this video public</span>
+              <span className="text-[#818181] ml-2">
+                Make this video public
+              </span>
             </div>
           </div>
           <div

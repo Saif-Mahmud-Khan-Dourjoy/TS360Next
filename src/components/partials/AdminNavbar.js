@@ -20,8 +20,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { FaCaretDown } from "react-icons/fa6"
 import { Avatar as AvaterNext, AvatarFallback } from "@/components/ui/avatar"
-import { signOut } from "next-auth/react"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 
 const settings = {
   dots: false, // Dont Show dots for navigation
@@ -203,7 +202,7 @@ const AdminNavbar = () => {
                     <div className="flex items-center  gap-x-5 ">
                       <div>
                         <Avatar
-                          size="60"
+                          size="40"
                           round={true}
                           name={getInitials(session?.user?.userName)}
                           color="white"
@@ -303,7 +302,10 @@ const AdminNavbar = () => {
                             <div className="text-white ">User Guides</div>
                           </div>
                           <hr className="mt-2" />
-                          <div className="flex gap-x-5 items-center mt-5 cursor-pointer">
+                          <div
+                            className="flex gap-x-5 items-center mt-5 cursor-pointer"
+                            onClick={() => signOut()}
+                          >
                             <div className="relative bottom-[-2px]">
                               <FontAwesomeIcon
                                 icon={faRightFromBracket}

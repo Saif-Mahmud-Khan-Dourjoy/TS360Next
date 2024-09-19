@@ -175,13 +175,18 @@ export const GetAllBlog = async (token) => {
 }
 
 export const GetBlogBySlug = async (slug, token) => {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  }
+
+  // Add Authorization header if token is provided
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
   return axios
     .get(`${Config?.baseApi}/subscription/blog/public/slug/${slug}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: headers,
     })
     .then((res) => {
       return [res?.data]
@@ -322,14 +327,17 @@ export const BlogDelete = async (id, token) => {
     })
 }
 
-export const PublicAllBlog = async () => {
+export const PublicAllBlog = async (searchText) => {
   return axios
-    .get(`${Config?.baseApi}/subscription/blog/public/dashboard-all`, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
+    .get(
+      `${Config?.baseApi}/subscription/blog/public/dashboard-all?searchText=${searchText}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
     .then((res) => {
       return [res?.data]
     })
@@ -348,7 +356,7 @@ export const PublicAllBlog = async () => {
     })
 }
 
-export const GetBlogByCategory = async (catId, token) => {
+export const GetBlogByCategory = async (catId, searchText, token) => {
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -360,11 +368,38 @@ export const GetBlogByCategory = async (catId, token) => {
   }
   return axios
     .get(
-      `${Config?.baseApi}/subscription/blog/public/all?categoryIds=${catId}`,
+      `${Config?.baseApi}/subscription/blog/public/all?categoryIds=${catId}&searchText=${searchText}`,
       {
         headers: headers,
       }
     )
+    .then((res) => {
+      return [res?.data]
+    })
+    .catch((error) => {
+      console.error(error)
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
+      }
+    })
+}
+
+export const ReactBlog = async (id, data, token) => {
+  return axios
+    .put(`${Config?.baseApi}/subscription/blog/${id}/react`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
     .then((res) => {
       return [res?.data]
     })

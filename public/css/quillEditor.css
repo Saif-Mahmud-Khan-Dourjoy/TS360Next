@@ -3,7 +3,7 @@
 }
 
 .blog-content {
-    max-width: 800px;
+    /* max-width: 800px; */
     /* Set a max-width for better readability */
     width: 100%;
     /* Ensures the content takes full width up to the max-width */
@@ -16,6 +16,21 @@
     /* Centers the image horizontally */
 }
 
+.blog-content * {
+    word-break: break-word;
+    /* Allows long words to break and wrap to the next line */
+    white-space: pre-wrap;
+    /* Preserves whitespace and wraps text */
+}
+
+.blog-content a {
+    text-decoration: underline;
+    color: rgb(36, 36, 210);
+    word-break: break-all;
+    white-space: normal;
+}
+
+
 /* Optional: If you want to add styles to code blocks */
 .blog-content pre {
     background-color: #2d2d2d;
@@ -26,7 +41,7 @@
     font-family: monospace;
 }
 
-.blog-content .hljs-comment {
+/* .blog-content .hljs-comment {
     color: #6272a4;
 }
 
@@ -48,4 +63,4 @@
 
 .blog-content .hljs-string {
     color: #f1fa8c;
-}
+} */

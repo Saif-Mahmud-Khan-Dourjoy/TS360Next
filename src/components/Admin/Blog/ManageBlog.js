@@ -477,7 +477,7 @@ export default function CreateBlog() {
                     <div className=" mb-1">File Type: {selectedFile?.type}</div>
                     <div className=" mb-1">
                       Last Modified:{" "}
-                      {selectedFile?.lastModifiedDate?.toString()}
+                      {selectedFile?.creationDate?.toString()}
                     </div>
                   </div> */}
                     <Image

@@ -1,20 +1,20 @@
-"use client";
-import { useEffect, useState } from "react";
-import logo from "../../../public/logo.png";
-import L1 from "../../../public/Auth/L1.png";
-import L2 from "../../../public/Auth/L2.png";
-import L3 from "../../../public/Auth/L3.png";
-import Slider from "react-slick";
-import "../../../public/css/slickSlider.css";
-import Image from "next/image";
-import Link from "next/link";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+"use client"
+import { useEffect, useState } from "react"
+import logo from "../../../public/logo.png"
+import L1 from "../../../public/Auth/L1.png"
+import L2 from "../../../public/Auth/L2.png"
+import L3 from "../../../public/Auth/L3.png"
+import Slider from "react-slick"
+import "../../../public/css/slickSlider.css"
+import Image from "next/image"
+import Link from "next/link"
+import { useFormik } from "formik"
+import * as Yup from "yup"
 
-import { signIn, signOut, useSession } from "next-auth/react";
-import CustomModal from "../Custom/Modal";
-import LoaderModal from "../Custom/Loader";
-import { useRouter } from "next/navigation";
+import { signIn, signOut, useSession } from "next-auth/react"
+import CustomModal from "../Custom/Modal"
+import LoaderModal from "../Custom/Loader"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const settings = {
   dots: true, // Show dots for navigation
@@ -25,49 +25,51 @@ const settings = {
   arrows: false, // Disable the arrows
   autoplay: true, // Enable autoplay
   autoplaySpeed: 3000, // Autoplay speed in milliseconds (3000ms = 3 seconds)
-};
+}
 export default function Login() {
-  const [keepLogin, setKeepLogin] = useState(false);
-  const { data: session } = useSession();
-  const [isLoaderOpen, setIsLoaderOpen] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("success");
-  const [modalMessage, setModalMessage] = useState("Operation was successful!");
-  const router = useRouter();
+  const [keepLogin, setKeepLogin] = useState(false)
+  const { data: session } = useSession()
+  const [isLoaderOpen, setIsLoaderOpen] = useState(false)
+  const [isModalOpen, setModalOpen] = useState(false)
+  const [modalType, setModalType] = useState("success")
+  const [modalMessage, setModalMessage] = useState("Operation was successful!")
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect")
 
-  console.log(session);
-    
   useEffect(() => {
-        
-         if (session) {
-            setIsLoaderOpen(false);
-           if (session?.user?.role == "ADMIN") {
-             router.push(`/admin/blog`);
-           } else {
-             router.push(`/`);
-           }
-         }
-   
-  }, [session]);
+    if (session) {
+      if (redirectTo) {
+        router.push(`${redirectTo}`)
+      } else {
+        setIsLoaderOpen(false)
+        if (session?.user?.role == "ADMIN") {
+          router.push(`/admin/blog`)
+        } else {
+          router.push(`/`)
+        }
+      } 
+    }
+  }, [session])
 
   const checkBoxValue = (e) => {
-    setKeepLogin(e.target.checked);
-  };
+    setKeepLogin(e.target.checked)
+  }
 
   const openModal = (type, message) => {
-    setModalType(type);
-    setModalMessage(message);
-    setModalOpen(true);
-  };
+    setModalType(type)
+    setModalMessage(message)
+    setModalOpen(true)
+  }
 
   const handleOk = () => {
-    setModalOpen(false);
+    setModalOpen(false)
     // router.push(`/otp-varification?email=${values.email}`);
-  };
+  }
 
   const handleCancel = () => {
-    setModalOpen(false);
-  };
+    setModalOpen(false)
+  }
 
   // const handleSubmitLogin = async (e) => {
   //     e.preventDefault();
@@ -104,35 +106,45 @@ export default function Login() {
       password: Yup.string().required("Password is Required"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
-      setIsLoaderOpen(true);
-      console.log(values);
+      setIsLoaderOpen(true)
+      console.log(values)
       // setSubmitting(true);
 
       const result = await signIn("credentials", {
         redirect: false,
         username: values.username,
         password: values.password,
-      });
+      })
 
       // setSubmitting(false);
 
       if (result.error) {
-        setIsLoaderOpen(false);
-        openModal("error", "Failed to sign in!");
-        console.error("Failed to sign in:", result.error);
+        setIsLoaderOpen(false)
+        openModal("error", "Failed to sign in!")
+        console.error("Failed to sign in:", result.error)
       } else {
         // setIsLoaderOpen(false);
+
+        if (redirectTo) {
+          console.log(redirectTo)
+          router.push(`${redirectTo}`)
+        }
+
         if (session) {
-            setIsLoaderOpen(false);
-          if (session?.user?.role == "ADMIN") {
-            router.push(`/admin/blog`);
-          } else {
-            router.push(`/`);
-          }
+          if (redirectTo) {
+            router.push(`${redirectTo}`)
+          } else{
+             setIsLoaderOpen(false)
+             if (session?.user?.role == "ADMIN") {
+               router.push(`/admin/blog`)
+             } else {
+               router.push(`/`)
+             }
+          } 
         }
       }
     },
-  });
+  })
   return (
     <>
       <Link href="/">
@@ -172,7 +184,7 @@ export default function Login() {
                   placeholder="Enter Username"
                   value={values?.username}
                   onChange={(e) => {
-                    setValues({ ...values, username: e.target.value });
+                    setValues({ ...values, username: e.target.value })
                   }}
                   onBlur={handleBlur}
                   name="username"
@@ -200,7 +212,7 @@ export default function Login() {
                   placeholder="Enter password"
                   value={values?.password}
                   onChange={(e) => {
-                    setValues({ ...values, password: e.target.value });
+                    setValues({ ...values, password: e.target.value })
                   }}
                   onBlur={handleBlur}
                   name="password"
@@ -334,5 +346,5 @@ export default function Login() {
       />
       <LoaderModal isOpen={isLoaderOpen} />
     </>
-  );
+  )
 }

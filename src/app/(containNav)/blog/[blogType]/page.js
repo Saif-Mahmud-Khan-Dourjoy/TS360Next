@@ -4,6 +4,7 @@ import {
   PublicAllBlog,
 } from "@/API/Admin/BlogApi"
 import BlogData from "@/components/Blog/BlogData"
+
 export async function generateMetadata() {
   return {
     title: "Blog",
@@ -21,10 +22,16 @@ export default async function BlogType({ params, searchParams }) {
   let catId = await findId(category, params.blogType)
   let blogData = null
   if (catId) {
-    let blog = await GetBlogByCategory(catId)
+    let blog = await GetBlogByCategory(
+      catId,
+      searchParams?.search ? searchParams?.search : ""
+    )
+
     blogData = blog?.[0]
   } else {
-    let blog = await PublicAllBlog()
+    let blog = await PublicAllBlog(
+      searchParams?.search ? searchParams?.search : ""
+    )
     blogData = blog?.[0]
   }
   return (

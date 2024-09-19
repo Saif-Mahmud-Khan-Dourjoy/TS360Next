@@ -24,6 +24,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { FaCaretDown } from "react-icons/fa6"
 import { Avatar as AvaterNext, AvatarFallback } from "@/components/ui/avatar"
+import { useSession, signOut } from "next-auth/react"
 
 const settings = {
   dots: false, // Dont Show dots for navigation
@@ -40,10 +41,11 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null)
 
   const [proUser, setProUser] = useState(false)
-  const [authUser, setAuthUser] = useState(false)
+  const [authUser, setAuthUser] = useState(true)
   const [sideBarOpen, setSideBarOpen] = useState(true)
   const [profileOpen, setProfileOpen] = useState(false)
   const [packageText, setPackageText] = useState("")
+  const { data: session } = useSession()
 
   const dropdownRef = useRef(null)
   const navbarRef = useRef(null)
@@ -153,6 +155,7 @@ const Navbar = () => {
     const initials = nameArray
       .map((name) => name.charAt(0).toUpperCase())
       .join("")
+
     return initials
   }
 
@@ -284,9 +287,7 @@ const Navbar = () => {
             } `}
           >
             <div
-              className={` overflow-hidden overflow-y-auto h-full ${
-                authUser ? "w-fit" : "md:max-w-[40%] sm:max-w-[50%] max-w-[65%]"
-              }  ml-auto relative  bg-[#3AB6FF]  rounded-tl-3xl rounded-bl-3xl px-[15px] transition-all duration-500 ease ${
+              className={` overflow-hidden overflow-y-auto h-full w-11/12 max-w-sm  ml-auto relative  bg-[#3AB6FF]  rounded-tl-3xl rounded-bl-3xl px-[15px] transition-all duration-500 ease ${
                 open ? "right-0" : "right-[-100%]"
               } `}
             >
@@ -302,31 +303,39 @@ const Navbar = () => {
                 />
               </div>
               <div className="" style={{ zIndex: "1" }}>
-                {authUser && (
+                {session && (
                   <div className="bg-[#3A9ED9]  px-3 pt-3 pb-2 rounded-xl">
                     <div className="flex items-center  gap-x-5 ">
                       <div>
-                        <Avatar
-                          size="60"
-                          round={true}
-                          name="Kaushik Das"
-                          color="white"
-                          fgColor="#3AB6FF"
-                          className="font-bold "
-                        />
+                        {session?.user?.role == "USER" ? (
+                          <AvaterNext>
+                            <AvatarFallback className="bg-white text-[#3AB6FF] font-bold">
+                              {getInitials(session?.user?.fullName)}
+                            </AvatarFallback>
+                          </AvaterNext>
+                        ) : (
+                          <AvaterNext>
+                            <AvatarFallback className="bg-white text-[#3AB6FF] font-bold">
+                              {getInitials(session?.user?.userName)}
+                            </AvatarFallback>
+                          </AvaterNext>
+                        )}
                       </div>
                       <div className="">
-                        <div className="flex gap-1 items-center">
-                          <div className="font-semibold text-base text-white">
-                            Koushik Das
+                        {session?.user?.role == "USER" && (
+                          <div className="flex gap-1 items-center">
+                            <div className="font-semibold text-base text-white">
+                              {session?.user?.fullName}
+                            </div>
+                            {proUser && (
+                              <Image className="h-full" src={Pro} alt="" />
+                            )}
                           </div>
-                          {proUser && (
-                            <Image className="h-full" src={Pro} alt="" />
-                          )}
-                        </div>
+                        )}
 
                         <div className="font-semibold text-sm text-gray-200 mt-1 break-all ">
-                          k_das@test360.com
+                          {session?.user?.userName.charAt(0).toUpperCase() +
+                            session?.user?.userName.slice(1)}
                         </div>
                       </div>
                     </div>
@@ -345,7 +354,8 @@ const Navbar = () => {
                           {userState}
                           </div>
                           } */}
-                          <div className="max-w-[200px]">
+                          {/* will be needed in the future */}
+                          {/* <div className="max-w-[200px]">
                             {proUser ? (
                               <Slider {...settings}>
                                 <div>
@@ -381,7 +391,7 @@ const Navbar = () => {
                                 </div>
                               </Slider>
                             )}
-                          </div>
+                          </div> */}
                         </div>
                         <div className="mt-5">
                           <div className="flex gap-x-5 items-center cursor-pointer">
@@ -406,7 +416,10 @@ const Navbar = () => {
                             <div className="text-white ">User Guides</div>
                           </div>
                           <hr className="mt-2" />
-                          <div className="flex gap-x-5 items-center mt-5 cursor-pointer">
+                          <div
+                            className="flex gap-x-5 items-center mt-5 cursor-pointer"
+                            onClick={() => signOut()}
+                          >
                             <div className="relative bottom-[-2px]">
                               <FontAwesomeIcon
                                 icon={faRightFromBracket}
@@ -414,7 +427,7 @@ const Navbar = () => {
                                 color="white"
                               />
                             </div>
-                            <div className="text-white ">Log out</div>
+                            <div className="text-white">Log out</div>
                           </div>
                         </div>
                       </div>
@@ -441,7 +454,7 @@ const Navbar = () => {
                           onClick={() => handleDropdownClick(link.name)}
                           className="pl-2 flex justify-between cursor-pointer text-white text-lg focus:text-gray-400 duration-500 capitalize"
                         >
-                          <span>{link.name}</span>{" "}
+                          <span>{link.name.toUpperCase()}</span>{" "}
                           <span className="ml-3 ">
                             {" "}
                             {dropdownOpen === link.name ? (
@@ -496,14 +509,14 @@ const Navbar = () => {
                                 : ""
                             }`}
                           >
-                            {link?.name}
+                            {link?.name.toUpperCase()}
                           </Link>
                         </li>
                         <hr className="mt-2" />
                       </>
                     )
                   )}
-                  {!authUser && (
+                  {!session && (
                     <>
                       <div className="mt-6">
                         <Link
@@ -530,7 +543,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:block">
-            {authUser ? (
+            {session ? (
               <div className="relative">
                 <div className="flex items-center gap-2">
                   <div
@@ -538,11 +551,20 @@ const Navbar = () => {
                     onClick={() => setProfileOpen(!profileOpen)}
                   >
                     {/* <Avatar size="40" round={true} name="Kaushik Das" color="#3AB6FF" fgColor="white" className="font-bold " /> */}
-                    <AvaterNext>
-                      <AvatarFallback className="bg-[#3AB6FF] text-white font-semibold">
-                        {getInitials("Kaushik Das")}
-                      </AvatarFallback>
-                    </AvaterNext>
+                    {session?.user?.role == "USER" ? (
+                      <AvaterNext>
+                        <AvatarFallback className="bg-[#3AB6FF] text-white font-semibold">
+                          {getInitials(session?.user?.fullName)}
+                        </AvatarFallback>
+                      </AvaterNext>
+                    ) : (
+                      <AvaterNext>
+                        <AvatarFallback className="bg-[#3AB6FF] text-white font-semibold">
+                          {getInitials("Admin")}
+                        </AvatarFallback>
+                      </AvaterNext>
+                    )}
+
                     {
                       proUser && (
                         <Image
@@ -576,20 +598,29 @@ const Navbar = () => {
                   }`}
                   style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}
                 >
-                  <div className="text-base text-[#2F2F2F] text-center font-bold">
-                    Koushik Das
-                  </div>
-                  <div className="text-sm text-[#2F2F2F] text-center mt-1">
-                    k_das@test360.com
-                  </div>
-
+                  {session?.user?.role == "USER" && (
+                    <div className="text-base text-[#2F2F2F] text-center font-bold">
+                      {session?.user?.fullName}
+                    </div>
+                  )}
                   <div
+                    className={`${
+                      session?.user?.role == "ADMIN"
+                        ? "text-base font-bold"
+                        : "text-sm"
+                    } text-[#2F2F2F] text-center mt-1`}
+                  >
+                    {session?.user?.userName.charAt(0).toUpperCase() +
+                      session?.user?.userName.slice(1)}
+                  </div>
+                  {/* will be needed in the future */}
+                  {/* <div
                     onMouseEnter={mouseEventEvent}
                     onMouseLeave={mouseLeaveEvent}
                     className="min-w-[200px] px-5 py-2 border-2 border-[#8555EB] hover:text-white hover:border-[#8555EB] hover:bg-[#8555EB] w-fit mx-auto text-[#818181] rounded-3xl mt-4 text-center transition-all duration-500 ease-in-out cursor-pointer"
                   >
                     {packageText}
-                  </div>
+                  </div> */}
                   <hr className="mt-4 border-t-2" />
                   <div className="mt-6">
                     <div className="w-fit">
@@ -619,7 +650,10 @@ const Navbar = () => {
                     </div>
                     <hr className="mt-5" />
                     <div className="w-fit mt-5">
-                      <div className="flex gap-x-5 items-center cursor-pointer">
+                      <div
+                        className="flex gap-x-5 items-center cursor-pointer "
+                        onClick={() => signOut()}
+                      >
                         <div className="relative bottom-[-2px]">
                           <FontAwesomeIcon
                             icon={faRightFromBracket}
@@ -627,18 +661,20 @@ const Navbar = () => {
                             color="#A6A6A6"
                           />
                         </div>
-                        <div className="text-[#A6A6A6] ">Log out</div>
+                        <div className="text-[#A6A6A6] cur">Log out</div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <Link className="" href="/login" onClick={handleLinkClick}>
-                <button className="hover:text-blue-400  text-xl text-[#818181] lg:ml-8 font-semibold px-4 py-[6px] rounded-[30px] duration-500 lg:static">
-                  Login
-                </button>
-              </Link>
+              <>
+                <Link className="" href="/login" onClick={handleLinkClick}>
+                  <button className="hover:text-blue-400  text-xl text-[#818181] lg:ml-8 font-semibold px-4 py-[6px] rounded-[30px] duration-500 lg:static">
+                    Login
+                  </button>
+                </Link>
+              </>
             )}
           </div>
         </div>

@@ -50,7 +50,6 @@ export default function AllBlog() {
   }, [session, reload])
 
   const BlogEdit = (id, status, slug) => {
- 
     if (status === "DRAFTED") {
       router.push(
         `/admin/blog/manage-blog?id=${id}&status=${status}&slug=${slug}`
@@ -189,7 +188,7 @@ export default function AllBlog() {
                       {getCategory(blog?.blogCategories)}
                     </div>
                     <div className=" text-[#A6A6A6] font-semibold">
-                      {moment(blog?.lastModifiedDate).format("DD MMMM, YYYY")}
+                      {moment(blog?.creationDate).format("DD MMMM, YYYY")}
                     </div>
                   </div>
 
