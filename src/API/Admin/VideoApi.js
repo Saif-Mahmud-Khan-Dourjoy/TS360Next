@@ -63,18 +63,23 @@ export const AddNewVideo = async (videoContent, uploadedFile, token) => {
     })
 }
 
-export const GetAllVideo = async (token) => {
+export const GetAllVideo = async (token, searchText) => {
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
   }
-
-  // Add Authorization header if token is provided
+  let url
+  if (searchText) {
+    url = `${Config?.baseApi}/subscription/video-content/public/all?searchText=${searchText}`
+  } else {
+    url = `${Config?.baseApi}/subscription/video-content/public/all`
+  }
   if (token) {
+    // Add Authorization header if token is provided
     headers.Authorization = `Bearer ${token}`
   }
   return axios
-    .get(`${Config?.baseApi}/subscription/video-content/public/all`, {
+    .get(url, {
       headers: headers,
     })
     .then((res) => {
@@ -127,7 +132,7 @@ export const GetVideoById = async (id, token) => {
     })
 }
 
-export const GetVideoByCategory = async (catId, token) => {
+export const GetVideoByCategory = async (catId, searchText, token) => {
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -139,7 +144,7 @@ export const GetVideoByCategory = async (catId, token) => {
   }
   return axios
     .get(
-      `${Config?.baseApi}/subscription/video-content/public/all?categoryIds=${catId}`,
+      `${Config?.baseApi}/subscription/video-content/public/all?categoryIds=${catId}&searchText=${searchText}`,
       {
         headers: headers,
       }
@@ -232,7 +237,6 @@ export const UpdateVideo = async (id, videoContent, uploadedFile, token) => {
 }
 
 export const VideoDelete = async (id, token) => {
- 
   return axios
     .delete(`${Config?.baseApi}/subscription/video-content/${id}/delete`, {
       headers: {

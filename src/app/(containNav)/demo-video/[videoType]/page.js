@@ -5,10 +5,7 @@ import { FaRegCirclePlay } from "react-icons/fa6"
 import ModalVideo from "react-modal-video"
 import "react-modal-video/scss/modal-video.scss"
 import EmptyBlog_Image from "../../../../../public/Blog/EmptyBlog_Image.png"
-import V1 from "../../../../../public/Video/V1.png"
-import V2 from "../../../../../public/Video/V2.png"
-import V3 from "../../../../../public/Video/V3.png"
-import V4 from "../../../../../public/Video/V4.png"
+import { useSearchParams } from "next/navigation"
 import {
   GetAllVideo,
   GetVideoByCategory,
@@ -21,6 +18,8 @@ export default function VideoType({ params }) {
   const [videoId, setVideoId] = useState("")
   const [category, setCategory] = useState([])
   const [allVideo, setAllVideo] = useState([])
+  const searchParams = useSearchParams()
+  const search = searchParams.get("search")
 
   const [loader, setLoader] = useState(false)
   useEffect(() => {
@@ -47,7 +46,7 @@ export default function VideoType({ params }) {
     })?.[0]?.id
     if (category.length > 0) {
       if (catId) {
-        GetVideoByCategory(catId).then((res) => {
+        GetVideoByCategory(catId, search?search:"").then((res) => {
           if (res?.[0]) {
             console.log(res?.[0])
             setLoader(false)
@@ -58,7 +57,7 @@ export default function VideoType({ params }) {
           }
         })
       } else {
-        GetAllVideo().then((res) => {
+        GetAllVideo("",search ? search : "").then((res) => {
           if (res?.[0]) {
             console.log(res?.[0])
             setLoader(false)
