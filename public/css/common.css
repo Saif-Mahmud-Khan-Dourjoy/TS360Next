@@ -12,6 +12,21 @@
     overflow: hidden;
 }
 
+ .gradient-border {
+     position: relative;
+     border: 4px solid transparent;
+     /* Adjust thickness as needed */
+     background-image: linear-gradient(#82D955, #82D955), linear-gradient(to right, #3AB6FF, #82D955);
+     background-clip: padding-box, border-box;
+     background-origin: border-box;
+ }
+
+ .hover\:border-gradient:hover {
+     background-image: linear-gradient(#3AB6FF, #3AB6FF), linear-gradient(to right, #82D955, #3AB6FF);
+ }
+
+
+
 /* Modal transition effect */
 @keyframes modalSlideIn {
     0% {

@@ -113,6 +113,7 @@ const Navbar = () => {
         },
       ],
     },
+    { name: "Pricing", link: "/pricing" },
     { name: "Contact", link: "/contact" },
   ]
 
@@ -499,7 +500,7 @@ const Navbar = () => {
                       </li>
                     ) : (
                       <>
-                        <li className="pl-2 " key={index}>
+                        <li className="pl-2 mt-5" key={index}>
                           <Link
                             href={link?.link}
                             onClick={handleLinkClick}

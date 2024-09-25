@@ -62,15 +62,21 @@ export const GetAllFAQ = async (token) => {
 }
 
 export const GetFAQByCategory = async (type, token) => {
+
+   const headers = {
+     "Content-Type": "application/json",
+     Accept: "application/json",
+   }
+
+   // Add Authorization header if token is provided
+   if (token) {
+     headers.Authorization = `Bearer ${token}`
+   }
   return axios
     .get(
       `${Config?.baseApi}/subscription/frequently-asked-question/public/all?types=${type}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: headers,
       }
     )
     .then((res) => {
