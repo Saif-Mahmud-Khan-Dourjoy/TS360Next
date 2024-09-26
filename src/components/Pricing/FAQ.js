@@ -29,10 +29,8 @@ export default function FAQ() {
     GetFAQByCategory("PRICING").then((res) => {
       console.log(res)
       if (res?.[0]) {
-       
         setFAQData([...res?.[0]])
       } else {
-      
         setFAQData([])
       }
     })
@@ -52,6 +50,7 @@ export default function FAQ() {
       <div className="mt-10">
         {faqData?.map((data, index) => (
           <div
+            key={`FAQ-${index}`}
             className={`w-[60%] mx-auto border border-[#CBCACA] rounded-md py-4 px-6 ${
               index > 0 ? "mt-8" : ""
             }`}
