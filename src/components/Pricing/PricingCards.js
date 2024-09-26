@@ -3,9 +3,7 @@ import React, { useEffect, useState } from "react"
 import { AllPlan } from "@/API/User/Pricing"
 import { FaCheck } from "react-icons/fa6"
 import ContactModal from "../Custom/ContactModal"
-import ComponentLoader from "../Custom/ComponentLoader"
-import Loading from "../../../public/Loading.gif"
-import Image from "next/image"
+import ComponentLoader2 from "../Custom/ComponentLoader2"
 
 const monthlyConst = (planFrequency) => {
   return planFrequency?.find((item) => {
@@ -53,7 +51,6 @@ export default function PricingCards() {
       }
     })
   }, [])
-
 
   return (
     <>
@@ -213,12 +210,13 @@ export default function PricingCards() {
         </div>
       )}
       {planLoader && (
-        <div className="mt-14">
-          <Image
+        <div className="mt-16">
+          {/* <Image
             className="w-fit h-fit mx-auto"
             src={Loading}
             alt="loading..."
-          />
+          /> */}
+          <ComponentLoader2 />
         </div>
       )}
 
