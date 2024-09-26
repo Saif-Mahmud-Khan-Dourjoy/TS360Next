@@ -51,7 +51,7 @@ export default function FAQ() {
         {faqData?.map((data, index) => (
           <div
             key={`FAQ-${index}`}
-            className={`w-[60%] mx-auto border border-[#CBCACA] rounded-md py-4 px-6 ${
+            className={`sm:w-[95%] lg:w-[80%] 2xl:w-[60%] mx-auto border border-[#CBCACA] rounded-md py-4 px-6 ${
               index > 0 ? "mt-8" : ""
             }`}
           >
@@ -59,12 +59,12 @@ export default function FAQ() {
               className="flex justify-between items-center gap-4 "
               onClick={() => toggle(index)}
             >
-              <div className="text-[#486681] font-semibold text-lg">
+              <div className="text-[#486681] font-semibold sm:text-lg">
                 {data?.title}
               </div>
               <div className="">
                 {selected == index ? (
-                  <FaMinus color="#486681" className="cursor-pointer t" />
+                  <FaMinus color="#486681" className="cursor-pointer" />
                 ) : (
                   <FaPlus color="#486681" className="cursor-pointer" />
                 )}
