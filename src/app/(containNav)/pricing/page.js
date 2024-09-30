@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import ComparePlan from "@/components/Pricing/ComparePlan"
 import FAQ from "@/components/Pricing/FAQ"
 import PricingCards from "@/components/Pricing/PricingCards"

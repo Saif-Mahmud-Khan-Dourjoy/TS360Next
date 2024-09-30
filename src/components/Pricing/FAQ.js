@@ -3,8 +3,7 @@ import { GetFAQByCategory } from "@/API/Admin/FAQApi"
 import React, { useEffect, useState } from "react"
 import { FaPlus } from "react-icons/fa"
 import { FaMinus } from "react-icons/fa"
-import Loading from "../../../public/Loading.gif"
-import Image from "next/image"
+import ComponentLoader2 from "../Custom/ComponentLoader2"
 
 export default function FAQ() {
   const [selected, setSelected] = useState(null)
@@ -75,11 +74,7 @@ export default function FAQ() {
       )}
       {faqLoader && (
         <div className="mt-14">
-          <Image
-            className="w-fit h-fit mx-auto"
-            src={Loading}
-            alt="loading..."
-          />
+          <ComponentLoader2 />
         </div>
       )}
 

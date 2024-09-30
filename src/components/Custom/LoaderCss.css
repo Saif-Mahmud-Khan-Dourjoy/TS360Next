@@ -13,9 +13,18 @@
     z-index: 100;
 }
 
+.loading2{
+margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .loading svg {
     margin-bottom: 2px;
 }
+
 
 #infinity-outline {
     fill: transparent;

@@ -1,3 +1,4 @@
+
 import { AllFeature } from "@/API/User/Pricing"
 import React from "react"
 import { FaCheck } from "react-icons/fa"
@@ -16,15 +17,10 @@ export default async function ComparePlan() {
   ]
 
   const { header, data } = tableData
-
-  // Filter sortedHeader to include only headers present in the actual data
   const sortedColumns = sortedHeader.filter((col) => header.includes(col))
-
-  // Add remaining columns from the header that were not in sortedHeader
   const remainingColumns = header.filter((col) => !sortedHeader.includes(col))
-
-  // Combine the two arrays: sorted first, then remaining
   const finalColumns = [...sortedColumns, ...remainingColumns]
+
   return (
     <div className="mt-20">
       <div className="text-[40px] text-[#2F2F2F] font-bold text-center w-full">

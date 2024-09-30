@@ -382,7 +382,7 @@ const AdminNavbar = () => {
               <div className="relative">
                 <div className="flex items-center gap-2">
                   <div
-                    className="relative"
+                    className="relative cursor-pointer"
                     onClick={() => setProfileOpen(!profileOpen)}
                   >
                     {/* <Avatar size="40" round={true} name="Kaushik Das" color="#3AB6FF" fgColor="white" className="font-bold " /> */}

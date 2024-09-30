@@ -1,4 +1,3 @@
-// components/CustomModal.js
 import React, { useEffect } from "react"
 import {
   AiOutlineClose,
@@ -51,15 +50,14 @@ const CustomModal = ({ isOpen, onClose, type, message, onOk, onCancel }) => {
             {message}
           </p>
           <div className="flex space-x-4">
-            {type === "success" ||
-              (type === "delete" && (
-                <button
-                  onClick={onOk}
-                  className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300"
-                >
-                  Ok
-                </button>
-              ))}
+            {(type === "success" || type === "delete") && (
+              <button
+                onClick={onOk}
+                className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300"
+              >
+                Ok
+              </button>
+            )}
             <button
               onClick={onCancel}
               className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-300"
