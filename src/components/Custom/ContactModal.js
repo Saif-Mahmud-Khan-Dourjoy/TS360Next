@@ -11,6 +11,19 @@ import { HiOutlineBuildingOffice2 } from "react-icons/hi2"
 import { MdPeopleOutline } from "react-icons/md"
 import { CiMail } from "react-icons/ci"
 import { FaPencilAlt } from "react-icons/fa"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import { ContactRequest } from "@/API/User/Subscription/contact"
+
+const formData = {
+  name: "",
+  phoneNumber: "",
+  organizationName: "",
+  numberOfEmployees: "",
+  email: "",
+  description: "",
+  userId: "",
+}
 
 const ContactModal = ({ isOpen, onClose }) => {
   useEffect(() => {
@@ -25,6 +38,48 @@ const ContactModal = ({ isOpen, onClose }) => {
       document.body.classList.remove("no-scroll")
     }
   }, [isOpen])
+
+  const {
+    handleSubmit,
+    handleChange,
+    values,
+    touched,
+    errors,
+    handleBlur,
+    setValues,
+    resetForm,
+  } = useFormik({
+    initialValues: formData,
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required("Name is required"),
+      phoneNumber: Yup.string()
+        .matches(/^\d+$/, "Phone number must contain only digits")
+        .nullable(),
+      organizationName: Yup.string().required("Organization Name is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      description: Yup.string().nullable(),
+      numberOfEmployees: Yup.number()
+        .min(1, "Atlest one employee is required") // Minimum number validation
+        .required("Employee Number is required"), // Required validation
+    }),
+    onSubmit: (values) => {
+      console.log(values)
+      handleFormSubmit(values)
+    },
+  })
+
+  const handleFormSubmit = async () => {
+    ContactRequest(values).then((res) => {
+      if (res?.[0]) {
+        console.log("Successfull")
+      } else {
+        console.log(res?.[1])
+      }
+    })
+  }
+
   if (!isOpen) return null
 
   return (
@@ -59,9 +114,19 @@ const ContactModal = ({ isOpen, onClose }) => {
               <div className="mt-1">
                 <input
                   type="text"
-                  id="name"
-                  class=" border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 "
+                  className={`border  text-gray-500   rounded-lg focus:border-blue-600 ${
+                    touched.name && errors.name ? "border-red-600" : ""
+                  } w-full p-2`}
+                  name="name"
+                  value={values?.name}
+                  onChange={(e) => {
+                    setValues({ ...values, name: e.target.value })
+                  }}
+                  onBlur={handleBlur}
                 />
+                {touched.name && errors.name && (
+                  <div className="text-[12px] text-red-600">{errors.name}</div>
+                )}
               </div>
             </div>
             <div className="mt-5 sm:mt-0">
@@ -74,13 +139,27 @@ const ContactModal = ({ isOpen, onClose }) => {
               <div className="mt-1">
                 <input
                   type="text"
-                  id="name"
-                  class=" border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 "
+                  className={`border  text-gray-500   rounded-lg focus:border-blue-600 ${
+                    touched.phoneNumber && errors.phoneNumber
+                      ? "border-red-600"
+                      : ""
+                  } w-full p-2`}
+                  name="phoneNumber"
+                  value={values?.phoneNumber}
+                  onChange={(e) => {
+                    setValues({ ...values, phoneNumber: e.target.value })
+                  }}
+                  onBlur={handleBlur}
                 />
+                {touched.phoneNumber && errors.phoneNumber && (
+                  <div className="text-[12px] text-red-600">
+                    {errors.phoneNumber}
+                  </div>
+                )}
               </div>
             </div>
           </div>
-          <div className="sm:flex justify-between mt-5">
+          <div className="sm:flex flex-wrap justify-between mt-5 gap-y-5">
             <div>
               <div className=" flex items-center gap-2">
                 <HiOutlineBuildingOffice2 color="#486681" />
@@ -92,13 +171,27 @@ const ContactModal = ({ isOpen, onClose }) => {
               <div className="mt-1">
                 <input
                   type="text"
-                  id="name"
-                  class=" border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 "
+                  className={`border  text-gray-500   rounded-lg focus:border-blue-600 ${
+                    touched.organizationName && errors.organizationName
+                      ? "border-red-600"
+                      : ""
+                  } w-full p-2`}
+                  name="organizationName"
+                  value={values?.organizationName}
+                  onChange={(e) => {
+                    setValues({ ...values, organizationName: e.target.value })
+                  }}
+                  onBlur={handleBlur}
                 />
+                {touched.organizationName && errors.organizationName && (
+                  <div className="text-[12px] text-red-600">
+                    {errors.organizationName}
+                  </div>
+                )}
               </div>
             </div>
             <div className="mt-5 sm:mt-0">
-              <div className=" flex items-center gap-2">
+              <div className=" flex  items-center gap-2">
                 <MdPeopleOutline color="#486681" />
                 <div>
                   <span className="text-[#818181] mr-2">
@@ -109,10 +202,24 @@ const ContactModal = ({ isOpen, onClose }) => {
               </div>
               <div className="mt-1">
                 <input
-                  type="text"
-                  id="name"
-                  class=" border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 "
+                  type="number"
+                  className={`border  text-gray-500   rounded-lg focus:border-blue-600 ${
+                    touched.numberOfEmployees && errors.numberOfEmployees
+                      ? "border-red-600"
+                      : ""
+                  } w-full p-2`}
+                  name="numberOfEmployees"
+                  value={values?.numberOfEmployees}
+                  onChange={(e) => {
+                    setValues({ ...values, numberOfEmployees: e.target.value })
+                  }}
+                  onBlur={handleBlur}
                 />
+                {touched.numberOfEmployees && errors.numberOfEmployees && (
+                  <div className="text-[12px] text-red-600">
+                    {errors.numberOfEmployees}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -128,9 +235,19 @@ const ContactModal = ({ isOpen, onClose }) => {
             <div className="mt-1">
               <input
                 type="text"
-                id="name"
-                class=" border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 "
+                className={`border  text-gray-500   rounded-lg focus:border-blue-600 ${
+                  touched.email && errors.email ? "border-red-600" : ""
+                } w-full p-2`}
+                name="email"
+                value={values?.email}
+                onChange={(e) => {
+                  setValues({ ...values, email: e.target.value })
+                }}
+                onBlur={handleBlur}
               />
+              {touched.email && errors.email && (
+                <div className="text-[12px] text-red-600">{errors.email}</div>
+              )}
             </div>
           </div>
 
@@ -138,18 +255,30 @@ const ContactModal = ({ isOpen, onClose }) => {
             <div className=" flex items-center gap-2">
               <FaPencilAlt color="#486681" />
               <div>
-                <span className="text-[#818181] mr-2">Specific Needs</span>
-                <span className="text-red-600">*</span>
+                <span className="text-[#818181]">Specific Needs</span>
               </div>
             </div>
             <div className="mt-1">
               <textarea
+                type="text"
+                className={`border focus:border-blue-600 rounded-lg ${
+                  touched.description && errors.description
+                    ? "border-red-600"
+                    : ""
+                } w-full text-gray-500 resize-none focus:outline-none p-2`}
+                name="description"
                 rows="4"
-                className="border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
-                placeholder="Write your message"
-              >
-                {" "}
-              </textarea>
+                value={values?.description}
+                onChange={(e) => {
+                  setValues({ ...values, description: e.target.value })
+                }}
+                onBlur={handleBlur}
+              ></textarea>
+              {touched.description && errors.description && (
+                <div className="text-[12px] text-red-600">
+                  {errors.description}
+                </div>
+              )}
             </div>
           </div>
         </div>
