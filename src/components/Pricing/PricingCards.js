@@ -3,9 +3,13 @@ import React, { useEffect, useState } from "react"
 import { AllPlan } from "@/API/User/Pricing"
 import { FaCheck } from "react-icons/fa6"
 import ContactModal from "../Custom/ContactModal"
-import ComponentLoader from "../Custom/ComponentLoader"
 import Loading from "../../../public/Loading.gif"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
+import { useRouter, usePathname } from "next/navigation"
+import { showErrorAlert, showSuccessAlert } from "../Alerts/Alert"
+import { ContactRequest } from "@/API/User/Subscription/contact"
+import LoaderModal from "../Custom/Loader"
 
 const monthlyConst = (planFrequency) => {
   return planFrequency?.find((item) => {
@@ -27,9 +31,12 @@ const othersPlan = (planFrequency) => {
 
 export default function PricingCards() {
   const [sortedPlans, setSortedPlans] = useState([])
-  const [loader, setLoader] = useState(false)
   const [isModalOpen, setModalOpen] = useState(false)
   const [planLoader, setPlanLoader] = useState(true)
+  const { data: session } = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isLoaderOpen, setIsLoaderOpen] = useState(false)
 
   useEffect(() => {
     AllPlan().then((res) => {
@@ -54,10 +61,47 @@ export default function PricingCards() {
     })
   }, [])
 
+  const BuyNow = (plan) => {
+    if (session) {
+      console.log(session)
+    } else {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
+    }
+  }
+
+  const submitContact = (data) => {
+    setModalOpen(false)
+    setIsLoaderOpen(true)
+    handleContactSubmit(data)
+  }
+
+  const handleContactSubmit = async (data) => {
+    ContactRequest(data).then((res) => {
+      if (res?.[0]) {
+        setIsLoaderOpen(false)
+        showSuccessAlert(
+          "Check your email and we will get back to you soon",
+          "center",
+          2000
+        )
+      } else {
+        setIsLoaderOpen(false)
+        showErrorAlert(res?.[1], "center", 2000)
+      }
+    })
+  }
 
   return (
     <>
-      <ContactModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <LoaderModal isOpen={isLoaderOpen} />
+      {isModalOpen && (
+        <ContactModal
+          userId={session?.user?.id}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          submitContact={submitContact}
+        />
+      )}
       {sortedPlans.length > 0 && !planLoader && (
         <div className="mt-24 mb-5">
           {sortedPlans.length > 0 && (
@@ -183,7 +227,11 @@ export default function PricingCards() {
                   {plan?.startingPrice == null && (
                     <div className=" absolute left-0 bottom-14  w-full flex justify-center items-center ">
                       <div
-                        onClick={() => setModalOpen(true)}
+                        onClick={
+                          session
+                            ? () => setModalOpen(true)
+                            : () => BuyNow(plan)
+                        }
                         className="cursor-pointer text-lg font-medium py-2 px-6 bg-white outline outline-1 outline-[#3AB6FF] text-[#3AB6FF] rounded-md hover:bg-[#3AB6FF] hover:text-white"
                       >
                         Contact
@@ -221,7 +269,6 @@ export default function PricingCards() {
           />
         </div>
       )}
-
       {sortedPlans.length < 1 && !planLoader && (
         <div className="text-gray-500 text-xl text-center mt-10">
           {" "}
