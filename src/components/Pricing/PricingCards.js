@@ -1,9 +1,14 @@
 "use client"
 import React, { useEffect, useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import { AllPlan } from "@/API/User/Pricing"
 import { FaCheck } from "react-icons/fa6"
 import ContactModal from "../Custom/ContactModal"
 import ComponentLoader2 from "../Custom/ComponentLoader2"
+import { useSession } from "next-auth/react"
+// import VerticalProgressBar from "./VerticalProgressBar"
+import HorizontalProgressBar from "./HorizontalProgressBar"
+import StepProgressBar from "./HorizontalProgressBar"
 
 const monthlyConst = (planFrequency) => {
   return planFrequency?.find((item) => {
@@ -29,11 +34,17 @@ export default function PricingCards() {
   const [isModalOpen, setModalOpen] = useState(false)
   const [planLoader, setPlanLoader] = useState(true)
   const [hoveredCardIndex, setHoveredCardIndex] = useState(null) // Track which card is hovered
+  const { data: session } = useSession()
+  const steps = ["Add User", "Payment Information", "Review & Confirm"]
+
+  const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     AllPlan().then((res) => {
       setPlanLoader(true)
       if (res?.[0]) {
+        console.log(res?.[0])
         setPlanLoader(false)
         const allPlan = res?.[0]
         const plans = allPlan.sort((a, b) => {
@@ -58,6 +69,14 @@ export default function PricingCards() {
       setHoveredCardIndex(recommendedIndex)
     }
   }, [sortedPlans])
+
+  const BuyNow = (plan) => {
+    if (session) {
+      console.log(session)
+    } else {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
+    }
+  }
 
   return (
     <>
@@ -163,7 +182,7 @@ export default function PricingCards() {
                         </div>
                       </div>
                     ) : (
-                      <div className="text-[#3A9ED9] font-extrabold text-4xl min-h-32">
+                      <div className=" text-[#3A9ED9] font-extrabold text-4xl min-h-32">
                         Contact for quote
                       </div>
                     )}
@@ -204,6 +223,7 @@ export default function PricingCards() {
                     {plan?.startingPrice !== 0 &&
                       plan?.startingPrice != null && (
                         <div
+                          onClick={() => BuyNow(plan)}
                           className={`cursor-pointer text-lg font-medium py-2 px-6  outline outline-1 outline-[#3AB6FF] text-[#3AB6FF] rounded-md ${
                             hoveredCardIndex === null && plan.isRecommended
                               ? "bg-[#3bb4fa] text-white " // Apply hover effect to recommended plan when no other card is hovered
@@ -269,6 +289,9 @@ export default function PricingCards() {
           No Plan is Available right now
         </div>
       )}
+      <>
+        <StepProgressBar steps={steps} />
+      </>
     </>
   )
 }
