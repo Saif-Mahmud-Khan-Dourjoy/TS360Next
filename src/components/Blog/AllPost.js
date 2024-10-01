@@ -36,10 +36,11 @@ export default function AllPost({ searchParams, blogData }) {
       {!searchParams?.search &&
         (blogData?.RECENT?.length > 0 ||
           blogData?.POPULAR?.length > 0 ||
-          blogData?.FEATURED !== null) && (
+          (blogData?.FEATURED !== null && blogData?.FEATURED !== null)) && (
           <div className="flex-col md:flex-row  flex justify-between mt-8 gap-x-8 gap-y-8">
             <div className="md:w-[55%] lg:w-[60%] xl:w-[65%] 2xl:w-[70%] cursor-pointer">
-              {blogData?.FEATURED !== null ? (
+              {blogData?.FEATURED !== null &&
+              blogData?.FEATURED !== undefined ? (
                 <Link href={`${pathname}/${blogData?.FEATURED?.slug}`}>
                   {" "}
                   <div className="w-full relative min-h-[400px]  sm:h-full">

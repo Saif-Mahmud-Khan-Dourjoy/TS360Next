@@ -1,5 +1,5 @@
 const Config = {
-  baseApi: "http://10.10.32.126:8085",
+  baseApi: "https://backend.testsprint360.com",
 }
 
 export default Config
