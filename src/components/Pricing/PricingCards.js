@@ -4,6 +4,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { AllPlan } from "@/API/User/Pricing"
 import { FaCheck } from "react-icons/fa6"
 import ContactModal from "../Custom/ContactModal"
+import Loading from "../../../public/Loading.gif"
+import Image from "next/image"
+import { useSession } from "next-auth/react"
+import { useRouter, usePathname } from "next/navigation"
+import { showErrorAlert, showSuccessAlert } from "../Alerts/Alert"
+import { ContactRequest } from "@/API/User/Subscription/contact"
+import LoaderModal from "../Custom/Loader"
 import ComponentLoader2 from "../Custom/ComponentLoader2"
 import { useSession } from "next-auth/react"
 // import VerticalProgressBar from "./VerticalProgressBar"
@@ -30,9 +37,12 @@ const othersPlan = (planFrequency) => {
 
 export default function PricingCards() {
   const [sortedPlans, setSortedPlans] = useState([])
-  const [loader, setLoader] = useState(false)
   const [isModalOpen, setModalOpen] = useState(false)
   const [planLoader, setPlanLoader] = useState(true)
+  const { data: session } = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isLoaderOpen, setIsLoaderOpen] = useState(false)
   const [hoveredCardIndex, setHoveredCardIndex] = useState(null) // Track which card is hovered
   const { data: session } = useSession()
   const steps = ["Add User", "Payment Information", "Review & Confirm"]
@@ -63,6 +73,36 @@ export default function PricingCards() {
       }
     })
   }, [])
+
+  const BuyNow = (plan) => {
+    if (session) {
+      console.log(session)
+    } else {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
+    }
+  }
+
+  const submitContact = (data) => {
+    setModalOpen(false)
+    setIsLoaderOpen(true)
+    handleContactSubmit(data)
+  }
+
+  const handleContactSubmit = async (data) => {
+    ContactRequest(data).then((res) => {
+      if (res?.[0]) {
+        setIsLoaderOpen(false)
+        showSuccessAlert(
+          "Check your email and we will get back to you soon",
+          "center",
+          2000
+        )
+      } else {
+        setIsLoaderOpen(false)
+        showErrorAlert(res?.[1], "center", 2000)
+      }
+    })
+  }
   useEffect(() => {
     const recommendedIndex = sortedPlans.findIndex((plan) => plan.isRecommended)
     if (recommendedIndex !== -1) {
@@ -80,7 +120,15 @@ export default function PricingCards() {
 
   return (
     <>
-      <ContactModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <LoaderModal isOpen={isLoaderOpen} />
+      {isModalOpen && (
+        <ContactModal
+          userId={session?.user?.id}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          submitContact={submitContact}
+        />
+      )}
       {sortedPlans.length > 0 && !planLoader && (
         <div className="mt-24 mb-5">
           {sortedPlans.length > 0 && (
@@ -256,10 +304,14 @@ export default function PricingCards() {
                     )}
                     {plan?.startingPrice == null && (
                       <div
-                        onClick={() => setModalOpen(true)}
+                        onClick={
+                          session
+                            ? () => setModalOpen(true)
+                            : () => BuyNow(plan)
+                        }
                         className={`cursor-pointer text-lg font-medium py-2 px-6 bg-white outline outline-1 outline-[#3AB6FF] text-[#3AB6FF] rounded-md ${
                           hoveredCardIndex === null && plan.isRecommended
-                            ? "" // Apply hover effect to recommended plan when no other card is hovered
+                            ? "bg-[#3AB6FF] text-white" // Apply hover effect to recommended plan when no other card is hovered
                             : ""
                         }
                     ${
@@ -283,7 +335,6 @@ export default function PricingCards() {
           <ComponentLoader2 />
         </div>
       )}
-
       {sortedPlans.length < 1 && !planLoader && (
         <div className="text-gray-500 text-xl text-center mt-10">
           No Plan is Available right now

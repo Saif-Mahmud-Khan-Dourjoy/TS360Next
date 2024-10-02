@@ -17,23 +17,25 @@ const findId = async (category, blogType) => {
   })?.id
 }
 export default async function BlogType({ params, searchParams }) {
+  let blogData = { ALL: [], RECENT: [], POPULAR: [], FEATURED: null }
   const category = await BlogCategory()
+  if (category?.length > 0) {
+    let catId = await findId(category, params.blogType)
+    if (catId) {
+      let blog = await GetBlogByCategory(
+        catId,
+        searchParams?.search ? searchParams?.search : ""
+      )
 
-  let catId = await findId(category, params.blogType)
-  let blogData = null
-  if (catId) {
-    let blog = await GetBlogByCategory(
-      catId,
-      searchParams?.search ? searchParams?.search : ""
-    )
-
-    blogData = blog?.[0]
-  } else {
-    let blog = await PublicAllBlog(
-      searchParams?.search ? searchParams?.search : ""
-    )
-    blogData = blog?.[0]
+      blogData = blog?.[0]
+    } else {
+      let blog = await PublicAllBlog(
+        searchParams?.search ? searchParams?.search : ""
+      )
+      blogData = blog?.[0]
+    }
   }
+
   return (
     <>
       <BlogData

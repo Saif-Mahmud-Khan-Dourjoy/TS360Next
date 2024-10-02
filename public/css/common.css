@@ -25,6 +25,14 @@
      background-image: linear-gradient(#3AB6FF, #3AB6FF), linear-gradient(to right, #82D955, #3AB6FF);
  }
 
+textarea:focus {
+    border-color: #3b82f6;
+    /* This is the Tailwind blue-500 color */
+    outline: none;
+    /* Ensure there's no default browser focus outline */
+}
+
+
 
 
 /* Modal transition effect */

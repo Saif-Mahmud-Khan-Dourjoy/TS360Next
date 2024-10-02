@@ -6,6 +6,7 @@ import Description from "./Description"
 import RelatedBlog from "./RelatedBlog"
 import Link from "next/link"
 import noImage from "../../../public/Blog/noImage.png"
+import noImage2 from "../../../public/Blog/noImage2.png"
 import moment from "moment"
 import Arrow from "../../../public/Blog/Arrow.png"
 import { headers } from "next/headers"
@@ -31,12 +32,21 @@ export default function BlogDetails({ blogDetails }) {
       <BlogHeader blogDetails={blogDetails} />
       <div className="w-full mt-8 h-[400px] sm:h-[500px] md:h-[620px]">
         <div className="relative h-full w-full">
-          <Image
-            src={blogDetails?.coverImagePath}
-            className="object-cover object-top"
-            fill
-            alt=""
-          />
+          {blogDetails?.coverImagePath ? (
+            <Image
+              src={blogDetails?.coverImagePath}
+              className="object-cover object-center"
+              alt="blog image"
+              fill
+            />
+          ) : (
+            <Image
+              src={noImage2}
+              alt="blog image"
+              fill
+              className="rounded-l-lg object-center object-cover h-full w-full"
+            />
+          )}
         </div>
 
         <div></div>
