@@ -13,7 +13,7 @@ export default function AllPost({ searchParams, blogData }) {
   const router = useRouter()
   const params = new URLSearchParams(searchParam.toString())
   const pathname = usePathname()
-  console.log(blogData)
+  
 
   const setSelectedTab2 = (tab) => {
     if (tab) {

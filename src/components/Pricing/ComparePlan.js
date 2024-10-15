@@ -1,4 +1,3 @@
-
 import { AllFeature } from "@/API/User/Pricing"
 import React from "react"
 import { FaCheck } from "react-icons/fa"
@@ -17,8 +16,8 @@ export default async function ComparePlan() {
   ]
 
   const { header, data } = tableData
-  const sortedColumns = sortedHeader.filter((col) => header.includes(col))
-  const remainingColumns = header.filter((col) => !sortedHeader.includes(col))
+  const sortedColumns = sortedHeader.filter((col) => header?.includes(col))
+  const remainingColumns = header.filter((col) => !sortedHeader?.includes(col))
   const finalColumns = [...sortedColumns, ...remainingColumns]
 
   return (

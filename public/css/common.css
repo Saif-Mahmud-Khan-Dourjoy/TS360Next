@@ -1,53 +1,90 @@
-.about-us-career{
-    min-height: 350px;
-    width: 100%;
-    background-image: linear-gradient(105deg, rgba(72, 102, 129, 1) 0%, rgba(72, 102, 129, 1) 60%, transparent 60%), url('/AboutUs/bg.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: right
-   
+.about-us-career {
+  min-height: 350px;
+  width: 100%;
+  background-image: linear-gradient(
+      105deg,
+      rgba(72, 102, 129, 1) 0%,
+      rgba(72, 102, 129, 1) 60%,
+      transparent 60%
+    ),
+    url("/AboutUs/bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right;
 }
 
 .no-scroll {
-    overflow: hidden;
+  overflow: hidden;
 }
 
- .gradient-border {
-     position: relative;
-     border: 4px solid transparent;
-     /* Adjust thickness as needed */
-     background-image: linear-gradient(#82D955, #82D955), linear-gradient(to right, #3AB6FF, #82D955);
-     background-clip: padding-box, border-box;
-     background-origin: border-box;
- }
+.gradient-border {
+  position: relative;
+  border: 4px solid transparent;
+  /* Adjust thickness as needed */
+  background-image: linear-gradient(#82d955, #82d955),
+    linear-gradient(to right, #3ab6ff, #82d955);
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+}
 
- .hover\:border-gradient:hover {
-     background-image: linear-gradient(#3AB6FF, #3AB6FF), linear-gradient(to right, #82D955, #3AB6FF);
- }
+.hover\:border-gradient:hover {
+  background-image: linear-gradient(#3ab6ff, #3ab6ff),
+    linear-gradient(to right, #82d955, #3ab6ff);
+}
 
 textarea:focus {
-    border-color: #3b82f6;
-    /* This is the Tailwind blue-500 color */
-    outline: none;
-    /* Ensure there's no default browser focus outline */
+  border-color: #3b82f6;
+  /* This is the Tailwind blue-500 color */
+  outline: none;
+  /* Ensure there's no default browser focus outline */
 }
-
-
-
 
 /* Modal transition effect */
 @keyframes modalSlideIn {
-    0% {
-        transform: translateY(-50%);
-        opacity: 0;
-    }
+  0% {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
 
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal-enter {
-    animation: modalSlideIn 0.3s ease-out forwards;
+  animation: modalSlideIn 0.3s ease-out forwards;
+}
+
+@keyframes modalSlideInFromDown {
+  0% {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-enter-from-down {
+  animation: modalSlideInFromDown 0.3s ease-out forwards;
+}
+
+@keyframes bounceY {
+  0%,
+  100% {
+    transform: translateY(0); /* Initial and final position */
+  }
+  30% {
+    transform: translateY(-30%); /* Move up by 10px */
+  }
+  60% {
+    transform: translateY(30%); /* Move up by 10px */
+  }
+}
+
+.infiniteUp {
+  animation: bounceY 1s infinite; /* Apply animation with 1s duration and infinite repeat */
 }

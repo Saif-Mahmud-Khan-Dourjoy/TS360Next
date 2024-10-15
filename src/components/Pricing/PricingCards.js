@@ -4,18 +4,11 @@ import { usePathname, useRouter } from "next/navigation"
 import { AllPlan } from "@/API/User/Pricing"
 import { FaCheck } from "react-icons/fa6"
 import ContactModal from "../Custom/ContactModal"
-import Loading from "../../../public/Loading.gif"
-import Image from "next/image"
 import { useSession } from "next-auth/react"
-import { useRouter, usePathname } from "next/navigation"
 import { showErrorAlert, showSuccessAlert } from "../Alerts/Alert"
 import { ContactRequest } from "@/API/User/Subscription/contact"
 import LoaderModal from "../Custom/Loader"
 import ComponentLoader2 from "../Custom/ComponentLoader2"
-import { useSession } from "next-auth/react"
-// import VerticalProgressBar from "./VerticalProgressBar"
-import HorizontalProgressBar from "./HorizontalProgressBar"
-import StepProgressBar from "./HorizontalProgressBar"
 
 const monthlyConst = (planFrequency) => {
   return planFrequency?.find((item) => {
@@ -44,11 +37,6 @@ export default function PricingCards() {
   const pathname = usePathname()
   const [isLoaderOpen, setIsLoaderOpen] = useState(false)
   const [hoveredCardIndex, setHoveredCardIndex] = useState(null) // Track which card is hovered
-  const { data: session } = useSession()
-  const steps = ["Add User", "Payment Information", "Review & Confirm"]
-
-  const router = useRouter()
-  const pathname = usePathname()
 
   useEffect(() => {
     AllPlan().then((res) => {
@@ -73,14 +61,6 @@ export default function PricingCards() {
       }
     })
   }, [])
-
-  const BuyNow = (plan) => {
-    if (session) {
-      console.log(session)
-    } else {
-      router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
-    }
-  }
 
   const submitContact = (data) => {
     setModalOpen(false)
@@ -112,7 +92,7 @@ export default function PricingCards() {
 
   const BuyNow = (plan) => {
     if (session) {
-      console.log(session)
+      router.push(`/buy-now?plan=${plan?.id}`)
     } else {
       router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
     }
@@ -340,9 +320,6 @@ export default function PricingCards() {
           No Plan is Available right now
         </div>
       )}
-      <>
-        <StepProgressBar steps={steps} />
-      </>
     </>
   )
 }

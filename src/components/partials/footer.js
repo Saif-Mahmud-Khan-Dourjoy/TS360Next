@@ -4,7 +4,7 @@ import { FaEnvelope, FaLocationDot } from "react-icons/fa6"
 import Image from "next/image"
 export default function Footer() {
   return (
-    <div className="bg-gray-900 pt-14 pb-6 px-10  w-full z-10 relative">
+    <div className="bg-gray-900 pt-14 pb-6 px-10  w-full relative">
       <div className="flex justify-between md:items-center mb-10 flex-col md:flex-row gap-x-3 gap-y-10  md:gap-y-0">
         <div className="hidden lg:block w-fit">
           <Link href="/">

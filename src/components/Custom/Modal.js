@@ -23,7 +23,8 @@ const CustomModal = ({ isOpen, onClose, type, message, onOk, onCancel }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      style={{ zIndex: "9999" }}
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       onClick={onClose}
     >
       <div
