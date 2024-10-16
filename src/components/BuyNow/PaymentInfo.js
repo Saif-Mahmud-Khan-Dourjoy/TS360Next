@@ -7,10 +7,7 @@ import amex1 from "../../../public/Subscription/amex1.png"
 import Select from "react-select"
 import { FaRegCircleCheck } from "react-icons/fa6"
 import ReCAPTCHA from "react-google-recaptcha"
-import {
-  CreateCardByStax,
-  GetAllCard,
-} from "@/API/User/Subscription/SubscriptionOperation"
+import { GetAllCard } from "@/API/User/Subscription/SubscriptionOperation"
 import { CardType } from "../../../src/Utility/CreditCard"
 import { useFormik } from "formik"
 import * as Yup from "yup"
@@ -61,6 +58,7 @@ export default function PaymentInfo({
   const [recaptchaToken, setRecaptchaToken] = useState(null)
   const [allCard, setAllCard] = useState(null)
   const [selectedCardItem, setSelectedCardItem] = useState(null)
+  const [reload, setReload] = useState(false)
   const [formData, setFormData] = useState({
     customerID: customerId,
     publicApiKey: process.env.NEXT_PUBLIC_PUBLIC_API_KEY,
@@ -99,7 +97,7 @@ export default function PaymentInfo({
         openModal("error", res?.[1] || "Something went wrong")
       }
     })
-  }, [])
+  }, [reload])
 
   const {
     handleSubmit,
@@ -135,19 +133,12 @@ export default function PaymentInfo({
     }),
     onSubmit: (values) => {
       // Handle form submission
+      setIsLoaderOpen(true)
       SubmitForm(values)
     },
   })
 
   const SubmitForm = async (data) => {
-    // CreateCardByStax(values).then((res)=>{
-    //   if(res?.[0]){
-    //     console.log(res?.[0])
-    //   }else{
-    //     console.log(res?.[1])
-    //   }
-    // })
-
     const finalData = {
       customerID: data.customerID,
       publicApiKey: data.publicApiKey,
@@ -173,26 +164,64 @@ export default function PaymentInfo({
         }
       )
 
-       console.log("Only response")
-       console.log(response)
-       console.log("Outside condition");
-         const data = await response.json()
-       console.log(data)
-
       if (response.ok) {
-        console.log("Inside condition")
-        const data = await response.json();
-      
-        console.log(data)
+        const data = await response.json()
+        const forCard = {
+          maskedCardNumber: data?.maskedCardNumber,
+          cardType: data?.cardType,
+          expirationMonth: data?.expirationMonth,
+          expirationYear: data?.expirationYear,
+          pgCustomerId: data?.customerId,
+          firstName: data?.firstName,
+          lastName: data?.lastName,
+          isDefault: data?.isDefault,
+          pgPaymentMethodId: data?.id,
+        }
+
+        let addCard = await AddCardApiCall(forCard, session?.accessToken)
+
+        if (addCard[0]) {
+          setIsLoaderOpen(false)
+          setReload(!reload)
+        } else {
+          openModal("error", addCard?.[1] || "Something went wrong")
+        }
       } else {
-         console.log("Inside else error")
         const errorData = await response.json()
         console.log("Error: " + errorData.message)
+        setIsLoaderOpen(false)
+        openModal("error", errorData.message || "Something went wrong")
       }
     } catch (error) {
-       console.log("Inside try catch error")
       console.log("An error occurred: " + error.message)
+      setIsLoaderOpen(false)
+      openModal("error", error.message || "Something went wrong")
     }
+  }
+
+  const AddCardApiCall = async (data, token) => {
+    try {
+      // Await the result of the AddCardAtSystem function
+      const res = await AddCardAtSystem(data, token)
+
+      // Return based on the response from the API
+      if (res?.[0]) {
+        return [true] // Success case
+      } else {
+        return [false, res?.[1]] // Error case
+      }
+    } catch (error) {
+      console.error("Error in AddCardApiCall:", error)
+      return [false, error.message] // Handle error cases
+    }
+
+    //  return  AddCardAtSystem(data, token).then((res)=>{
+    //     if(res?.[0]){
+    //        return [true]
+    //     }else{
+    //        return [false, res?.[1]]
+    //     }
+    //    })
   }
 
   const setCardInfo = (item, i) => {

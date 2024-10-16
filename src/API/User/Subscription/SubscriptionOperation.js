@@ -2,7 +2,6 @@ import Config from "@/Config"
 import axios from "axios"
 
 export const CreateCustomer = async (userId, token) => {
-
   return axios
     .post(
       `${Config?.baseApi}/subscription/customer/add-by-user/${userId}`,
@@ -63,38 +62,29 @@ export const GetAllCard = async (pgCustomerId, token) => {
     })
 }
 
-export const CreateCardByStax = async (data) => {
-  const finalData = {
-    customerID: data.customerID,
-    publicApiKey: data.publicApiKey,
-    cardNumber: data.cardNumber,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    expirationMonth: parseInt(data.expirationMonth, 10),
-    expirationYear: parseInt(data.expirationYear, 10),
-    cvv: data.cvv,
-    makeDefault: data.makeDefault,
-    recaptcha: data.recaptcha,
-  }
-
-  debugger
+export const AddCardAtSystem = async (data, token) => {
   return axios
-    .post(
-      `https://payments.subscriptionplatform.com/api/paymentsv2`,
-      { finalData },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    .post(`${Config?.baseApi}/subscription/payment-method/add`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
     .then((res) => {
-      return [res]
+      return [res?.data]
     })
     .catch((error) => {
       console.error(error)
-      if (error) {
-        return [false, error]
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
       }
     })
 }

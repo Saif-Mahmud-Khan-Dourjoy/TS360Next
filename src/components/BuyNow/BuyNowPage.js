@@ -174,6 +174,8 @@ export default function BuyNowPage() {
                     openModal={openModal}
                     setIsVerified={setIsVerified}
                     isVerified={isVerified}
+                  
+                 
                   />
                 )}
                 {currentStep == 2 && (
