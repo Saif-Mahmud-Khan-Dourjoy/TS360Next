@@ -7,7 +7,7 @@ import amex1 from "../../../public/Subscription/amex1.png"
 import Select from "react-select"
 import { FaRegCircleCheck } from "react-icons/fa6"
 import ReCAPTCHA from "react-google-recaptcha"
-import { GetAllCard } from "@/API/User/Subscription/SubscriptionOperation"
+import { AddCardAtSystem, GetAllCard } from "@/API/User/Subscription/SubscriptionOperation"
 import { CardType } from "../../../src/Utility/CreditCard"
 import { useFormik } from "formik"
 import * as Yup from "yup"
@@ -184,6 +184,7 @@ export default function PaymentInfo({
           setIsLoaderOpen(false)
           setReload(!reload)
         } else {
+          setIsLoaderOpen(false)
           openModal("error", addCard?.[1] || "Something went wrong")
         }
       } else {
