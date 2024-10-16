@@ -173,17 +173,24 @@ export default function PaymentInfo({
         }
       )
 
-       const data = await response.json();
-       console.log(data);
+       console.log("Only response")
+       console.log(response)
+       console.log("Outside condition");
+         const data = await response.json()
+       console.log(data)
 
       if (response.ok) {
+        console.log("Inside condition")
         const data = await response.json();
+      
         console.log(data)
       } else {
+         console.log("Inside else error")
         const errorData = await response.json()
         console.log("Error: " + errorData.message)
       }
     } catch (error) {
+       console.log("Inside try catch error")
       console.log("An error occurred: " + error.message)
     }
   }
