@@ -1,7 +1,12 @@
 "use client"
 import { useState } from "react"
 
-const StepProgressBar = ({ steps, currentStep, setCurrentStep }) => {
+const StepProgressBar = ({
+  steps,
+  currentStep,
+  setCurrentStep,
+  isDetailsSubmit,
+}) => {
   const stepWidth = 100 / (steps.length - 1) // Calculate the width for each step dynamically
   const setStep = (index) => {
     if (currentStep > index) {
@@ -27,7 +32,7 @@ const StepProgressBar = ({ steps, currentStep, setCurrentStep }) => {
             )}
             <div className="flex flex-col items-center">
               <div
-                onClick={() => setStep(index)}
+                onClick={() => !isDetailsSubmit && setStep(index)}
                 className={`cursor-pointer w-8 h-8 rounded-full flex items-center justify-center z-10 ${
                   index <= currentStep
                     ? "bg-[#3AB6FF] text-white"
@@ -56,24 +61,6 @@ const StepProgressBar = ({ steps, currentStep, setCurrentStep }) => {
           </div>
         ))}
       </div>
-
-      {/* Buttons for testing */}
-      {/* <div className="flex mt-4 space-x-2">
-        <button
-          className="px-4 py-2 bg-gray-300 rounded-md"
-          onClick={() => setCurrentStep((prev) => Math.max(prev - 1, 0))}
-        >
-          Prev
-        </button>
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={() =>
-            setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
-          }
-        >
-          Next
-        </button>
-      </div> */}
     </div>
   )
 }

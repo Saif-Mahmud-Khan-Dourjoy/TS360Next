@@ -12,7 +12,13 @@ export default function OrderSummary({
   totalUser,
   submitForm,
   customerId,
- 
+  planName,
+  selectedCardValue,
+  isDetailsSubmit,
+  setPlanEndDate,
+  createPayment,
+  setAmount,
+  setAmountWithTax,
 }) {
   const [total, setTotal] = useState(0)
   const [tax, setTax] = useState(0)
@@ -21,8 +27,10 @@ export default function OrderSummary({
     let total = selectedCycle?.price * totalUser?.length
     let tax = total * (5 / 100)
     setTotal(total)
+    setAmount(total)
     setTax(tax)
     setTotalWithTax(total + tax)
+    setAmountWithTax(total + tax)
   }, [selectedCycle, totalUser])
   const ChangeCycle = (e) => {
     const current_cycle = planFrequency?.filter((plan, index) => {
@@ -36,6 +44,8 @@ export default function OrderSummary({
     if (currentStep === 0) {
       // Submit the form when proceeding from "Add User" step
       submitForm()
+    } else if (currentStep === 2) {
+      createPayment()
     } else {
       setCurrentStep(currentStep + 1)
       if (setSummaryModalOpen) setSummaryModalOpen(false)
@@ -55,7 +65,7 @@ export default function OrderSummary({
         </div>
         <div className="flex gap-3 text-[#2F2F2F] mt-10">
           <span>Selected Plan: </span>
-          <span className="font-bold">Professional</span>
+          <span className="font-bold">{planName}</span>
         </div>
         {currentStep < 2 && (
           <div className="mt-5 flex justify-between">
@@ -164,7 +174,12 @@ export default function OrderSummary({
             //   setSummaryModalOpen && setSummaryModalOpen(false)
             // }}
             onClick={handleProceed}
-            className="cursor-pointer text-[#FFF] text-sm lg:text-base font-semibold rounded-md py-2 px-5 w-fit mx-auto bg-[#3AB6FF] shadow-2xl"
+            className={`${
+              (currentStep == 1 && selectedCardValue == null) ||
+              (currentStep == 2 && !isDetailsSubmit)
+                ? "pointer-events-none cursor-not-allowed bg-gray-500"
+                : ""
+            } cursor-pointer text-[#FFF] text-sm lg:text-base font-semibold rounded-md py-2 px-5 w-fit mx-auto bg-[#3AB6FF] shadow-2xl`}
           >
             {currentStep == 0 && "Proceed to Payment Information"}
             {currentStep == 1 && "Review & Confirm"}

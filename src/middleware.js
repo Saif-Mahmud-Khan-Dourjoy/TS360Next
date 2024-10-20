@@ -55,5 +55,10 @@ const checkAuth = (req, token) => {
       return NextResponse.redirect(new URL("/login", req.url))
     }
   }
+  if (req.nextUrl.pathname.includes("buy-now")) {
+    if (!token || token?.role != "USER") {
+      return NextResponse.redirect(new URL("/login", req.url))
+    }
+  }
   return null // Ensure the function returns null if no redirection happens
 }

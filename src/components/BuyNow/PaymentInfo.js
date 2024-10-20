@@ -7,7 +7,10 @@ import amex1 from "../../../public/Subscription/amex1.png"
 import Select from "react-select"
 import { FaRegCircleCheck } from "react-icons/fa6"
 import ReCAPTCHA from "react-google-recaptcha"
-import { AddCardAtSystem, GetAllCard } from "@/API/User/Subscription/SubscriptionOperation"
+import {
+  AddCardAtSystem,
+  GetAllCard,
+} from "@/API/User/Subscription/SubscriptionOperation"
 import { CardType } from "../../../src/Utility/CreditCard"
 import { useFormik } from "formik"
 import * as Yup from "yup"
@@ -49,15 +52,17 @@ export default function PaymentInfo({
   openModal,
   setIsVerified,
   isVerified,
+  setSelectedCardValue,
+  selectedCard,
+  setSelectedCard,
 }) {
   const [countries, setCountries] = useState([])
   const [countryValue, setCountryValue] = useState("")
   const [menuTarget, setMenuTarget] = useState(null)
-  const [selectedCard, setSelectedCard] = useState(null)
 
   const [recaptchaToken, setRecaptchaToken] = useState(null)
   const [allCard, setAllCard] = useState(null)
-  const [selectedCardItem, setSelectedCardItem] = useState(null)
+
   const [reload, setReload] = useState(false)
   const [formData, setFormData] = useState({
     customerID: customerId,
@@ -227,8 +232,8 @@ export default function PaymentInfo({
 
   const setCardInfo = (item, i) => {
     selectedCard == i
-      ? (setSelectedCard(null), selectedCardItem(null))
-      : (setSelectedCard(i), selectedCardItem(item))
+      ? (setSelectedCard(null), setSelectedCardValue(null))
+      : (setSelectedCard(i), setSelectedCardValue(item))
   }
 
   const handleVerifyCaptcha = (token) => {

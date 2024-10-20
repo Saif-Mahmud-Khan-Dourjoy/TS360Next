@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { FaAngleLeft } from "react-icons/fa6"
 import StepProgressBar from "../Pricing/HorizontalProgressBar"
 import Avatar from "react-avatar"
@@ -14,30 +15,17 @@ import { useSession } from "next-auth/react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import LoaderModal from "../Custom/Loader"
-import { CreateCustomer } from "@/API/User/Subscription/SubscriptionOperation"
+import {
+  CompletePayment,
+  CreateCustomer,
+  GetPlanById,
+  SubscriptionAdd,
+} from "@/API/User/Subscription/SubscriptionOperation"
 import CustomModal from "../Custom/Modal"
-const steps = ["Add User", "Payment Information", "Review & Confirm"]
+import { useSearchParams } from "next/navigation"
+import moment from "moment"
 
-const planFrequency = [
-  {
-    id: 2,
-    name: null,
-    noOfInterval: 1,
-    price: 199,
-    paymentGatewayId: 109906,
-    frequencyInterval: "MONTHLY",
-    additionalMonths: 0,
-  },
-  {
-    id: 3,
-    name: null,
-    noOfInterval: 1,
-    price: 499,
-    paymentGatewayId: 109909,
-    frequencyInterval: "YEARLY",
-    additionalMonths: 0,
-  },
-]
+const steps = ["Add User", "Payment Information", "Review & Confirm"]
 
 export default function BuyNowPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -47,11 +35,16 @@ export default function BuyNowPage() {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalType, setModalType] = useState("success")
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
+  const searchParams = useSearchParams()
+
+  const router = useRouter()
+  const planId = searchParams.get("plan")
+
+  const [planFrequency, setPlanFrequency] = useState([])
+  const [planName, setPlanName] = useState("")
 
   const [totalUser, setTotalUser] = useState([])
-  const [selectedCycle, setSelectedCycle] = useState(
-    planFrequency?.length > 0 ? planFrequency?.[0] : {}
-  )
+  const [selectedCycle, setSelectedCycle] = useState({})
 
   const [customerId, setCustomerId] = useState(null)
 
@@ -61,6 +54,54 @@ export default function BuyNowPage() {
 
   const [emailDomain, setEmailDomain] = useState(null)
   const [isVerified, setIsVerified] = useState(false)
+  const [selectedCardValue, setSelectedCardValue] = useState(null)
+  const [selectedCard, setSelectedCard] = useState(null)
+  const [autoRenew, setAutoRenew] = useState(true)
+  const [sendInvoice, setSendInvoice] = useState(false)
+  const [isDetailsSubmit, setIsDetailsSubmit] = useState(false)
+  const [planStartDate, setPlanStartDate] = useState(
+    moment().format("YYYY-MM-DD")
+  )
+  const [planEndDate, setPlanEndDate] = useState()
+  const [reference, setReference] = useState()
+  const [amount, setAmount] = useState(0)
+  const [amountWithTax, setAmountWithTax] = useState(0)
+
+  useEffect(() => {
+    setIsLoaderOpen(true)
+    GetPlanById(planId, session?.accessToken).then((res) => {
+      setIsLoaderOpen(false)
+      if (res?.[0]) {
+        console.log(res?.[0])
+        setPlanFrequency(res?.[0]?.planFrequency)
+        setPlanName(res?.[0]?.name)
+        setSelectedCycle(
+          res?.[0]?.planFrequency?.length > 0
+            ? res?.[0]?.planFrequency?.[0]
+            : {}
+        )
+      } else {
+        openModal("error", res?.[1] || "Something went wrong")
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    const plan = { ...selectedCycle }
+    const interval = plan?.frequencyInterval
+    const additionalMonths = plan?.additionalMonths
+    if (interval == "MONTHLY") {
+      setPlanEndDate(moment().add(1, "month").format("YYYY-MM-DD"))
+    }
+    if (interval == "YEARLY") {
+      setPlanEndDate(
+        moment()
+          .add(1, "year")
+          .add(additionalMonths, "months")
+          .format("YYYY-MM-DD")
+      )
+    }
+  }, [selectedCycle])
 
   useEffect(() => {
     setTotalUser([
@@ -131,6 +172,64 @@ export default function BuyNowPage() {
       }
     })
   }
+  // console.log("Root", selectedCycle)
+  const addSubscription = async () => {
+    const data = {
+      pgCustomerId: customerId,
+      validFrom: planStartDate,
+      validTo: planEndDate,
+      autoRenewal: autoRenew,
+      sendInvoice: sendInvoice,
+      plan: {
+        id: planId,
+      },
+      planFrequency: {
+        id: selectedCycle?.id,
+      },
+      numberOfUsers: totalUser?.length,
+      teams: totalUser?.filter((user) => {
+        return user?.email != session?.user?.userName
+      }),
+    }
+
+    setIsLoaderOpen(true)
+
+    SubscriptionAdd(data, session?.accessToken).then((res) => {
+      setIsLoaderOpen(false)
+      if (res?.[0]) {
+        setIsDetailsSubmit(true)
+        setReference(res?.[0]?.pgSubscriptionId)
+      } else {
+        openModal("error", res?.[1] || "Something went wrong")
+      }
+    })
+  }
+
+  const createPayment = async () => {
+    let data = {
+      customerId: customerId,
+      reference: reference,
+      amount: amountWithTax,
+      paymentMethod: "CreditCard",
+      paymentMethodId: selectedCardValue?.pgPaymentMethodId,
+      source: "Manual",
+    }
+    setIsLoaderOpen(true)
+    CompletePayment(data, session?.accessToken).then((res) => {
+      setIsLoaderOpen(false)
+      if (res?.[0]) {
+        showSuccessAlert(
+          res?.[0]?.message || "Payment is successfull",
+          "center",
+          2000
+        )
+        router.push(`/home`)
+      } else {
+        openModal("error", res?.[1] || "Something went wrong")
+      }
+    })
+  }
+
   return (
     <>
       <div className="">
@@ -148,6 +247,7 @@ export default function BuyNowPage() {
                   setCurrentStep={setCurrentStep}
                   currentStep={currentStep}
                   steps={steps}
+                  isDetailsSubmit={isDetailsSubmit}
                 />
               </div>
               <div className="mt-10 ">
@@ -174,14 +274,27 @@ export default function BuyNowPage() {
                     openModal={openModal}
                     setIsVerified={setIsVerified}
                     isVerified={isVerified}
-                  
-                 
+                    setSelectedCardValue={setSelectedCardValue}
+                    selectedCard={selectedCard}
+                    setSelectedCard={setSelectedCard}
                   />
                 )}
                 {currentStep == 2 && (
                   <Review
                     setCurrentStep={setCurrentStep}
                     currentStep={currentStep}
+                    session={session}
+                    selectedCardValue={selectedCardValue}
+                    totalUser={totalUser}
+                    autoRenew={autoRenew}
+                    setAutoRenew={setAutoRenew}
+                    sendInvoice={sendInvoice}
+                    setSendInvoice={setSendInvoice}
+                    isDetailsSubmit={isDetailsSubmit}
+                    setIsDetailsSubmit={setIsDetailsSubmit}
+                    planEndDate={planEndDate}
+                    planStartDate={planStartDate}
+                    addSubscription={addSubscription}
                   />
                 )}
               </div>
@@ -217,6 +330,13 @@ export default function BuyNowPage() {
                 submitForm={UserFormik.submitForm}
                 customerId={customerId}
                 isVerified={isVerified}
+                planName={planName}
+                selectedCardValue={selectedCardValue}
+                isDetailsSubmit={isDetailsSubmit}
+                setPlanEndDate={setPlanEndDate}
+                createPayment={createPayment}
+                setAmount={setAmount}
+                setAmountWithTax={setAmountWithTax}
               />
             </div>
           </div>
@@ -240,6 +360,13 @@ export default function BuyNowPage() {
               submitForm={UserFormik.submitForm}
               customerId={customerId}
               isVerified={isVerified}
+              planName={planName}
+              selectedCardValue={selectedCardValue}
+              isDetailsSubmit={isDetailsSubmit}
+              setPlanEndDate={setPlanEndDate}
+              createPayment={createPayment}
+              setAmount={setAmount}
+              setAmountWithTax={setAmountWithTax}
             />
           </OrderSummaryModal>
         )}
