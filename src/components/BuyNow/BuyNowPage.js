@@ -24,6 +24,7 @@ import {
 import CustomModal from "../Custom/Modal"
 import { useSearchParams } from "next/navigation"
 import moment from "moment"
+import { showSuccessAlert } from "../Alerts/Alert"
 
 const steps = ["Add User", "Payment Information", "Review & Confirm"]
 
@@ -139,11 +140,13 @@ export default function BuyNowPage() {
         .of(
           Yup.object({
             email: Yup.string()
-              .email("Invalid email")
-              .required("Email is required")
-              .test("domain-check", `Must end with ${emailDomain}`, (value) =>
-                value?.endsWith(`${emailDomain}`)
-              ),
+              .nullable() // Allows the email to be null or empty
+              .test("domain-check", `Must end with ${emailDomain}`, (value) => {
+                if (!value) return true // If no value, skip the domain check
+                return value.endsWith(`${emailDomain}`) // If value exists, check domain
+              })
+              .email("Invalid email") // Check if the email is valid
+              .notRequired(), // Email is not required unless provided
           })
         )
         .min(1, "At least one user is required")
@@ -188,7 +191,7 @@ export default function BuyNowPage() {
       },
       numberOfUsers: totalUser?.length,
       teams: totalUser?.filter((user) => {
-        return user?.email != session?.user?.userName
+        return user?.email.length > 0
       }),
     }
 
@@ -230,6 +233,7 @@ export default function BuyNowPage() {
     })
   }
 
+  console.log(totalUser)
   return (
     <>
       <div className="">

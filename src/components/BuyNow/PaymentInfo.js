@@ -143,6 +143,8 @@ export default function PaymentInfo({
     },
   })
 
+ 
+
   const SubmitForm = async (data) => {
     const finalData = {
       customerID: data.customerID,
@@ -186,6 +188,8 @@ export default function PaymentInfo({
         let addCard = await AddCardApiCall(forCard, session?.accessToken)
 
         if (addCard[0]) {
+          resetForm()
+          setNewInfo(false)
           setIsLoaderOpen(false)
           setReload(!reload)
         } else {

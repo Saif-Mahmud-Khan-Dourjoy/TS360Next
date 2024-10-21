@@ -54,7 +54,11 @@ const CustomModal = ({ isOpen, onClose, type, message, onOk, onCancel }) => {
             {(type === "success" || type === "delete") && (
               <button
                 onClick={onOk}
-                className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300"
+                className={`px-4 py-2 text-white ${
+                  type === "success"
+                    ? "bg-green-500 rounded-lg hover:bg-green-600"
+                    : "bg-red-500 rounded-lg hover:bg-red-600"
+                }  focus:outline-none focus:ring `}
               >
                 Ok
               </button>

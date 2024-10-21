@@ -27,7 +27,7 @@ const AddUserModal = ({
   }, [isOpen])
 
   useEffect(() => {
-    let total = selectedCycle?.price * (user)
+    let total = selectedCycle?.price * user
     setTotal(total)
   }, [user])
 
@@ -37,7 +37,7 @@ const AddUserModal = ({
     }
   }
   const finalAdd = () => {
-    const newList = Array.from({ length: user-1 }, (item, index) => ({
+    const newList = Array.from({ length: user - 1 }, (item, index) => ({
       id: "",
       email: "",
     }))
@@ -99,23 +99,31 @@ const AddUserModal = ({
         </div>
         {Object.keys(selectedCycle).length > 0 && (
           <div className="mt-5 flex justify-center gap-3">
-            <div className="text-[#818181] text-xl font-semibold">
+            <div className="text-[#818181] text-sm lg:text-xl font-semibold">
               ${selectedCycle?.price}
             </div>
-            <div className="text-[#818181] text-xl font-semibold">x</div>
-            <div className="text-[#818181] text-xl font-semibold">
+            <div className="text-[#818181] text-sm lg:text-xl font-semibold">
+              x
+            </div>
+            <div className="text-[#818181] text-sm lg:text-xl font-semibold">
               {user} users
             </div>
-            <div className="text-[#818181] text-xl font-semibold">x</div>
-            <div className="text-[#818181] text-xl font-semibold">
+            <div className="text-[#818181] text-sm lg:text-xl font-semibold">
+              x
+            </div>
+            <div className="text-[#818181] text-sm lg:text-xl font-semibold">
               1{" "}
               {selectedCycle?.frequencyInterval
                 ?.slice(0, -2)
                 .toLowerCase()
                 .replace(/^./, (char) => char.toUpperCase())}
             </div>
-            <div className="text-[#818181] text-xl font-semibold">=</div>
-            <div className="text-[#2F2F2F] text-2xl font-semibold">${total}</div>
+            <div className="text-[#818181] text-sm lg:text-xl font-semibold">
+              =
+            </div>
+            <div className="text-[#2F2F2F] text-sm lg:text-2xl font-semibold">
+              ${total}
+            </div>
           </div>
         )}
 
