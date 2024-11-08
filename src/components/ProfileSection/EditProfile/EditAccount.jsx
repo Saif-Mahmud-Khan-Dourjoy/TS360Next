@@ -1,7 +1,7 @@
-import React from "react"
-import { FiEdit2 } from "react-icons/fi"
-import { RxCross2 } from "react-icons/rx"
-import { IoSaveOutline } from "react-icons/io5"
+import React from "react";
+import { FiEdit2 } from "react-icons/fi";
+import { RxCross2 } from "react-icons/rx";
+import { IoSaveOutline } from "react-icons/io5";
 
 export default function EditAccount() {
   return (
@@ -75,5 +75,5 @@ export default function EditAccount() {
         </div>
       </div>
     </>
-  )
+  );
 }

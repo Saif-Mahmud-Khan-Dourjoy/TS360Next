@@ -1,49 +1,49 @@
-import React from "react"
+import React from "react";
 
 export default function Common({ selectedTab, setSelectedTab }) {
   return (
-    <div className="flex flex-col gap-5 w-max">
-      <div
+    <div className="flex flex-col w-max">
+      <h1
         class={`${
           selectedTab == "PROFILE"
-            ? "text-[#3ab6ff] font-extrabold "
+            ? "text-[#3ab6ff] font-bold "
             : "text-[#919eab] font-normal"
-        }  text-sm  border-b pb-2 cursor-pointer w-full`}
+        }  text-sm  border-b py-3 cursor-pointer w-full`}
         onClick={() => setSelectedTab("PROFILE")}
       >
         Profile
-      </div>
+      </h1>
 
-      <div
+      <h1
         class={`${
           selectedTab == "MY_SUBSCRIPTION"
-            ? "text-[#3ab6ff] font-extrabold "
+            ? "text-[#3ab6ff] font-bold "
             : "text-[#919eab] font-normal"
-        }  text-sm  border-b pb-2 cursor-pointer w-full`}
+        }  text-sm  border-b py-3 cursor-pointer w-full`}
         onClick={() => setSelectedTab("MY_SUBSCRIPTION")}
       >
         My Subscription
-      </div>
-      <div
+      </h1>
+      <h1
         class={`${
           selectedTab == "PAYMENT_METHOD"
-            ? "text-[#3ab6ff] font-extrabold "
+            ? "text-[#3ab6ff] font-bold "
             : "text-[#919eab] font-normal"
-        }  text-sm  border-b pb-2 cursor-pointer w-full`}
+        }  text-sm  border-b py-3 cursor-pointer w-full`}
         onClick={() => setSelectedTab("PAYMENT_METHOD")}
       >
         Payment Method
-      </div>
-      <div
+      </h1>
+      <h1
         class={`${
           selectedTab == "PURCHASE_HISTORY"
-            ? "text-[#3ab6ff] font-extrabold "
+            ? "text-[#3ab6ff] font-bold "
             : "text-[#919eab] font-normal"
-        }  text-sm cursor-pointer w-full`}
+        }  text-sm pt-3 cursor-pointer w-full`}
         onClick={() => setSelectedTab("PURCHASE_HISTORY")}
       >
         Purchase History
-      </div>
+      </h1>
     </div>
-  )
+  );
 }
