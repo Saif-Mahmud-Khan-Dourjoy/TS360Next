@@ -9,13 +9,14 @@ export default function EditAccount() {
       <div className="flex justify-between items-center">
         <div class="text-[#2f2f2f] text-base font-extrabold">ACCOUNT DATA</div>
 
-        <div class="w-[115px] h-9 bg-[#3ab6ff] rounded-[5px] shadow flex justify-center items-center cursor-pointer">
+        <button class="w-[115px] h-9 bg-[#3ab6ff] rounded-[5px] shadow flex justify-center items-center cursor-pointer hover:bg-[#239ade]">
           <div class=" text-white text-sm font-semibold flex items-center gap-2">
             <FiEdit2 size={16} />
             Edit
           </div>
-        </div>
+        </button>
       </div>
+
       <div className="flex justify-between mt-5 w-full gap-5">
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">First Name</div>
@@ -32,6 +33,7 @@ export default function EditAccount() {
           ></input>
         </div>
       </div>
+
       <div className="flex justify-between mt-5 w-full gap-5">
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">
@@ -42,6 +44,7 @@ export default function EditAccount() {
             placeholder="Organization X"
           ></input>
         </div>
+
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">Country</div>
           <select className="w-full h-12 px-3 py-3.5 bg-white rounded-md border border-[#c4cdd5] text-sm focus:border-blue-600 text-[#97999b]">
@@ -52,6 +55,7 @@ export default function EditAccount() {
           </select>
         </div>
       </div>
+
       <div className="flex justify-between mt-5 w-full gap-5">
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">Phone</div>
@@ -62,17 +66,19 @@ export default function EditAccount() {
         </div>
         <div className="flex-1"></div>
       </div>
+
       <div className="flex justify-end mt-5 w-full gap-5">
-        <div class="w-[150px] h-10 bg-[#2f2f2f] rounded-[5px] shadow flex justify-center items-center cursor-pointer">
+        <button class="w-[150px] h-10 bg-[#2f2f2f] rounded-[5px] shadow flex justify-center items-center cursor-pointer hover:bg-black">
           <div class=" text-white text-sm font-semibold flex items-center gap-2">
-            <RxCross2 size={20} /> Cancle
+            <RxCross2 size={20} /> Cancel
           </div>
-        </div>
-        <div class="w-[150px] h-10 bg-[#3ab6ff] rounded-[5px] shadow flex justify-center items-center">
+        </button>
+
+        <button class="w-[150px] h-10 bg-[#3ab6ff] rounded-[5px] shadow flex justify-center items-center hover:bg-[#239ade]">
           <div class=" text-white text-sm font-semibold flex items-center gap-2">
             <IoSaveOutline size={16} /> Save
           </div>
-        </div>
+        </button>
       </div>
     </>
   );

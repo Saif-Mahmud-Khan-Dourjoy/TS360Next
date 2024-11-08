@@ -6,6 +6,9 @@ import VisaCard from "../../../../public/Subscription/Visaa.png";
 export default function PaymentMethod() {
   return (
     <>
+      <div class="text-[#2f2f2f] text-base font-extrabold mb-6">
+        EXISTING PAYMENT METHODS
+      </div>
       <div className="flex gap-4">
         <div className="p-4 rounded-xl shadow-lg border border-gray-300 w-[350px]">
           {/* Left Side */}
