@@ -36,6 +36,8 @@ export default function BuyNowPage() {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalType, setModalType] = useState("success")
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
+  const [startingPrice, setStartingPrice] = useState(null)
+
   const searchParams = useSearchParams()
 
   const router = useRouter()
@@ -57,7 +59,7 @@ export default function BuyNowPage() {
   const [isVerified, setIsVerified] = useState(false)
   const [selectedCardValue, setSelectedCardValue] = useState(null)
   const [selectedCard, setSelectedCard] = useState(null)
-  const [autoRenew, setAutoRenew] = useState(true)
+  const [autoRenew, setAutoRenew] = useState(false)
   const [sendInvoice, setSendInvoice] = useState(false)
   const [isDetailsSubmit, setIsDetailsSubmit] = useState(false)
   const [planStartDate, setPlanStartDate] = useState(
@@ -81,6 +83,12 @@ export default function BuyNowPage() {
             ? res?.[0]?.planFrequency?.[0]
             : {}
         )
+
+        setStartingPrice(parseFloat(res?.[0]?.startingPrice))
+
+        if (parseFloat(res?.[0]?.startingPrice) > 0) {
+          setAutoRenew(true)
+        }
       } else {
         openModal("error", res?.[1] || "Something went wrong")
       }
@@ -266,6 +274,7 @@ export default function BuyNowPage() {
                     handleChange={UserFormik.handleChange}
                     handleBlur={UserFormik.handleBlur}
                     setFieldValue={UserFormik.setFieldValue}
+                    startingPrice={startingPrice}
                   />
                 )}
                 {currentStep == 1 && (
@@ -299,6 +308,7 @@ export default function BuyNowPage() {
                     planEndDate={planEndDate}
                     planStartDate={planStartDate}
                     addSubscription={addSubscription}
+                    startingPrice={startingPrice}
                   />
                 )}
               </div>

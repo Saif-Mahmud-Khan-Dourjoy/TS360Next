@@ -143,8 +143,6 @@ export default function PaymentInfo({
     },
   })
 
- 
-
   const SubmitForm = async (data) => {
     const finalData = {
       customerID: data.customerID,
@@ -237,7 +235,7 @@ export default function PaymentInfo({
   const setCardInfo = (item, i) => {
     selectedCard == i
       ? (setSelectedCard(null), setSelectedCardValue(null))
-      : (setSelectedCard(i), setSelectedCardValue(item))
+      : (setSelectedCard(i), setSelectedCardValue(item), setNewInfo(false))
   }
 
   const handleVerifyCaptcha = (token) => {

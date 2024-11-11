@@ -19,6 +19,7 @@ export default function UserSection({
   errors,
   touched,
   setFieldValue,
+  startingPrice,
 }) {
   const [isModalOpen, setModalOpen] = useState(false)
   const [suggestionIndex, setSuggestionIndex] = useState(null) // Track the index of open suggestion
@@ -144,13 +145,15 @@ export default function UserSection({
           </div>
           <div className="text-xs text-[#818181] font-semibold">Owner</div>
         </div>
-
-        <div className="mt-4 border-b"></div>
-        <div className="text-xs text-[#A6A6A6] mt-4">
-          Enter email addresses for your users now, or add them later in your
-          profile.
-        </div>
-
+        {startingPrice > 0 && (
+          <>
+            <div className="mt-4 border-b"></div>
+            <div className="text-xs text-[#A6A6A6] mt-4">
+              Enter email addresses for your users now, or add them later in
+              your profile.
+            </div>{" "}
+          </>
+        )}
         <div className="mt-5 w-full">
           {totalUser?.slice(1).map((user, index) => (
             <div key={`user-${index}`} className="[&:not(:first-child)]:mt-5">
@@ -172,7 +175,7 @@ export default function UserSection({
                     type="text"
                     placeholder="email@company.com"
                     value={user?.email}
-                    onBlur={handleBlur}   
+                    onBlur={handleBlur}
                     name={`users[${index + 1}].email`}
                     onChange={(e) => handleInputChange(e, index + 1)}
                     className="flex-grow px-3 py-1 focus:outline-none text-sm"
@@ -225,24 +228,29 @@ export default function UserSection({
             <div className="text-red-500 text-xs mt-2 ml-6">{errors.users}</div>
           )}
         </div>
+        {startingPrice > 0 && (
+          <>
+            <div className="mt-8 ml-5 sm:ml-0">
+              <div
+                onClick={
+                  totalUser.length > 1 ? AddUser : () => setModalOpen(true)
+                }
+                className="rounded-md text-white flex items-center gap-3 px-5 py-2 bg-[#486681] w-fit shadow-2xl cursor-pointer"
+              >
+                <CiCirclePlus size={24} /> Add more users
+              </div>
+            </div>
 
-        <div className="mt-8 ml-5 sm:ml-0">
-          <div
-            onClick={totalUser.length > 1 ? AddUser : () => setModalOpen(true)}
-            className="rounded-md text-white flex items-center gap-3 px-5 py-2 bg-[#486681] w-fit shadow-2xl cursor-pointer"
-          >
-            <CiCirclePlus size={24} /> Add more users
-          </div>
-        </div>
-
-        <div className="mt-4 border-b"></div>
-        <div className="mt-5 flex gap-2">
-          <BsFillInfoCircleFill color="#3AB6FF" />
-          <span className="text-xs text-[#A6A6A6]">
-            An invite link will be sent to these emails. You can only invite
-            users from your organization.
-          </span>
-        </div>
+            <div className="mt-4 border-b"></div>
+            <div className="mt-5 flex gap-2">
+              <BsFillInfoCircleFill color="#3AB6FF" />
+              <span className="text-xs text-[#A6A6A6]">
+                An invite link will be sent to these emails. You can only invite
+                users from your organization.
+              </span>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

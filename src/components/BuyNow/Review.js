@@ -17,6 +17,7 @@ export default function Review({
   planEndDate,
   planStartDate,
   addSubscription,
+  startingPrice,
 }) {
   console.log(sendInvoice)
   return (
@@ -107,29 +108,33 @@ export default function Review({
             </div>
           )}
 
-          <div className="flex gap-2">
-            <input
-              type="checkbox"
-              name="auto_renew"
-              checked={autoRenew}
-              onChange={(e) => setAutoRenew(!autoRenew)}
-            />
-            <span className="text-[#2F2F2F]">
-              Renew subscription automatically
-            </span>
-          </div>
+          {startingPrice > 0 && (
+            <div className="flex gap-2">
+              <input
+                type="checkbox"
+                name="auto_renew"
+                checked={autoRenew}
+                onChange={(e) => setAutoRenew(!autoRenew)}
+              />
+              <span className="text-[#2F2F2F]">
+                Renew subscription automatically
+              </span>
+            </div>
+          )}
         </div>
-        <div className="mt-6">
-          <div className="flex gap-2">
-            <input
-              type="checkbox"
-              name="send_invoice"
-              checked={sendInvoice}
-              onChange={(e) => setSendInvoice(!sendInvoice)}
-            />
-            <span className="text-[#2F2F2F]">Send invoice through email</span>
+        {startingPrice > 0 && (
+          <div className="mt-6">
+            <div className="flex gap-2">
+              <input
+                type="checkbox"
+                name="send_invoice"
+                checked={sendInvoice}
+                onChange={(e) => setSendInvoice(!sendInvoice)}
+              />
+              <span className="text-[#2F2F2F]">Send invoice through email</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div
         onClick={() => {
