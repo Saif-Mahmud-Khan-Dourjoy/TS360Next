@@ -17,7 +17,7 @@ export default function EditAccount() {
         </button>
       </div>
 
-      <div className="flex justify-between mt-5 w-full gap-5">
+      <div className="flex flex-col md:flex-row justify-between mt-5 w-full gap-5">
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">First Name</div>
           <input
@@ -34,7 +34,7 @@ export default function EditAccount() {
         </div>
       </div>
 
-      <div className="flex justify-between mt-5 w-full gap-5">
+      <div className="flex flex-col md:flex-row justify-between mt-5 w-full gap-5">
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">
             Organization
@@ -56,7 +56,7 @@ export default function EditAccount() {
         </div>
       </div>
 
-      <div className="flex justify-between mt-5 w-full gap-5">
+      <div className="flex justify-between mt-5 w-full gap-5 flex-col md:flex-row">
         <div className="flex-1">
           <div class="text-[#808080] text-sm font-normal mb-1">Phone</div>
           <input
@@ -64,7 +64,6 @@ export default function EditAccount() {
             placeholder="01674324577"
           ></input>
         </div>
-        <div className="flex-1"></div>
       </div>
 
       <div className="flex justify-end mt-5 w-full gap-5">

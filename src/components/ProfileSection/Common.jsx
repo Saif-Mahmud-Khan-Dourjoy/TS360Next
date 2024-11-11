@@ -1,49 +1,30 @@
 import React from "react";
 
 export default function Common({ selectedTab, setSelectedTab }) {
-  return (
-    <div className="flex flex-col w-max">
-      <h1
-        class={`${
-          selectedTab == "PROFILE"
-            ? "text-[#3ab6ff] font-bold "
-            : "text-[#919eab] font-normal"
-        }  text-sm  border-b py-3 cursor-pointer w-full`}
-        onClick={() => setSelectedTab("PROFILE")}
-      >
-        Profile
-      </h1>
+  const tabs = [
+    { key: "PROFILE", label: "Profile" },
+    { key: "MY_SUBSCRIPTION", label: "My Subscription" },
+    { key: "PAYMENT_METHOD", label: "Payment Method" },
+    { key: "PURCHASE_HISTORY", label: "Purchase History" },
+  ];
 
-      <h1
-        class={`${
-          selectedTab == "MY_SUBSCRIPTION"
-            ? "text-[#3ab6ff] font-bold "
-            : "text-[#919eab] font-normal"
-        }  text-sm  border-b py-3 cursor-pointer w-full`}
-        onClick={() => setSelectedTab("MY_SUBSCRIPTION")}
-      >
-        My Subscription
-      </h1>
-      <h1
-        class={`${
-          selectedTab == "PAYMENT_METHOD"
-            ? "text-[#3ab6ff] font-bold "
-            : "text-[#919eab] font-normal"
-        }  text-sm  border-b py-3 cursor-pointer w-full`}
-        onClick={() => setSelectedTab("PAYMENT_METHOD")}
-      >
-        Payment Method
-      </h1>
-      <h1
-        class={`${
-          selectedTab == "PURCHASE_HISTORY"
-            ? "text-[#3ab6ff] font-bold "
-            : "text-[#919eab] font-normal"
-        }  text-sm pt-3 cursor-pointer w-full`}
-        onClick={() => setSelectedTab("PURCHASE_HISTORY")}
-      >
-        Purchase History
-      </h1>
+  return (
+    <div className="flex md:flex-col flex-row md:w-full overflow-x-auto gap-4 md:gap-0">
+      {tabs.map((tab, index) => (
+        <h1
+          key={tab.key}
+          className={`${
+            selectedTab === tab.key
+              ? "text-[#3ab6ff] font-bold"
+              : "text-[#919eab] font-normal"
+          } text-sm py-3 cursor-pointer whitespace-nowrap ${
+            index !== tabs.length - 1 ? "md:border-b" : ""
+          }`}
+          onClick={() => setSelectedTab(tab.key)}
+        >
+          {tab.label}
+        </h1>
+      ))}
     </div>
   );
 }

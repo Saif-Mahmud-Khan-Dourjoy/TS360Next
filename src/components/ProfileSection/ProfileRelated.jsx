@@ -10,8 +10,8 @@ export default function ProfileRelated() {
   const [selectedTab, setSelectedTab] = useState("PROFILE");
   return (
     <>
-      <div className="flex justify-between gap-x-20">
-        <div className="">
+      <div className="flex flex-col md:flex-row justify-between gap-x-20">
+        <div className="mb-4">
           <Common selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         </div>
 

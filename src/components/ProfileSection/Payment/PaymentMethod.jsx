@@ -6,11 +6,11 @@ import VisaCard from "../../../../public/Subscription/Visaa.png";
 export default function PaymentMethod() {
   return (
     <>
-      <div class="text-[#2f2f2f] text-base font-extrabold mb-6">
+      <div class="text-[#2f2f2f] text-base font-extrabold mt-2 mb-6">
         EXISTING PAYMENT METHODS
       </div>
       <div className="flex gap-4">
-        <div className="p-4 rounded-xl shadow-lg border border-gray-300 w-[350px]">
+        <div className="p-4 rounded-xl shadow-lg border border-gray-300 w-[340px]">
           {/* Left Side */}
           <div className="flex-grow">
             <Image
@@ -46,7 +46,7 @@ export default function PaymentMethod() {
         </div>
       </div>
 
-      <button className="flex items-center gap-2 justify-center w-[350px] py-3 mt-12 text-white bg-[#3AB6FF] rounded-lg hover:bg-[#239ade] ">
+      <button className="flex items-center gap-2 justify-center w-[320px] py-3 mt-12 text-white bg-[#3AB6FF] rounded-lg hover:bg-[#239ade] ">
         <FaPlusCircle />
         Add payment method
       </button>
