@@ -69,7 +69,11 @@ export default function PurchaseHistory() {
         {/* Body */}
         {orders.map((order) => (
           <div key={order.id} className="min-w-[800px]">
-            <div className="grid grid-cols-8 border-t items-center text-[#818181]">
+            <div
+              className={`grid grid-cols-8 border-t items-center text-[#818181] text-sm ${
+                expandedRow === order.id ? "bg-blue-50" : ""
+              }`}
+            >
               <div className="py-3 px-4">{order.id}</div>
               <div className="py-3 px-4">{order.planName}</div>
               <div className="py-3 px-4">{order.planType}</div>

@@ -9,19 +9,6 @@ export default function UpdatePassword() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  console.log("1");
-
-  // here add setTimeout which will be console before useEffect
-  setTimeout(() => {
-    console.log("2");
-  }, 0);
-
-  useEffect(() => {
-    console.log("3");
-  }, []);
-
-  console.log("4");
-
   return (
     <>
       {isModalOpen && (
@@ -43,8 +30,6 @@ export default function UpdatePassword() {
           Set New Password
         </div>
       </button>
-
-      {console.log("5")}
 
       <section>
         {/* New Password Field */}
