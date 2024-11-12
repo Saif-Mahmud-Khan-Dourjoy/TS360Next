@@ -130,6 +130,12 @@ const Navbar = () => {
     }
   }
 
+  function handleDropdownEnter1(){
+    if(dropdownOpen != null){
+      setDropdownOpen(null)
+    }
+  }
+
   const handleDropdownClick = (name) => {
     if (dropdownOpen === name) {
       setDropdownOpen(null)
@@ -208,12 +214,11 @@ const Navbar = () => {
                   key={index}
                 >
                   <div
-                    onClick={() => handleDropdownClick(link.name)}
-                    onMouseEnter={() => handleDropdownEnter(link.name)}
+                  onClick={() => handleDropdownClick(link.name)}
                     className="cursor-pointer text-[#818181] hover:text-blue-400 duration-500 uppercase flex items-center"
                   >
                     <div>{link.name}</div>{" "}
-                    <div className="ml-3">
+                    <div className="ml-3" onMouseEnter={() => handleDropdownEnter(link.name)}>
                       {" "}
                       <FaAngleDown
                         className={`${
@@ -223,7 +228,7 @@ const Navbar = () => {
                     </div>
                   </div>
                   {dropdownOpen === link.name && (
-                    <ul
+                    <ul onMouseLeave={handleDropdownEnter1}
                       style={{
                         boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                       }}
