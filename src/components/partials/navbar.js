@@ -239,14 +239,14 @@ const Navbar = () => {
                   </div>
                   {dropdownOpen === link.name && (
                     <div
-                      className={`lg:absolute pb-10 top-5 left-0 lg:bg-white  w-max margin mt-3 lg:mt-0 lg:py-2 lg:rounded-b-xl`}
+                      className={`lg:absolute pb-10 top-5 left-0 lg:bg-white  w-max margin mt-3 lg:mt-0 lg:py-2 `}
                       ref={dropdownRef}
                     >
                       <ul
                         style={{
                           boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                         }}
-                        className="mt-2"
+                        className="mt-2 lg:rounded-b-xl"
                       >
                         {link.child.map((child, childIndex) => {
                           // const isActive = pathname.includes(child.link)
