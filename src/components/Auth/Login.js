@@ -35,6 +35,7 @@ export default function Login() {
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
   const redirectTo = searchParams.get("redirect")
 
   useEffect(() => {
@@ -145,11 +146,8 @@ export default function Login() {
       }
     },
   })
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
 
 const togglePasswordVisibility = () => {
-  var i_ele = document.getElementById("eyeIcon");
-  i_ele.classList.toggle('fa-eye-slash');
   setPasswordVisible(!isPasswordVisible);
 };
   return (
@@ -227,7 +225,7 @@ const togglePasswordVisibility = () => {
                     name="password"
                   />
                   <i
-                    class ="fa fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                    className ={`fa ${!isPasswordVisible? "fa-eye": "fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
                     onClick={togglePasswordVisibility} id="eyeIcon"
                   ></i>
                 </div>

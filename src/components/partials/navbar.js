@@ -46,6 +46,7 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false)
   const [packageText, setPackageText] = useState("")
   const { data: session } = useSession()
+  const [inDropDown, setDropDownPointer] = useState(false)
 
   const dropdownRef = useRef(null)
   const navbarRef = useRef(null)
@@ -130,10 +131,14 @@ const Navbar = () => {
     }
   }
 
+  const handleDropDownPointer = (val) =>{
+    setDropDownPointer(val);
+  }
+
   function handleDropdownEnter1(){
-    if(dropdownOpen != null){
-      setDropdownOpen(null)
-    }
+      if(dropdownOpen != null){
+        setDropdownOpen(null)
+      }
   }
 
   const handleDropdownClick = (name) => {
@@ -212,13 +217,14 @@ const Navbar = () => {
                 <li
                   className="lg:ml-8 lg:my-0 my-7 font-semibold lg:relative "
                   key={index}
+                  onClick={()=>handleDropdownClick(link.name)}
+                  onMouseEnter={()=>handleDropdownEnter(link.name)}
                 >
                   <div
-                  onClick={() => handleDropdownClick(link.name)}
                     className="cursor-pointer text-[#818181] hover:text-blue-400 duration-500 uppercase flex items-center"
                   >
                     <div>{link.name}</div>{" "}
-                    <div className="ml-3" onMouseEnter={() => handleDropdownEnter(link.name)}>
+                    <div className="ml-3">
                       {" "}
                       <FaAngleDown
                         className={`${
@@ -228,7 +234,7 @@ const Navbar = () => {
                     </div>
                   </div>
                   {dropdownOpen === link.name && (
-                    <ul onMouseLeave={handleDropdownEnter1}
+                    <ul onMouseLeave={()=>handleDropdownEnter(null)}
                       style={{
                         boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                       }}

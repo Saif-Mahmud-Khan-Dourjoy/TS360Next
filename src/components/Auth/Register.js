@@ -103,6 +103,7 @@ export default function Register() {
   const [modalType, setModalType] = useState("success")
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const[isConfirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -222,9 +223,11 @@ export default function Register() {
   }
 
   const togglePasswordVisibility = () => {
-    var i_ele = document.getElementById("eyeIcon");
-    i_ele.classList.toggle('fa-eye-slash');
     setPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!isConfirmPasswordVisible);
   };
 
   // const checkBoxValue = (e) => {
@@ -477,7 +480,7 @@ export default function Register() {
                         onBlur={handleBlur}
                         name="password"
                       />
-                      <i class ="fa fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                      <i className ={`fa ${!isPasswordVisible?"fa-eye":"fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
                         onClick={togglePasswordVisibility} id="eyeIcon"
                       ></i>
                     </div>
@@ -493,25 +496,30 @@ export default function Register() {
                       Confirm password
                       <span style={{ color: 'red' }}> *</span>
                     </label>
-                    <input
-                      type="password"
-                      id="confirm_password"
-                      className={`bg-gray-50 border ${
-                        touched?.confirmPassword && errors?.confirmPassword
-                          ? "border-red-700"
-                          : "border-gray-300"
-                      } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
-                      placeholder="Re-enter password"
-                      value={values?.confirmPassword}
-                      onChange={(e) => {
-                        setValues({
-                          ...values,
-                          confirmPassword: e.target.value,
-                        })
-                      }}
-                      onBlur={handleBlur}
-                      name="confirmPassword"
-                    />
+                    <div className="relative w-full">
+                      <input
+                        type="password"
+                        id="confirm_password"
+                        className={`bg-gray-50 border ${
+                          touched?.confirmPassword && errors?.confirmPassword
+                            ? "border-red-700"
+                            : "border-gray-300"
+                        } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
+                        placeholder="Re-enter password"
+                        value={values?.confirmPassword}
+                        onChange={(e) => {
+                          setValues({
+                            ...values,
+                            confirmPassword: e.target.value,
+                          })
+                        }}
+                        onBlur={handleBlur}
+                        name="confirmPassword"
+                      />
+                      <i className ={`fa ${!isConfirmPasswordVisible?"fa-eye":"fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                          onClick={toggleConfirmPasswordVisibility} id="eyeIcon"
+                      ></i>
+                    </div>
                     <p className="text-red-500 text-[12px] mt-1">
                       {touched?.confirmPassword && errors.confirmPassword}
                     </p>
