@@ -498,7 +498,7 @@ export default function Register() {
                     </label>
                     <div className="relative w-full">
                       <input
-                        type="password"
+                        type={!isConfirmPasswordVisible ? 'password' : text}
                         id="confirm_password"
                         className={`bg-gray-50 border ${
                           touched?.confirmPassword && errors?.confirmPassword
