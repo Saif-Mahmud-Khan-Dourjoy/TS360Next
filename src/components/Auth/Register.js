@@ -17,6 +17,7 @@ import * as Yup from "yup"
 import "/public/css/slickSlider.css"
 import CustomModal from "../Custom/Modal"
 import LoaderModal from "../Custom/Loader"
+import { text } from "@fortawesome/fontawesome-svg-core"
 
 // import ReactFlagsSelect from "react-flags-select";
 const settings = {
@@ -101,6 +102,8 @@ export default function Register() {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalType, setModalType] = useState("success")
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const[isConfirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -154,14 +157,15 @@ export default function Register() {
         .required("Email is required"),
       orgName: Yup.string().required("Organization name is required"),
       phone: Yup.string()
-        // .matches(/^[0-9]+$/, 'Phone number must be numeric')
-        // .min(10, 'Phone number must be at least 10 digits')
-        // .max(15, 'Phone number cannot exceed 15 digits')
+        .matches(/^[0-9]+$/, 'Phone number must be numeric')
+        .min(10, 'Phone number must be at least 10 digits')
+        .max(10, 'Phone number cannot exceed 10 digits')
         .required("Phone number is required"),
       country: Yup.string().required("Country is required"),
       intendedPurpose: Yup.string().required("Purpose  is Required"),
       password: Yup.string()
-        // .min(8, 'Password must be at least 8 characters')
+        .min(10, 'Password must be at least 10 characters')
+        .matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$&])/, 'Password must have 1 uppercase, 1 lowercase, 1 number and 1 of !,@,#,$,&')
         .required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
@@ -218,12 +222,22 @@ export default function Register() {
     })
   }
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
+
   // const checkBoxValue = (e) => {
   //   setChecked(e.target.checked);
   // }
 
   return (
     <>
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
       <div className="py-8 lg:px-24 px-7 ">
         <Link href="/">
           <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
@@ -249,6 +263,7 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       First name
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
                     <input
                       type="text"
@@ -276,6 +291,7 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Last name
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
                     <input
                       type="text"
@@ -303,6 +319,7 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Company
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
                     <input
                       type="text"
@@ -330,6 +347,7 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Company Email
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
                     <input
                       type="email"
@@ -357,6 +375,7 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Phone
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
                     <input
                       type="tel"
@@ -442,23 +461,29 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Password
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
-                    <input
-                      type="password"
-                      id="password"
-                      className={`bg-gray-50 border ${
-                        touched?.password && errors?.password
-                          ? "border-red-700"
-                          : "border-gray-300"
-                      } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
-                      placeholder="Enter password"
-                      value={values?.password}
-                      onChange={(e) => {
-                        setValues({ ...values, password: e.target.value })
-                      }}
-                      onBlur={handleBlur}
-                      name="password"
-                    />
+                    <div className="relative w-full">
+                      <input
+                        type={!isPasswordVisible ? 'password' : text}
+                        id="password"
+                        className={`bg-gray-50 border ${
+                          touched?.password && errors?.password
+                            ? "border-red-700"
+                            : "border-gray-300"
+                        } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
+                        placeholder="Enter password"
+                        value={values?.password}
+                        onChange={(e) => {
+                          setValues({ ...values, password: e.target.value })
+                        }}
+                        onBlur={handleBlur}
+                        name="password"
+                      />
+                      <i className ={`fa ${!isPasswordVisible?"fa-eye":"fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                        onClick={togglePasswordVisibility} id="eyeIcon"
+                      ></i>
+                    </div>
                     <p className="text-red-500 text-[12px] mt-1">
                       {touched?.password && errors.password}
                     </p>
@@ -469,26 +494,32 @@ export default function Register() {
                       className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Confirm password
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
-                    <input
-                      type="password"
-                      id="confirm_password"
-                      className={`bg-gray-50 border ${
-                        touched?.confirmPassword && errors?.confirmPassword
-                          ? "border-red-700"
-                          : "border-gray-300"
-                      } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
-                      placeholder="Re-enter password"
-                      value={values?.confirmPassword}
-                      onChange={(e) => {
-                        setValues({
-                          ...values,
-                          confirmPassword: e.target.value,
-                        })
-                      }}
-                      onBlur={handleBlur}
-                      name="confirmPassword"
-                    />
+                    <div className="relative w-full">
+                      <input
+                        type={!isConfirmPasswordVisible ? 'password' : text}
+                        id="confirm_password"
+                        className={`bg-gray-50 border ${
+                          touched?.confirmPassword && errors?.confirmPassword
+                            ? "border-red-700"
+                            : "border-gray-300"
+                        } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
+                        placeholder="Re-enter password"
+                        value={values?.confirmPassword}
+                        onChange={(e) => {
+                          setValues({
+                            ...values,
+                            confirmPassword: e.target.value,
+                          })
+                        }}
+                        onBlur={handleBlur}
+                        name="confirmPassword"
+                      />
+                      <i className ={`fa ${!isConfirmPasswordVisible?"fa-eye":"fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                          onClick={toggleConfirmPasswordVisibility} id="eyeIcon"
+                      ></i>
+                    </div>
                     <p className="text-red-500 text-[12px] mt-1">
                       {touched?.confirmPassword && errors.confirmPassword}
                     </p>
@@ -520,6 +551,7 @@ export default function Register() {
                       terms and conditions
                     </a>
                     .
+                    <span style={{ color: 'red' }}> *</span>
                   </label>
                   <p className="text-red-500 text-[12px] mt-1 absolute top-[95%]">
                     {touched?.agreeToTerms && errors.agreeToTerms}

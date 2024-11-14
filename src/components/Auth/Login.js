@@ -35,6 +35,7 @@ export default function Login() {
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
   const redirectTo = searchParams.get("redirect")
 
   useEffect(() => {
@@ -145,8 +146,13 @@ export default function Login() {
       }
     },
   })
+
+const togglePasswordVisibility = () => {
+  setPasswordVisible(!isPasswordVisible);
+};
   return (
     <>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
       <Link href="/">
         <div className="absolute top-8 lg:left-24 left-7">
           <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
@@ -201,22 +207,28 @@ export default function Login() {
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className={`bg-gray-50 border ${
-                    touched?.password && errors?.password
-                      ? "border-red-700"
-                      : "border-gray-300"
-                  } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 `}
-                  placeholder="Enter password"
-                  value={values?.password}
-                  onChange={(e) => {
-                    setValues({ ...values, password: e.target.value })
-                  }}
-                  onBlur={handleBlur}
-                  name="password"
-                />
+                <div className="relative w-full">
+                  <input
+                    type={isPasswordVisible ? "text" : "password"}
+                    id="password"
+                    className={`bg-gray-50 border ${
+                      touched?.password && errors?.password
+                        ? "border-red-700"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10`}
+                    placeholder="Enter password"
+                    value={values?.password}
+                    onChange={(e) => {
+                      setValues({ ...values, password: e.target.value });
+                    }}
+                    onBlur={handleBlur}
+                    name="password"
+                  />
+                  <i
+                    className ={`fa ${!isPasswordVisible? "fa-eye": "fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                    onClick={togglePasswordVisibility} id="eyeIcon"
+                  ></i>
+                </div>
                 <p className="text-red-500 text-[12px] mt-1">
                   {touched?.password && errors.password}
                 </p>
