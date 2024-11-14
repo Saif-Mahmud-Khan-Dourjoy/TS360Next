@@ -31,7 +31,7 @@ export default function HeroSection() {
                   onClick={() => router.push("/pricing")}
                   type="button"
                   className="text-white bg-[#82D955] hover:bg-[#6fbc49] focus:outline-none  font-medium rounded-full text-sm md:text-xl px-7 md:px-10 lg:px-[27px] xl:px-10  py-[14px] lg:py-2.5 text-center me-2 mb-2 shadow-homeButtom"
-                  onClick={() => router.push("/pricing")}
+                  
                 >
                   Start Free Trial
                 </button>
