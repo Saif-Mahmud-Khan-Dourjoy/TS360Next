@@ -130,6 +130,10 @@ const Navbar = () => {
     }
   }
 
+  const handleDropdownLeave = () => {
+    setDropdownOpen(null)
+  }
+
   const handleDropdownClick = (name) => {
     if (dropdownOpen === name) {
       setDropdownOpen(null)
@@ -206,12 +210,11 @@ const Navbar = () => {
                 <li
                   className="lg:ml-8 lg:my-0 my-7 font-semibold lg:relative "
                   key={index}
+                  onClick={() => handleDropdownClick(link.name)}
+                  onMouseEnter={() => handleDropdownEnter(link.name)}
+                  onMouseLeave={() => handleDropdownLeave()}
                 >
-                  <div
-                    onClick={() => handleDropdownClick(link.name)}
-                    onMouseEnter={() => handleDropdownEnter(link.name)}
-                    className="cursor-pointer text-[#818181] hover:text-blue-400 duration-500 uppercase flex items-center"
-                  >
+                  <div className="cursor-pointer text-[#818181] hover:text-blue-400 duration-500 uppercase flex items-center">
                     <div>{link.name}</div>{" "}
                     <div className="ml-3">
                       {" "}
@@ -223,37 +226,41 @@ const Navbar = () => {
                     </div>
                   </div>
                   {dropdownOpen === link.name && (
-                    <ul
-                      style={{
-                        boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                      }}
-                      className={`lg:absolute top-8 left-0 lg:bg-white  w-max margin mt-3 lg:mt-0 lg:py-2 lg:rounded-b-xl`}
+                    <div
+                      className={`lg:absolute pb-10 top-5 left-0 lg:bg-white  w-max margin mt-3 lg:mt-0 lg:py-2 lg:rounded-b-xl`}
                       ref={dropdownRef}
                     >
-                      {link.child.map((child, childIndex) => {
-                        const isActive = pathname.startsWith(child.link)
-                        return (
-                          <>
-                            <li
-                              key={`${index}-${childIndex}`}
-                              className=" px-3 py-3 font-semibold "
-                            >
-                              <Link
-                                href={child.link}
-                                onClick={handleLinkClick}
-                                className={` uppercase text-[#818181] lg:text-[#818181] hover:text-blue-400 duration-500 ${
-                                  isActive ? "text-blue-400" : ""
-                                }`}
+                      <ul
+                        style={{
+                          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                        }}
+                        className="mt-2"
+                      >
+                        {link.child.map((child, childIndex) => {
+                          const isActive = pathname.startsWith(child.link)
+                          return (
+                            <>
+                              <li
+                                key={`${index}-${childIndex}`}
+                                className=" px-3 py-3 font-semibold "
                               >
-                                {child.name}
-                              </Link>
-                            </li>
+                                <Link
+                                  href={child.link}
+                                  onClick={handleLinkClick}
+                                  className={` uppercase text-[#818181] lg:text-[#818181] hover:text-blue-400 duration-500 ${
+                                    isActive ? "text-blue-400" : ""
+                                  }`}
+                                >
+                                  {child.name}
+                                </Link>
+                              </li>
 
-                            {link.child.length - 1 > childIndex && <hr />}
-                          </>
-                        )
-                      })}
-                    </ul>
+                              {link.child.length - 1 > childIndex && <hr />}
+                            </>
+                          )
+                        })}
+                      </ul>
+                    </div>
                   )}
                 </li>
               ) : (
