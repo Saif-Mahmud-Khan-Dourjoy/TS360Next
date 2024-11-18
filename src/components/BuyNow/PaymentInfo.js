@@ -98,11 +98,32 @@ export default function PaymentInfo({
       setIsLoaderOpen(false)
       if (res?.[0]) {
         setAllCard([...res?.[0]])
+        let response = [...res?.[0]]
+
+        let filteredCard = response
+          .filter((item) => item?.isDefault) // filter based on the isDefault property
+  
+          console.log(filteredCard);
+        if (filteredCard?.length > 0) {
+          setSelectedCard(filteredCard?.[0]?.id)
+          setSelectedCardValue(filteredCard?.[0])
+        } else {
+          setSelectedCard(null)
+          setSelectedCardValue(null)
+        }
       } else {
         openModal("error", res?.[1] || "Something went wrong")
       }
     })
   }, [reload])
+
+  // useEffect(()=>{
+  //   const setCardInfo = (item, i) => {
+  //     selectedCard == i
+  //       ? (setSelectedCard(null), setSelectedCardValue(null))
+  //       : (setSelectedCard(i), setSelectedCardValue(item))
+  //   }
+  // },[])
 
   const {
     handleSubmit,
@@ -142,8 +163,6 @@ export default function PaymentInfo({
       SubmitForm(values)
     },
   })
-
- 
 
   const SubmitForm = async (data) => {
     const finalData = {
@@ -269,12 +288,12 @@ export default function PaymentInfo({
             {allCard?.map((itm, i) => (
               <div
                 key={`itm-${i}`}
-                className={`relative p-3 border rounded-lg cursor-pointer ${
-                  selectedCard == i ? "ring-2 ring-[#3AB6FF]" : ""
+                className={`relative p-3 border rounded-lg  ${
+                  selectedCard == itm?.id ? "ring-2 ring-[#3AB6FF]" : ""
                 }`}
-                onClick={() => setCardInfo(itm, i)}
+                // onClick={() => setCardInfo(itm, i)}
               >
-                {selectedCard == i && (
+                {selectedCard == itm?.id && (
                   <div className="absolute -top-3 -right-4">
                     <FaRegCircleCheck
                       className="bg-[#3AB6FF] rounded-full text-white "
@@ -312,6 +331,11 @@ export default function PaymentInfo({
             {`You haven't added any card`}
           </div>
         )}
+      </div>
+      <div className="mt-6 text-xs text-[#818181]">
+        <span className="text-[#FF5656] text-base relative top-1">*</span>
+        Payment will be charged to your default payment method. Change it in
+        your profile to use a different one.
       </div>
       <div className="mt-8">
         <div className="relative border-b text-[#818181] font-semibold before:bg-white before:px-2 before:content-['or'] before:absolute before:left-[50%] before:top-[50%] before:-translate-x-[50%] before:-translate-y-[50%]"></div>

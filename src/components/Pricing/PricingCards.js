@@ -268,6 +268,7 @@ export default function PricingCards() {
                       )}
                     {plan?.startingPrice === 0 && (
                       <div
+                        onClick={() => BuyNow(plan)}
                         className={`cursor-pointer text-lg font-medium py-2 px-6 bg-white outline outline-1 outline-[#3AB6FF] text-[#3AB6FF] rounded-md ${
                           hoveredCardIndex === null && plan.isRecommended
                             ? "bg-[#3AB6FF] text-white" // Apply hover effect to recommended plan when no other card is hovered

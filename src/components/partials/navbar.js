@@ -46,6 +46,7 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false)
   const [packageText, setPackageText] = useState("")
   const { data: session } = useSession()
+  const [inDropDown, setDropDownPointer] = useState(false)
 
   const dropdownRef = useRef(null)
   const navbarRef = useRef(null)
@@ -82,6 +83,8 @@ const Navbar = () => {
     {
       name: "Resources",
       link: "/resources",
+      child1: "/demo-video",
+      child2: "/blog",
       children: true,
       child: [
         {
@@ -99,6 +102,8 @@ const Navbar = () => {
     {
       name: "Company",
       link: "/company",
+      child1: "/about-us",
+      child2: "/career",
       children: true,
       child: [
         {
@@ -128,6 +133,10 @@ const Navbar = () => {
     } else {
       setDropdownOpen(name)
     }
+  }
+
+  const handleDropdownLeave = () => {
+    setDropdownOpen(null)
   }
 
   const handleDropdownClick = (name) => {
@@ -204,13 +213,19 @@ const Navbar = () => {
             {Links?.map((link, index) =>
               link?.children ? (
                 <li
-                  className="lg:ml-8 lg:my-0 my-7 font-semibold lg:relative "
-                  key={index}
+                  className={`lg:ml-8 lg:my-0 my-7 font-semibold lg:relative  `}
+                  key={`${link}----${index}`}
+                  onClick={() => handleDropdownClick(link.name)}
+                  onMouseEnter={() => handleDropdownEnter(link.name)}
+                  onMouseLeave={() => handleDropdownLeave()}
                 >
                   <div
-                    onClick={() => handleDropdownClick(link.name)}
-                    onMouseEnter={() => handleDropdownEnter(link.name)}
-                    className="cursor-pointer text-[#818181] hover:text-blue-400 duration-500 uppercase flex items-center"
+                    className={`cursor-pointer  hover:text-blue-400 duration-500 uppercase  flex items-center ${
+                      pathname.includes(link?.child1) ||
+                      pathname.includes(link?.child2)
+                        ? "text-blue-400"
+                        : "text-[#818181]"
+                    }`}
                   >
                     <div>{link.name}</div>{" "}
                     <div className="ml-3">
@@ -223,37 +238,43 @@ const Navbar = () => {
                     </div>
                   </div>
                   {dropdownOpen === link.name && (
-                    <ul
-                      style={{
-                        boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                      }}
-                      className={`lg:absolute top-8 left-0 lg:bg-white  w-max margin mt-3 lg:mt-0 lg:py-2 lg:rounded-b-xl`}
+                    <div
+                      className={`lg:absolute pb-10 top-5 left-0 lg:bg-white  w-max margin mt-3 lg:mt-0 lg:py-2 `}
                       ref={dropdownRef}
                     >
-                      {link.child.map((child, childIndex) => {
-                        const isActive = pathname.startsWith(child.link)
-                        return (
-                          <>
-                            <li
-                              key={`${index}-${childIndex}`}
-                              className=" px-3 py-3 font-semibold "
-                            >
-                              <Link
-                                href={child.link}
-                                onClick={handleLinkClick}
-                                className={` uppercase text-[#818181] lg:text-[#818181] hover:text-blue-400 duration-500 ${
-                                  isActive ? "text-blue-400" : ""
+                      <ul
+                        style={{
+                          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                        }}
+                        className="mt-2 lg:rounded-b-xl"
+                      >
+                        {link.child.map((child, childIndex) => {
+                          // const isActive = pathname.includes(child.link)
+                          return (
+                            <>
+                              <li
+                                key={`${index}-${childIndex}`}
+                                className={`px-3 py-3 font-semibold hover:text-blue-400 duration-500 ${
+                                  pathname.includes(child.link)
+                                    ? "text-blue-400"
+                                    : "text-[#818181]"
                                 }`}
                               >
-                                {child.name}
-                              </Link>
-                            </li>
+                                <Link
+                                  href={child.link}
+                                  onClick={handleLinkClick}
+                                  className={` uppercase   `}
+                                >
+                                  {child.name}
+                                </Link>
+                              </li>
 
-                            {link.child.length - 1 > childIndex && <hr />}
-                          </>
-                        )
-                      })}
-                    </ul>
+                              {link.child.length - 1 > childIndex && <hr />}
+                            </>
+                          )
+                        })}
+                      </ul>
+                    </div>
                   )}
                 </li>
               ) : (
@@ -262,7 +283,7 @@ const Navbar = () => {
                     href={link?.link}
                     onClick={handleLinkClick}
                     className={`uppercase text-[#818181] hover:text-blue-400 duration-500 ${
-                      pathname.startsWith(link.link) ? "text-blue-400" : ""
+                      pathname.includes(link.link) ? "text-blue-400" : ""
                     }`}
                   >
                     {link?.name}
@@ -453,7 +474,12 @@ const Navbar = () => {
                       <li className="  mb-6" key={index}>
                         <div
                           onClick={() => handleDropdownClick(link.name)}
-                          className="pl-2 flex justify-between cursor-pointer text-white text-lg focus:text-gray-400 duration-500 capitalize"
+                          className={`pl-2 flex justify-between cursor-pointer  text-lg  duration-500 capitalize ${
+                            pathname.includes(link?.child1) ||
+                            pathname.includes(link?.child2)
+                              ? "text-green-700"
+                              : "text-white"
+                          }`}
                         >
                           <span>{link.name.toUpperCase()}</span>{" "}
                           <span className="ml-3 ">
@@ -473,19 +499,19 @@ const Navbar = () => {
                             ref={dropdownRef}
                           >
                             {link.child.map((child, childIndex) => {
-                              const isActive = pathname.startsWith(child.link)
+                              const isActive = pathname.includes(child.link)
                               return (
                                 <>
                                   <li
                                     key={`${index}-${childIndex}`}
-                                    className=" pl-3 py-2  "
+                                    className={`${
+                                      isActive ? "text-green-700" : "text-white"
+                                    } pl-3 py-2 duration-500`}
                                   >
                                     <Link
                                       href={child.link}
                                       onClick={handleLinkClick}
-                                      className={` text-white focus:text-gray-400 duration-500 capitalize ${
-                                        isActive ? "text-gray-400" : ""
-                                      }`}
+                                      className={`  capitalize `}
                                     >
                                       {child.name}
                                     </Link>
@@ -500,15 +526,18 @@ const Navbar = () => {
                       </li>
                     ) : (
                       <>
-                        <li className="pl-2 mt-5" key={index}>
+                        <li
+                          className={`pl-2 mt-5 ${
+                            pathname.includes(link.link)
+                              ? "text-green-700"
+                              : "text-white"
+                          } duration-500`}
+                          key={index}
+                        >
                           <Link
                             href={link?.link}
                             onClick={handleLinkClick}
-                            className={`text-white text-lg focus:text-gray-400 duration-500 capitalize ${
-                              pathname.startsWith(link.link)
-                                ? "text-[#4c575d]"
-                                : ""
-                            }`}
+                            className={` text-lg  capitalize`}
                           >
                             {link?.name.toUpperCase()}
                           </Link>
