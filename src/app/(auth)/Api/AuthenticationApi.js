@@ -47,3 +47,22 @@ export const Login = async (data) => {
       return [false, error]
     })
 }
+
+export const SendOTP = async (email) => {
+  return axios.put(`${Config?.baseApi}/subscription/account/public/forget-password/${email}`,
+    {},
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      }
+    })
+    .then((res)=>{
+      console.log(res, "From endpoint");
+      return [true]
+    })
+    .catch((error)=>{
+      console.error(error.message)
+      return [false, error.message]
+    })
+}

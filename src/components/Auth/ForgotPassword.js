@@ -2,11 +2,29 @@
 import logo from "../../../public/logo.png";
 import Auth2 from "../../../public/Auth/auth2.png"
 import Link from "next/link";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons/faArrowAltCircleLeft";
 import Image from "next/image";
+import { SendOTP } from "@/app/(auth)/Api/AuthenticationApi"
+import { showErrorAlert } from "@/components/Alerts/Alert"
+import { useRouter } from "next/navigation"
 
 export default function Forgot() {
+  const [email, setEmail] = useState("");
+  const router = useRouter();
+
+  function handleSendOTP(){
+    SendOTP(email).then((res)=>{
+      if (res?.[0]) {
+        debugger;
+        router.push('/reset-password');
+      } else {
+        console.log(res[1]);
+       alert(res?.[1]);
+      }
+    })
+  }
 
 
 
@@ -40,13 +58,16 @@ export default function Forgot() {
 
 
               <div className="mb-14">
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 ">Company Email</label>
-                <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="you@yourcompany.com" required />
+                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 ">Company Email
+                <span style={{ color: 'red' }}> *</span>
+                </label>
+                <input type="email" id="email" value={email}  onChange={(e) => setEmail(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="you@yourcompany.com" required />
               </div>
 
 
               <div className="w-full">
-                <Link href='/reset-password'><button type="submit" className={`shadow-lg w-full  text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  cursor-pointer  font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Send Code</button></Link>
+                {/* <Link href='/reset-password'><button type="submit" disabled={email === ""} onClick={handleSendOTP} className={`shadow-lg w-full  text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  cursor-pointer  font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Send Code</button></Link> */}
+                <button type="submit" disabled={email === ""} onClick={handleSendOTP} className={`shadow-lg w-full  text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  cursor-pointer  font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Send Code</button>
               </div>
 
             </form>
