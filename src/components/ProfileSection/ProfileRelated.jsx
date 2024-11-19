@@ -1,16 +1,16 @@
-"use client";
-import React, { useState } from "react";
-import EditProfileMain from "./EditProfile/EditProfileMain";
-import Common from "./Common";
-import PurchaseHistory from "./PurchaseHistory/PurchaseHistory";
-import SubscriptionDetails from "./Subscription/SubscriptionDetails";
-import PaymentMethod from "./Payment/PaymentMethod";
+"use client"
+import React, { useState } from "react"
+import EditProfileMain from "./EditProfile/EditProfileMain"
+import Common from "./Common"
+import PurchaseHistory from "./PurchaseHistory/PurchaseHistory"
+import SubscriptionDetails from "./Subscription/SubscriptionDetails"
+import PaymentMethod from "./Payment/PaymentMethod"
 
 export default function ProfileRelated() {
-  const [selectedTab, setSelectedTab] = useState("PROFILE");
+  const [selectedTab, setSelectedTab] = useState("PROFILE")
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-between gap-x-20">
+      <div className="flex flex-col md:flex-row justify-between gap-x-20 min-h-[55vh]">
         <div className="mb-4">
           <Common selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         </div>
@@ -40,5 +40,5 @@ export default function ProfileRelated() {
         )}
       </div>
     </>
-  );
+  )
 }

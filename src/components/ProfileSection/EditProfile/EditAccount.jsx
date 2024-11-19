@@ -1,19 +1,13 @@
-import React, { useState } from "react";
-import { FiEdit2 } from "react-icons/fi";
-import { RxCross2 } from "react-icons/rx";
-import { IoSaveOutline } from "react-icons/io5";
+import React, { useState } from "react"
+import { FiEdit2 } from "react-icons/fi"
+import { RxCross2 } from "react-icons/rx"
+import { IoSaveOutline } from "react-icons/io5"
 
-export default function EditAccount() {
-  const [isEditClicked, setIsEditClicked] = useState(false);
-
-  const handleEditClick = () => {
-    setIsEditClicked(true);
-  };
-
-  const handleCancelClick = () => {
-    setIsEditClicked(false);
-  };
-
+export default function EditAccount({
+  isEditClicked,
+  handleEditClick,
+  handleCancelClick,
+}) {
   return (
     <>
       <div className="flex justify-between items-center">
@@ -116,7 +110,7 @@ export default function EditAccount() {
       </div>
 
       {isEditClicked && (
-        <div className="flex justify-end mt-5 w-full gap-5">
+        <div className="flex justify-end mt-10 w-full gap-5">
           <button
             className="w-[150px] h-10 bg-[#2f2f2f] rounded-[5px] shadow flex justify-center items-center cursor-pointer hover:bg-black"
             onClick={handleCancelClick}
@@ -134,5 +128,5 @@ export default function EditAccount() {
         </div>
       )}
     </>
-  );
+  )
 }
