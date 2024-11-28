@@ -18,7 +18,7 @@ export default function Forgot() {
     event.preventDefault() // Prevent the default form submission
     SendOTP(email).then((res) => {
       if (res?.[0]) {
-        router.push("/reset-password")
+        router.push(`/reset-password?email=${email}`)
       } else {
         console.log(res[1])
         alert(res?.[1])

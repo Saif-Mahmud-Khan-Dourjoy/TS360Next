@@ -15,6 +15,7 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import CustomModal from "../Custom/Modal"
 import LoaderModal from "../Custom/Loader"
 import { useRouter, useSearchParams } from "next/navigation"
+import {FiEye, FiEyeOff} from "react-icons/fi";
 
 const settings = {
   dots: true, // Show dots for navigation
@@ -152,7 +153,6 @@ const togglePasswordVisibility = () => {
 };
   return (
     <>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
       <Link href="/">
         <div className="absolute top-8 lg:left-24 left-7">
           <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
@@ -225,9 +225,9 @@ const togglePasswordVisibility = () => {
                     name="password"
                   />
                   <i
-                    className ={`fa ${!isPasswordVisible? "fa-eye": "fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                    className ={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
                     onClick={togglePasswordVisibility} id="eyeIcon"
-                  ></i>
+                  >{!isPasswordVisible ? <FiEye size={20} /> : <FiEyeOff size={20} />}</i>
                 </div>
                 <p className="text-red-500 text-[12px] mt-1">
                   {touched?.password && errors.password}
