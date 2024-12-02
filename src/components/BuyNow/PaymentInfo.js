@@ -75,7 +75,33 @@ export default function PaymentInfo({
     cvv: "",
     recaptcha: null,
     makeDefault: true,
+    billingAddress: {
+      streetAddress: "",
+      city: "",
+      state: "",
+      country: "",
+      postalZip: "",
+    },
   })
+
+  const [countryData, setCountryData] = useState([])
+  const [countryOption, setCountryOption] = useState([])
+  const [stateOptions, setStateOptions] = useState([])
+  useEffect(() => {
+    fetch("https://secure.fusebill.com/v1/Countries")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountryData(data)
+        const countryOption = data?.map((item) => {
+          return {
+            label: item?.name,
+            value: item?.id,
+          }
+        })
+
+        setCountryOption(countryOption)
+      })
+  }, [])
 
   useEffect(() => {
     setMenuTarget(document.body) // Set the target after the component mounts
@@ -100,10 +126,9 @@ export default function PaymentInfo({
         setAllCard([...res?.[0]])
         let response = [...res?.[0]]
 
-        let filteredCard = response
-          .filter((item) => item?.isDefault) // filter based on the isDefault property
-  
-          console.log(filteredCard);
+        let filteredCard = response.filter((item) => item?.isDefault) // filter based on the isDefault property
+
+        console.log(filteredCard)
         if (filteredCard?.length > 0) {
           setSelectedCard(filteredCard?.[0]?.id)
           setSelectedCardValue(filteredCard?.[0])
@@ -156,6 +181,18 @@ export default function PaymentInfo({
         .required("CVV is required"),
       recaptcha: Yup.string().required("Recaptcha is required"),
       makeDefault: Yup.boolean(),
+      billingAddress: Yup.object().shape({
+        streetAddress: Yup.string().required("Address is required"),
+        city: Yup.string().required("City is required"),
+
+        state: Yup.lazy(() =>
+          stateOptions.length > 0
+            ? Yup.string().required("State is required")
+            : Yup.string().nullable()
+        ),
+        country: Yup.string().required("Country is required"),
+        postalZip: Yup.string().required("Zip Code is required"),
+      }),
     }),
     onSubmit: (values) => {
       // Handle form submission
@@ -202,6 +239,13 @@ export default function PaymentInfo({
           lastName: data?.lastName,
           isDefault: data?.isDefault,
           pgPaymentMethodId: data?.id,
+          billingAddress: {
+            streetAddress: data?.streetAddress,
+            city: data?.city,
+            state: data?.state,
+            country: data?.country,
+            postalZip: data?.postalZip,
+          },
         }
 
         let addCard = await AddCardApiCall(forCard, session?.accessToken)
@@ -277,6 +321,33 @@ export default function PaymentInfo({
     setFieldValue("expirationMonth", month)
     setFieldValue("expirationYear", year)
   }
+
+  const setCountryState = (value) => {
+    const selectedCountry = countryData?.find(
+      (country) => country?.id === value
+    )
+    const states = selectedCountry?.states || []
+
+    // Update form values and reset state if needed
+    setValues((prevValues) => ({
+      ...prevValues,
+      billingAddress: {
+        ...prevValues.billingAddress,
+        country: value,
+        state: states.length > 0 ? "" : null, // Clear state if states exist
+      },
+    }))
+
+    // Update state options
+    setStateOptions(
+      states.map((state) => ({
+        value: state?.id,
+        label: state?.name,
+      }))
+    )
+  }
+
+  console.log(selectedCard)
 
   return (
     <>
@@ -509,27 +580,56 @@ export default function PaymentInfo({
                       <div className="flex flex-col gap-1">
                         <label className="text-sm text-[#818181]">
                           Street Address
-                          {/* <span className="text-red-600">*</span> */}
+                          <span className="text-red-600">*</span>
                         </label>
                         <input
                           type="text"
+                          name="billingAddress.streetAddress"
                           className="border rounded-md px-2 py-3 text-sm text-[#A6A6A6] focus:border-blue-500"
                           placeholder="1234 Maple Street"
+                          value={values.billingAddress.streetAddress}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
                         />
+                        {errors.billingAddress?.streetAddress &&
+                          touched.billingAddress?.streetAddress && (
+                            <div className="text-red-600">
+                              {errors.billingAddress.streetAddress}
+                            </div>
+                          )}
                       </div>
                     </div>
                     <div className="mt-5 flex flex-col xl:flex-row  justify-between gap-3">
                       <div className="flex-1">
                         <div className=" flex flex-col gap-1 w-full">
                           <label className="text-sm text-[#818181]">
-                            City
-                            {/* <span className="text-red-600">*</span> */}
+                            Country <span className="text-red-600">*</span>
                           </label>
-                          <input
-                            type="text"
-                            className="border rounded-md px-2 py-3 text-sm text-[#A6A6A6] focus:border-blue-500 w-full"
-                            placeholder="San Jose"
+
+                          <Select
+                            menuPortalTarget={menuTarget}
+                            menuPlacement="auto"
+                            styles={{
+                              ...customStyles(),
+                              menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999, // Ensure dropdown appears above the modal
+                              }),
+                            }}
+                            options={countryOption}
+                            value={countryOption.filter(
+                              (item) =>
+                                item.value == values?.billingAddress?.country
+                            )}
+                            onChange={(e) => setCountryState(e.value)}
                           />
+
+                          {errors?.billingAddress?.country &&
+                            touched?.billingAddress?.country && (
+                              <div className="text-red-600">
+                                {errors?.billingAddress?.country}
+                              </div>
+                            )}
                         </div>
                       </div>
 
@@ -537,48 +637,90 @@ export default function PaymentInfo({
                         <div className=" flex flex-col gap-1 w-full">
                           <label className="text-sm text-[#818181]">
                             State/Province
-                            {/* <span className="text-red-600">*</span> */}
+                            <span className="text-red-600">*</span>
                           </label>
-                          <input
-                            type="text"
-                            className="border rounded-md px-2 py-3 text-sm text-[#A6A6A6] focus:border-blue-500 w-full"
-                            placeholder="California"
+
+                          <Select
+                            menuPortalTarget={menuTarget}
+                            menuPlacement="auto"
+                            styles={{
+                              ...customStyles(),
+                              menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999, // Ensure dropdown appears above the modal
+                              }),
+                            }}
+                            options={stateOptions}
+                            value={stateOptions.filter(
+                              (item) =>
+                                item.value == values?.billingAddress?.state
+                            )}
+                            onChange={(e) =>
+                              setValues({
+                                ...values,
+                                billingAddress: {
+                                  ...values?.billingAddress,
+                                  state: e.value,
+                                },
+                              })
+                            }
                           />
+
+                          {errors?.billingAddress?.state &&
+                            touched?.billingAddress?.state && (
+                              <div className="text-red-600">
+                                {errors?.billingAddress?.state}
+                              </div>
+                            )}
                         </div>
                       </div>
                     </div>
+
                     <div className="mt-5 flex flex-col xl:flex-row  justify-between gap-3">
                       <div className="flex-1">
                         <div className=" flex flex-col gap-1 w-full">
                           <label className="text-sm text-[#818181]">
-                            Postal Code
-                            {/* <span className="text-red-600">*</span> */}
+                            City
+                            <span className="text-red-600">*</span>
                           </label>
                           <input
                             type="text"
-                            className="border rounded-md px-2 py-3 text-sm text-[#A6A6A6] focus:border-blue-500 w-full"
-                            placeholder="556B"
+                            name="billingAddress.city"
+                            className="border rounded-md px-2 py-3 text-sm text-[#A6A6A6] focus:border-blue-500"
+                            placeholder="San Jose"
+                            value={values.billingAddress.city}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                           />
+                          {errors.billingAddress?.city &&
+                            touched.billingAddress?.city && (
+                              <div className="text-red-600">
+                                {errors.billingAddress.city}
+                              </div>
+                            )}
                         </div>
                       </div>
-
                       <div className="flex-1">
                         <div className=" flex flex-col gap-1 w-full">
                           <label className="text-sm text-[#818181]">
-                            Country
-                            {/* <span className="text-red-600">*</span> */}
+                            Postal Code
+                            <span className="text-red-600">*</span>
                           </label>
-                          <Select
-                            menuPortalTarget={menuTarget}
-                            menuPlacement="auto"
-                            styles={customStyles()}
-                            options={countries}
-                            value={countries.filter(
-                              (item) => item.value == countryValue
-                            )}
-                            onChange={(e) => setCountryValue(e.value)}
-                            // onBlur={handleBlur}
+                          <input
+                            type="text"
+                            name="billingAddress.postalZip"
+                            className="border rounded-md px-2 py-3 text-sm text-[#A6A6A6] focus:border-blue-500"
+                            placeholder="556B"
+                            value={values.billingAddress.postalZip}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                           />
+                          {errors.billingAddress?.postalZip &&
+                            touched.billingAddress?.postalZip && (
+                              <div className="text-red-600">
+                                {errors.billingAddress.postalZip}
+                              </div>
+                            )}
                         </div>
                       </div>
                     </div>
