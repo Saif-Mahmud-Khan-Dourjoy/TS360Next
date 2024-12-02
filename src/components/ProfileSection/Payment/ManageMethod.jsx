@@ -43,6 +43,7 @@ export default function ManageMethod({
   setLoading,
   setReload,
   reload,
+  updateData,
 }) {
   const [menuTarget, setMenuTarget] = useState(null)
   const [recaptchaToken, setRecaptchaToken] = useState(null)
@@ -101,7 +102,11 @@ export default function ManageMethod({
     onSubmit: (values) => {
       setIsClicked(false)
       setLoading(true)
-      SubmitForm(values)
+      if (updateData) {
+        UpdateForm(values)
+      } else {
+        SubmitForm(values)
+      }
     },
   })
 
@@ -200,6 +205,89 @@ export default function ManageMethod({
     }
   }
 
+  const UpdateForm = async (formData) => {
+    const finalData = {
+      customerID: formData.customerID,
+      id: updateData?.id,
+      publicApiKey: formData.publicApiKey,
+      cardNumber: formData.cardNumber,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      expirationMonth: parseInt(formData.expirationMonth, 10),
+      expirationYear: parseInt(formData.expirationYear, 10),
+      cvv: formData.cvv,
+      makeDefault: formData.makeDefault,
+      recaptcha: formData.recaptcha,
+    }
+
+    try {
+      const response = await fetch(
+        "https://payments.subscriptionplatform.com/api/paymentsv2",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(finalData),
+        }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        const forCard = {
+          maskedCardNumber: data?.maskedCardNumber,
+          cardType: data?.cardType,
+          expirationMonth: data?.expirationMonth,
+          expirationYear: data?.expirationYear,
+          pgCustomerId: data?.customerId,
+          firstName: data?.firstName,
+          lastName: data?.lastName,
+          isDefault: data?.isDefault,
+          pgPaymentMethodId: data?.id,
+          billingAddress: {
+            streetAddress: formData?.streetAddress,
+            city: formData?.city,
+            state: formData?.state,
+            country: formData?.country,
+            postalZip: formData?.postalZip,
+          },
+        }
+
+        let updateCard = await UpdateCardApiCall(forCard, session?.accessToken)
+
+        if (updateCard[0]) {
+          showSuccessAlert("Updated Successfully")
+          resetForm()
+
+          setLoading(false)
+          setReload(!reload)
+        } else {
+          setLoading(false)
+
+          showErrorAlert(
+            updateCard?.[1] || "Something went wrong",
+            "center",
+            2000
+          )
+        }
+      } else {
+        const errorData = await response.json()
+        console.log("Error: " + errorData.message)
+        setLoading(false)
+
+        showErrorAlert(
+          errorData.message || "Something went wrong",
+          "center",
+          2000
+        )
+      }
+    } catch (error) {
+      console.log("An error occurred: " + error.message)
+      setLoading(false)
+      showErrorAlert(error.message || "Something went wrong", "center", 2000)
+    }
+  }
+
   const handleVerifyCaptcha = (token) => {
     setRecaptchaToken(token)
     setFieldValue("recaptcha", token)
@@ -247,7 +335,7 @@ export default function ManageMethod({
   return (
     <div className="">
       <div className="text-center text-lg font-extrabold text-[#2F2F2F] mb-8">
-        Add New Payment
+        {updateData ? "Edit Payment Method" : "Add New Payment"}
       </div>
       <form onSubmit={handleSubmit}>
         <div className="flex justify-between flex-col sm:flex-row gap-y-10">
@@ -572,7 +660,7 @@ export default function ManageMethod({
             }`}
             disabled={!isVerified}
           >
-            Submit
+            {updateData ? "Update" : "Submit"}
           </button>
         </div>
       </form>

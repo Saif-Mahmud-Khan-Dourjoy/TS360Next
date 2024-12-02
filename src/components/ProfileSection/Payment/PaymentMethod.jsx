@@ -57,8 +57,7 @@ export default function PaymentMethod() {
 
         setCountryOption(countryOption)
 
-        // setCountryData(data.countries)
-        // setCountryValue(data.userSelectValue.value)
+    
       })
   }, [])
 
@@ -80,8 +79,37 @@ export default function PaymentMethod() {
   }, [reload])
 
   const setCardDetails = (card) => {
-    console.log(card)
+    setUpdateData(card)
+    let billingAddress
+    if (card?.billingAddress) {
+      billingAddress = card?.billingAddress
+    } else {
+      billingAddress = {
+        streetAddress: "",
+        city: "",
+        state: "",
+        country: "",
+        postalZip: "",
+      }
+    }
+    setFormData({
+      customerID: profile?.user?.pgCustomerId,
+      publicApiKey: process.env.NEXT_PUBLIC_PUBLIC_API_KEY,
+      firstName: card?.firstName,
+      lastName: card?.lastName,
+      cardNumber: "",
+      expirationMonth: card?.expirationMonth,
+      expirationYear: card?.expirationYear,
+      cvv: "",
+      recaptcha: null,
+      makeDefault: card?.isDefault,
+      billingAddress: billingAddress,
+    })
+
+    setIsClicked(true)
   }
+
+  // console.log(formData)
   return (
     <>
       {loading && <ComponentLoader />}
@@ -122,15 +150,13 @@ export default function PaymentMethod() {
               {/* Right Side - Actions */}
               <div className="flex flex-col  space-y-2">
                 <button
-                  onClick={() => setCardDetails(itm)}
+                  // onClick={() => setCardDetails(itm)}
                   className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800"
                 >
                   <FaStar />
                 </button>
                 <button
-                  onClick={() => {
-                    console.log(itm)
-                  }}
+                  onClick={() => setCardDetails(itm)}
                   className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100"
                 >
                   <FaPencilAlt />
@@ -172,6 +198,7 @@ export default function PaymentMethod() {
             setLoading={setLoading}
             setReload={setReload}
             reload={reload}
+            updateData={updateData}
           />
         </ManagePaymentModal>
       )}
