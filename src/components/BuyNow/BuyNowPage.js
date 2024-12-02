@@ -66,7 +66,7 @@ export default function BuyNowPage() {
     moment().format("YYYY-MM-DD")
   )
   const [planEndDate, setPlanEndDate] = useState()
-  const [reference, setReference] = useState()
+  const [reference, setReference] = useState(null)
   const [amount, setAmount] = useState(0)
   const [amountWithTax, setAmountWithTax] = useState(0)
 
@@ -209,7 +209,7 @@ export default function BuyNowPage() {
       setIsLoaderOpen(false)
       if (res?.[0]) {
         setIsDetailsSubmit(true)
-        setReference(res?.[0]?.pgSubscriptionId)
+        setReference(res?.[0]?.id)
       } else {
         openModal("error", res?.[1] || "Something went wrong")
       }
@@ -217,18 +217,19 @@ export default function BuyNowPage() {
   }
 
   const createPayment = async () => {
-    let data = {
-      customerId: customerId,
-      reference: reference,
-      amount: amountWithTax,
-      paymentMethod: "CreditCard",
-      paymentMethodId: selectedCardValue?.pgPaymentMethodId,
-      source: "Manual",
-    }
+    // let data = {
+    //   customerId: customerId,
+    //   reference: reference,
+    //   amount: amountWithTax,
+    //   paymentMethod: "CreditCard",
+    //   paymentMethodId: selectedCardValue?.pgPaymentMethodId,
+    //   source: "Manual",
+    // }
     setIsLoaderOpen(true)
-    CompletePayment(data, session?.accessToken).then((res) => {
+    CompletePayment(reference, session?.accessToken).then((res) => {
       setIsLoaderOpen(false)
       if (res?.[0]) {
+        setReference(null)
         showSuccessAlert(
           res?.[0]?.message || "Payment is successfull",
           "center",
@@ -241,7 +242,7 @@ export default function BuyNowPage() {
     })
   }
 
-  console.log(totalUser)
+  
   return (
     <>
       <div className="">
