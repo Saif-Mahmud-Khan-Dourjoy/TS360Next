@@ -201,18 +201,18 @@ export default function PaymentInfo({
     },
   })
 
-  const SubmitForm = async (values) => {
+  const SubmitForm = async (formData) => {
     const finalData = {
-      customerID: values.customerID,
-      publicApiKey: values.publicApiKey,
-      cardNumber: values.cardNumber,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      expirationMonth: parseInt(values.expirationMonth, 10),
-      expirationYear: parseInt(values.expirationYear, 10),
-      cvv: values.cvv,
-      makeDefault: values.makeDefault,
-      recaptcha: values.recaptcha,
+      customerID: formData.customerID,
+      publicApiKey: formData.publicApiKey,
+      cardNumber: formData.cardNumber,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      expirationMonth: parseInt(formData.expirationMonth, 10),
+      expirationYear: parseInt(formData.expirationYear, 10),
+      cvv: formData.cvv,
+      makeDefault: formData.makeDefault,
+      recaptcha: formData.recaptcha,
     }
 
     try {
@@ -240,11 +240,11 @@ export default function PaymentInfo({
           isDefault: data?.isDefault,
           pgPaymentMethodId: data?.id,
           billingAddress: {
-            streetAddress: values?.streetAddress,
-            city: values?.city,
-            state: values?.state,
-            country: values?.country,
-            postalZip: values?.postalZip,
+            streetAddress: formData?.streetAddress,
+            city: formData?.city,
+            state: formData?.state,
+            country: formData?.country,
+            postalZip: formData?.postalZip,
           },
         }
 
