@@ -79,7 +79,9 @@ export default function PaymentMethod() {
     }
   }, [reload])
 
-  console.log(countryOption)
+  const setCardDetails = (card) => {
+    console.log(card)
+  }
   return (
     <>
       {loading && <ComponentLoader />}
@@ -119,7 +121,10 @@ export default function PaymentMethod() {
 
               {/* Right Side - Actions */}
               <div className="flex flex-col  space-y-2">
-                <button className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800">
+                <button
+                  onClick={() => setCardDetails(itm)}
+                  className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800"
+                >
                   <FaStar />
                 </button>
                 <button

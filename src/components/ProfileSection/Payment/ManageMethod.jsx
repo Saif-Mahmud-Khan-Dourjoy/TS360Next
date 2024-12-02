@@ -102,22 +102,21 @@ export default function ManageMethod({
       setIsClicked(false)
       setLoading(true)
       SubmitForm(values)
-   
     },
   })
 
-  const SubmitForm = async (data) => {
+  const SubmitForm = async (values) => {
     const finalData = {
-      customerID: data.customerID,
-      publicApiKey: data.publicApiKey,
-      cardNumber: data.cardNumber,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      expirationMonth: parseInt(data.expirationMonth, 10),
-      expirationYear: parseInt(data.expirationYear, 10),
-      cvv: data.cvv,
-      makeDefault: data.makeDefault,
-      recaptcha: data.recaptcha,
+      customerID: values.customerID,
+      publicApiKey: values.publicApiKey,
+      cardNumber: values.cardNumber,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      expirationMonth: parseInt(values.expirationMonth, 10),
+      expirationYear: parseInt(values.expirationYear, 10),
+      cvv: values.cvv,
+      makeDefault: values.makeDefault,
+      recaptcha: values.recaptcha,
     }
 
     try {
@@ -145,11 +144,11 @@ export default function ManageMethod({
           isDefault: data?.isDefault,
           pgPaymentMethodId: data?.id,
           billingAddress: {
-            streetAddress: data?.streetAddress,
-            city: data?.city,
-            state: data?.state,
-            country: data?.country,
-            postalZip: data?.postalZip,
+            streetAddress: values?.streetAddress,
+            city: values?.city,
+            state: values?.state,
+            country: values?.country,
+            postalZip: values?.postalZip,
           },
         }
 
