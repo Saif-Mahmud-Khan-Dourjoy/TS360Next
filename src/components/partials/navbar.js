@@ -416,16 +416,18 @@ const Navbar = () => {
                           </div> */}
                         </div>
                         <div className="mt-5">
-                          <div className="flex gap-x-5 items-center cursor-pointer">
-                            <div className="relative bottom-[-1px]">
-                              <FontAwesomeIcon
-                                icon={faUser}
-                                className="text-2xl "
-                                color="white"
-                              />
+                          <Link href="/profile">
+                            <div className="flex gap-x-5 items-center cursor-pointer">
+                              <div className="relative bottom-[-1px]">
+                                <FontAwesomeIcon
+                                  icon={faUser}
+                                  className="text-2xl "
+                                  color="white"
+                                />
+                              </div>
+                              <div className="text-white ">Profile</div>
                             </div>
-                            <div className="text-white ">Profile</div>
-                          </div>
+                          </Link>
                           <hr className="mt-2" />
                           <div className="flex gap-x-5 items-center mt-5 cursor-pointer">
                             <div className="relative bottom-[-1px]">
@@ -654,16 +656,18 @@ const Navbar = () => {
                   <hr className="mt-4 border-t-2" />
                   <div className="mt-6">
                     <div className="w-fit">
-                      <div className="flex gap-x-5 items-center cursor-pointer ">
-                        <div className="relative bottom-[-1px]">
-                          <FontAwesomeIcon
-                            icon={faUser}
-                            className="text-xl"
-                            color="#A6A6A6"
-                          />
+                      <Link href="/profile">
+                        <div className="flex gap-x-5 items-center cursor-pointer ">
+                          <div className="relative bottom-[-1px]">
+                            <FontAwesomeIcon
+                              icon={faUser}
+                              className="text-xl"
+                              color="#A6A6A6"
+                            />
+                          </div>
+                          <div className="text-[#A6A6A6] ">Profile</div>
                         </div>
-                        <div className="text-[#A6A6A6] ">Profile</div>
-                      </div>
+                      </Link>
                     </div>
                     <hr className="mt-5" />
                     <div className="w-fit mt-5">

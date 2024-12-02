@@ -50,12 +50,13 @@ export async function middleware(req) {
 }
 
 const checkAuth = (req, token) => {
+  const pathsToCheck = ["buy-now", "profile"]
   if (req.nextUrl.pathname.includes("admin")) {
     if (!token || token?.role != "ADMIN") {
       return NextResponse.redirect(new URL("/login", req.url))
     }
   }
-  if (req.nextUrl.pathname.includes("buy-now")) {
+  if (pathsToCheck.some((path) => req.nextUrl.pathname.includes(path))) {
     if (!token || token?.role != "USER") {
       return NextResponse.redirect(new URL("/login", req.url))
     }

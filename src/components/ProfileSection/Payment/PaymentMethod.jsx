@@ -1,55 +1,175 @@
-import Image from "next/image";
-import React from "react";
-import { FaStar, FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa";
-import VisaCard from "../../../../public/Subscription/Visaa.png";
+import Image from "next/image"
+import React, { useEffect, useState } from "react"
+import { FaStar, FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa"
+import VisaCard from "../../../../public/Subscription/Visaa.png"
+import useProfile from "@/hook"
+import ComponentLoader from "@/components/Custom/ComponentLoader"
+import { useSession } from "next-auth/react"
+import { getPaymentMethods } from "@/API/User/PaymentMethod/PaymentMethod"
+import { showErrorAlert } from "@/components/Alerts/Alert"
+import { CardType } from "@/Utility/CreditCard"
+import ManageMethod from "./ManageMethod"
+import moment from "moment"
+import ManagePaymentModal from "./ManagePaymentModal"
 
 export default function PaymentMethod() {
+  const { profile } = useProfile()
+  const [reload, setReload] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const { data: session } = useSession()
+  const [paymentMethods, setPaymentMethods] = useState([])
+  const [isClicked, setIsClicked] = useState(false)
+  const [countryOption, setCountryOption] = useState([])
+  const [updateData, setUpdateData] = useState(null)
+
+  const [formData, setFormData] = useState({
+    customerID: profile?.user?.pgCustomerId,
+    publicApiKey: process.env.NEXT_PUBLIC_PUBLIC_API_KEY,
+    firstName: "",
+    lastName: "",
+    cardNumber: "",
+    expirationMonth: moment().format("MM"),
+    expirationYear: moment().format("YY"),
+    cvv: "",
+    recaptcha: null,
+    makeDefault: true,
+    billingAddress: {
+      streetAddress: "",
+      city: "",
+      state: "",
+      country: "",
+      postalZip: "",
+    },
+  })
+
+  const [countryData, setCountryData] = useState([])
+  useEffect(() => {
+    fetch("https://secure.fusebill.com/v1/Countries")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountryData(data)
+        const countryOption = data?.map((item) => {
+          return {
+            label: item?.name,
+            value: item?.id,
+          }
+        })
+
+        setCountryOption(countryOption)
+
+        // setCountryData(data.countries)
+        // setCountryValue(data.userSelectValue.value)
+      })
+  }, [])
+
+  useEffect(() => {
+    setLoading(true)
+    if (session) {
+      getPaymentMethods(profile?.user?.pgCustomerId, session?.accessToken).then(
+        (res) => {
+          setLoading(false)
+          if (res?.[0]) {
+            setPaymentMethods(res?.[0])
+            console.log(res?.[0])
+          } else {
+            showErrorAlert(res?.[1], "center", 2000)
+          }
+        }
+      )
+    }
+  }, [reload])
+
+  console.log(countryOption)
   return (
     <>
-      <div class="text-[#2f2f2f] text-base font-extrabold mt-2 mb-6">
+      {loading && <ComponentLoader />}
+      <div className="text-[#2f2f2f] text-base font-extrabold mt-2 mb-6">
         EXISTING PAYMENT METHODS
       </div>
-      <div className="flex gap-4">
-        <div className="p-4 rounded-xl shadow-lg border border-gray-300 w-[340px]">
-          {/* Left Side */}
-          <div className="flex-grow">
-            <Image
-              src={VisaCard}
-              alt="Visa Logo"
-              className="w-14 h-auto mb-10"
-            />
+      {paymentMethods?.length > 0 ? (
+        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
+          {paymentMethods?.map((itm, i) => (
+            <div className="flex gap-4" key={`card-${i}`}>
+              <div className="p-4 rounded-xl shadow-lg border border-gray-300 ">
+                <div className="flex-grow">
+                  <div className="min-h-10 w-14 relative">
+                    <Image
+                      src={CardType?.[itm?.cardType]}
+                      alt={`${itm?.cardType}_logo`}
+                      className="h-full"
+                    />
+                  </div>
 
-            {/* Card Number */}
-            <p className="text-lg font-semibold tracking-widest text-gray-600">
-              **** **** **** 7654
-            </p>
-            {/* Expiry and Name */}
-            <div className="mt-1 mb-2 text-gray-500">
-              <p className="text-base">
-                <span className="font-semibold">06/25</span> | David Fernando
-              </p>
+                  <div className="mt-4 text-[#486681] text-sm font-semibold">
+                    {itm?.maskedCardNumber}
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                    <div className="text-[#919EAB] text-[13px] font-semibold">
+                      {`${itm?.expirationMonth}/${itm?.expirationYear}`}
+                    </div>
+                    <div className="text-[#919EAB] text-[13px] font-semibold">
+                      |
+                    </div>
+                    <div className="text-[#919EAB] text-[13px] font-semibold">
+                      {`${itm?.firstName} ${itm?.lastName}`}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Actions */}
+              <div className="flex flex-col  space-y-2">
+                <button className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800">
+                  <FaStar />
+                </button>
+                <button
+                  onClick={() => {
+                    console.log(itm)
+                  }}
+                  className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100"
+                >
+                  <FaPencilAlt />
+                </button>
+                <button className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100">
+                  <FaTrash />
+                </button>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-
-        {/* Right Side - Actions */}
-        <div className="flex flex-col  space-y-2">
-          <button className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800">
-            <FaStar />
-          </button>
-          <button className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100">
-            <FaPencilAlt />
-          </button>
-          <button className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100">
-            <FaTrash />
-          </button>
+      ) : (
+        <div className="mt-8 font-semibold text-red-500">
+          {`You haven't added any card`}
         </div>
-      </div>
+      )}
+      {!isClicked && (
+        <button
+          onClick={() => setIsClicked(true)}
+          className="w-fit flex items-center gap-2 justify-center  py-3 px-5 mt-12 text-white bg-[#3AB6FF] rounded-lg hover:bg-[#239ade] "
+        >
+          <FaPlusCircle />
+          <span>Add payment method</span>
+        </button>
+      )}
+      {isClicked && <div></div>}
 
-      <button className="flex items-center gap-2 justify-center w-[320px] py-3 mt-12 text-white bg-[#3AB6FF] rounded-lg hover:bg-[#239ade] ">
-        <FaPlusCircle />
-        Add payment method
-      </button>
+      {isClicked && (
+        <ManagePaymentModal
+          isOpen={isClicked}
+          onClose={() => setIsClicked(false)}
+          onOk={() => setIsClicked(false)}
+        >
+          <ManageMethod
+            setIsClicked={setIsClicked}
+            formData={formData}
+            countryOption={countryOption}
+            countryData={countryData}
+            setLoading={setLoading}
+            setReload={setReload}
+            reload={reload}
+          />
+        </ManagePaymentModal>
+      )}
     </>
-  );
+  )
 }
