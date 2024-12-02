@@ -6,12 +6,19 @@ import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons/faArrowA
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {useSearchParams, useRouter} from "next/navigation";
+import { VerifyOTP } from "@/app/(auth)/Api/AuthenticationApi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Reset() {
-  const [otp, setOtp] = useState(new Array(5).fill(""));
+  const [otp, setOtp] = useState(new Array(6).fill(""));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
   const [sendCode, setSendCode] = useState(false);
   const inputRef = useRef(null);
+  const param = useSearchParams();
+  const [email, setEmail] = useState('');
+  const newPassRouter = useRouter();
 
   useEffect(() => {
     inputRef.current.focus();
@@ -22,6 +29,10 @@ export default function Reset() {
     const hasEmptyString = otp.some((item) => item === "" || item === undefined);
     setSendCode(!hasEmptyString);
   }, [otp]);
+
+  useEffect(()=>{
+    setEmail(param.get("email"));
+  }, [email]);
 
   const handleChange = (e, i) => {
     if (isNaN(e.target.value)) return false;
@@ -45,6 +56,36 @@ export default function Reset() {
       }
     }
   };
+
+  function handleOTPVerification(){
+    let otp_str = ''
+    otp.forEach(ele=>{
+      otp_str = otp_str+ele;
+    })
+    let send_data = {};
+    send_data['username'] = email;
+    send_data['otp'] = otp_str;
+    VerifyOTP(send_data).then((res)=>{
+      if(res?.[0]){
+        localStorage.setItem("otp_val", otp_str);
+        newPassRouter.push(`/new-password?email=${email}`);
+      }
+      else{
+        toast.error("Incorrect OTP", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        return
+      }
+    })
+
+  }
 
   console.log(otp)
 
@@ -71,12 +112,12 @@ export default function Reset() {
             Password Reset
           </div>
           <div className="text-sm font-medium text-gray-400 mt-2">
-            We sent a code to <span className="text-gray-700 font-semibold">dev.testsprint@testsprint360.com</span>
+            OTP was sent to <span className="text-gray-700 font-semibold">{email}</span>
           </div>
 
           <div className="mt-14">
             <div className="mb-6 text-gray-900 text-sm font-semibold">
-              Enter Code
+              Enter OTP
             </div>
 
 
@@ -92,7 +133,10 @@ export default function Reset() {
 
 
             <div className="w-full">
-              <Link href='/new-password'><button type="submit" className={`shadow-lg w-full  text-white ${sendCode ? "bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300   cursor-pointer" : "bg-gray-400  focus:ring-4 focus:outline-none focus:ring-gray-300  cursor-not-allowed"}   font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Send Code</button></Link>
+              {/* <Link href='/new-password'><button type="submit" className={`shadow-lg w-full  text-white ${sendCode ? "bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300   cursor-pointer" : "bg-gray-400  focus:ring-4 focus:outline-none focus:ring-gray-300  cursor-not-allowed"}   font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Verify</button></Link> */}
+
+              <button type="button" onClick={handleOTPVerification} className={`shadow-lg w-full  text-white ${sendCode ? "bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300   cursor-pointer" : "bg-gray-400  focus:ring-4 focus:outline-none focus:ring-gray-300  cursor-not-allowed"}   font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Verify</button>
+              <ToastContainer/>
 
               {/* <Link to='/new-password'><button type="submit" className={`shadow-lg w-full  text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300   cursor-pointer font-medium rounded-md text-lg   px-5 py-2.5 text-center `}>Send Code</button></Link>  */}
             </div>
