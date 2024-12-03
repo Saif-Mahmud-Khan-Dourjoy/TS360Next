@@ -239,13 +239,7 @@ export default function PaymentInfo({
           lastName: data?.lastName,
           isDefault: data?.isDefault,
           pgPaymentMethodId: data?.id,
-          billingAddress: {
-            streetAddress: formData?.streetAddress,
-            city: formData?.city,
-            state: formData?.state,
-            country: formData?.country,
-            postalZip: formData?.postalZip,
-          },
+          billingAddress: formData?.billingAddress,
         }
 
         let addCard = await AddCardApiCall(forCard, session?.accessToken)
