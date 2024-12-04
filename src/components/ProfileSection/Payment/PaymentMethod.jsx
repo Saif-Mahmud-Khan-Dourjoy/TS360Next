@@ -42,7 +42,9 @@ export default function PaymentMethod() {
       streetAddress: "",
       city: "",
       state: "",
+      stateId: "",
       country: "",
+      countryId: "",
       postalZip: "",
     },
   })
@@ -91,7 +93,9 @@ export default function PaymentMethod() {
         streetAddress: "",
         city: "",
         state: "",
+        stateId: "",
         country: "",
+        countryId: "",
         postalZip: "",
       }
     }
@@ -158,7 +162,9 @@ export default function PaymentMethod() {
         streetAddress: "",
         city: "",
         state: "",
+        stateId: "",
         country: "",
+        countryId: "",
         postalZip: "",
       },
     })

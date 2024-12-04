@@ -61,7 +61,8 @@ export default function ManageMethod({
   useEffect(() => {
     if (updateData) {
       const selectedCountry = countryData?.find(
-        (country) => country?.id === Number(updateData?.billingAddress?.country)
+        (country) =>
+          country?.id === Number(updateData?.billingAddress?.countryId)
       )
       const states = selectedCountry?.states || []
 
@@ -109,12 +110,12 @@ export default function ManageMethod({
         streetAddress: Yup.string().required("Address is required"),
         city: Yup.string().required("City is required"),
 
-        state: Yup.lazy(() =>
+        stateId: Yup.lazy(() =>
           stateOptions.length > 0
             ? Yup.string().required("State is required")
             : Yup.string().nullable()
         ),
-        country: Yup.string().required("Country is required"),
+        countryId: Yup.string().required("Country is required"),
         postalZip: Yup.string().required("Zip Code is required"),
       }),
     }),
@@ -126,6 +127,7 @@ export default function ManageMethod({
       } else {
         SubmitForm(values)
       }
+      // console.log(values)
     },
   })
 
@@ -333,9 +335,9 @@ export default function ManageMethod({
     setRecaptchaToken(null)
   }
 
-  const setCountryState = (value) => {
+  const setCountryState = (e) => {
     const selectedCountry = countryData?.find(
-      (country) => country?.id === value
+      (country) => country?.id === e.value
     )
     const states = selectedCountry?.states || []
 
@@ -344,7 +346,9 @@ export default function ManageMethod({
       ...prevValues,
       billingAddress: {
         ...prevValues.billingAddress,
-        country: value,
+        country: e.label,
+        countryId: e.value,
+        stateId: states.length > 0 ? "" : null, // Clear state if states exist
         state: states.length > 0 ? "" : null, // Clear state if states exist
       },
     }))
@@ -552,15 +556,15 @@ export default function ManageMethod({
                     }}
                     options={countryOption}
                     value={countryOption.filter(
-                      (item) => item.value == values?.billingAddress?.country
+                      (item) => item.value == values?.billingAddress?.countryId
                     )}
-                    onChange={(e) => setCountryState(e.value)}
+                    onChange={(e) => setCountryState(e)}
                   />
 
-                  {errors?.billingAddress?.country &&
-                    touched?.billingAddress?.country && (
+                  {errors?.billingAddress?.countryId &&
+                    touched?.billingAddress?.countryId && (
                       <div className="text-red-600">
-                        {errors?.billingAddress?.country}
+                        {errors?.billingAddress?.countryId}
                       </div>
                     )}
                 </div>
@@ -585,23 +589,24 @@ export default function ManageMethod({
                     }}
                     options={stateOptions}
                     value={stateOptions.filter(
-                      (item) => item.value == values?.billingAddress?.state
+                      (item) => item.value == values?.billingAddress?.stateId
                     )}
                     onChange={(e) =>
                       setValues({
                         ...values,
                         billingAddress: {
                           ...values?.billingAddress,
-                          state: e.value,
+                          stateId: e.value,
+                          state: e.label,
                         },
                       })
                     }
                   />
 
-                  {errors?.billingAddress?.state &&
-                    touched?.billingAddress?.state && (
+                  {errors?.billingAddress?.stateId &&
+                    touched?.billingAddress?.stateId && (
                       <div className="text-red-600">
-                        {errors?.billingAddress?.state}
+                        {errors?.billingAddress?.stateId}
                       </div>
                     )}
                 </div>
