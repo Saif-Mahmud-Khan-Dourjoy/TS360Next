@@ -6,6 +6,7 @@ import Visa from "../../public/Subscription/Visaa.png"
 export const CardType = {
   "American Express": AMEX,
   Discover: Discover,
+  "Discover Card": Discover,
   "Master Card": Mastercard,
   Visa: Visa,
 }

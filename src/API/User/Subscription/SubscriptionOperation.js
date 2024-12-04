@@ -118,7 +118,7 @@ export const AddCardAtSystem = async (data, token) => {
 
 export const UpdateCardAtSystem = async (id, data, token) => {
   return axios
-    .post(`${Config?.baseApi}/subscription/payment-method/${id}/update`, data, {
+    .put(`${Config?.baseApi}/subscription/payment-method/${id}/update`, data, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

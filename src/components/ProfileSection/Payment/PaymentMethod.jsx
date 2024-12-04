@@ -1,12 +1,17 @@
 import Image from "next/image"
 import React, { useEffect, useState } from "react"
 import { FaStar, FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa"
+import { CiStar } from "react-icons/ci"
 import VisaCard from "../../../../public/Subscription/Visaa.png"
 import useProfile from "@/hook"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
 import { useSession } from "next-auth/react"
-import { getPaymentMethods } from "@/API/User/PaymentMethod/PaymentMethod"
-import { showErrorAlert } from "@/components/Alerts/Alert"
+import {
+  DeleteCard,
+  getPaymentMethods,
+  UpdateDefault,
+} from "@/API/User/PaymentMethod/PaymentMethod"
+import { showErrorAlert, showSuccessAlert } from "@/components/Alerts/Alert"
 import { CardType } from "@/Utility/CreditCard"
 import ManageMethod from "./ManageMethod"
 import moment from "moment"
@@ -56,8 +61,6 @@ export default function PaymentMethod() {
         })
 
         setCountryOption(countryOption)
-
-    
       })
   }, [])
 
@@ -109,7 +112,57 @@ export default function PaymentMethod() {
     setIsClicked(true)
   }
 
-  // console.log(formData)
+  const makeDefault = async (id) => {
+    setLoading(true)
+    UpdateDefault(id, session?.accessToken).then((res) => {
+      setLoading(false)
+      if (res?.[0]) {
+        console.log(res?.[0])
+        setReload(!reload)
+        showSuccessAlert("Updated Successfully", "center", 2000)
+      } else {
+        console.log(res?.[1])
+        showErrorAlert(res?.[1], "center", 2000)
+      }
+    })
+  }
+
+  const deleteCard = async (id) => {
+    setLoading(true)
+    DeleteCard(id, session?.accessToken).then((res) => {
+      setLoading(false)
+      if (res?.[0]) {
+        console.log(res?.[0])
+        setReload(!reload)
+        showSuccessAlert("Deleted Successfully", "center", 2000)
+      } else {
+        console.log(res?.[1])
+        showErrorAlert(res?.[1], "center", 2000)
+      }
+    })
+  }
+
+  const resetFrom = () => {
+    setFormData({
+      customerID: profile?.user?.pgCustomerId,
+      publicApiKey: process.env.NEXT_PUBLIC_PUBLIC_API_KEY,
+      firstName: "",
+      lastName: "",
+      cardNumber: "",
+      expirationMonth: moment().format("MM"),
+      expirationYear: moment().format("YY"),
+      cvv: "",
+      recaptcha: null,
+      makeDefault: true,
+      billingAddress: {
+        streetAddress: "",
+        city: "",
+        state: "",
+        country: "",
+        postalZip: "",
+      },
+    })
+  }
   return (
     <>
       {loading && <ComponentLoader />}
@@ -117,9 +170,9 @@ export default function PaymentMethod() {
         EXISTING PAYMENT METHODS
       </div>
       {paymentMethods?.length > 0 ? (
-        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
           {paymentMethods?.map((itm, i) => (
-            <div className="flex gap-4" key={`card-${i}`}>
+            <div className="flex  gap-4 justify-center " key={`card-${i}`}>
               <div className="p-4 rounded-xl shadow-lg border border-gray-300 ">
                 <div className="flex-grow">
                   <div className="min-h-10 w-14 relative">
@@ -149,19 +202,32 @@ export default function PaymentMethod() {
 
               {/* Right Side - Actions */}
               <div className="flex flex-col  space-y-2">
-                <button
-                  // onClick={() => setCardDetails(itm)}
-                  className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800"
-                >
-                  <FaStar />
-                </button>
+                {itm?.isDefault ? (
+                  <button
+                    className={`flex items-center justify-center w-8 h-8 rounded-full bg-gray-900 text-white hover:bg-gray-800 pointer-events-none`}
+                  >
+                    <FaStar />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => makeDefault(itm?.id)}
+                    className={`flex items-center justify-center w-8 h-8 rounded-full text-[#818181] border border-[#CBCACA]   hover:bg-gray-100 cursor-pointer"
+                     `}
+                  >
+                    <CiStar size={20} />
+                  </button>
+                )}
+
                 <button
                   onClick={() => setCardDetails(itm)}
                   className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100"
                 >
                   <FaPencilAlt />
                 </button>
-                <button className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100">
+                <button
+                  onClick={() => deleteCard(itm?.id)}
+                  className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100 cursor-pointer"
+                >
                   <FaTrash />
                 </button>
               </div>
@@ -176,7 +242,7 @@ export default function PaymentMethod() {
       {!isClicked && (
         <button
           onClick={() => setIsClicked(true)}
-          className="w-fit flex items-center gap-2 justify-center  py-3 px-5 mt-12 text-white bg-[#3AB6FF] rounded-lg hover:bg-[#239ade] "
+          className="w-fit flex items-center gap-2 justify-center  py-3 px-5 mt-12 text-white bg-[#3AB6FF] rounded-lg hover:bg-[#239ade] mx-auto sm:mx-0"
         >
           <FaPlusCircle />
           <span>Add payment method</span>
@@ -187,8 +253,16 @@ export default function PaymentMethod() {
       {isClicked && (
         <ManagePaymentModal
           isOpen={isClicked}
-          onClose={() => setIsClicked(false)}
-          onOk={() => setIsClicked(false)}
+          onClose={() => {
+            setUpdateData(null)
+            setIsClicked(false)
+            resetFrom()
+          }}
+          onOk={() => {
+            setUpdateData(null)
+            setIsClicked(false)
+            resetFrom()
+          }}
         >
           <ManageMethod
             setIsClicked={setIsClicked}
@@ -199,6 +273,8 @@ export default function PaymentMethod() {
             setReload={setReload}
             reload={reload}
             updateData={updateData}
+            setUpdateData={setUpdateData}
+            resetFrom={resetFrom}
           />
         </ManagePaymentModal>
       )}

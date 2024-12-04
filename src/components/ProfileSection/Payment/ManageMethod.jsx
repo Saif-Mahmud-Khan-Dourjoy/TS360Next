@@ -44,17 +44,36 @@ export default function ManageMethod({
   setReload,
   reload,
   updateData,
+  setUpdateData,
+  resetFrom,
 }) {
   const [menuTarget, setMenuTarget] = useState(null)
   const [recaptchaToken, setRecaptchaToken] = useState(null)
   const [stateOptions, setStateOptions] = useState([])
   const [isVerified, setIsVerified] = useState(false)
 
-  console.log(countryOption)
+  console.log(updateData)
 
   useEffect(() => {
     setMenuTarget(document.body) // Set the target after the component mounts
   }, [])
+
+  useEffect(() => {
+    if (updateData) {
+      const selectedCountry = countryData?.find(
+        (country) => country?.id === Number(updateData?.billingAddress?.country)
+      )
+      const states = selectedCountry?.states || []
+
+      // Update state options
+      setStateOptions(
+        states.map((state) => ({
+          value: state?.id,
+          label: state?.name,
+        }))
+      )
+    }
+  }, [updateData])
   const {
     handleSubmit,
     handleChange,
@@ -110,18 +129,18 @@ export default function ManageMethod({
     },
   })
 
-  const SubmitForm = async (values) => {
+  const SubmitForm = async (formData) => {
     const finalData = {
-      customerID: values.customerID,
-      publicApiKey: values.publicApiKey,
-      cardNumber: values.cardNumber,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      expirationMonth: parseInt(values.expirationMonth, 10),
-      expirationYear: parseInt(values.expirationYear, 10),
-      cvv: values.cvv,
-      makeDefault: values.makeDefault,
-      recaptcha: values.recaptcha,
+      customerID: formData?.customerID,
+      publicApiKey: formData?.publicApiKey,
+      cardNumber: formData?.cardNumber,
+      firstName: formData?.firstName,
+      lastName: formData?.lastName,
+      expirationMonth: parseInt(formData?.expirationMonth, 10),
+      expirationYear: parseInt(formData?.expirationYear, 10),
+      cvv: formData?.cvv,
+      makeDefault: formData?.makeDefault,
+      recaptcha: formData?.recaptcha,
     }
 
     try {
@@ -148,19 +167,13 @@ export default function ManageMethod({
           lastName: data?.lastName,
           isDefault: data?.isDefault,
           pgPaymentMethodId: data?.id,
-          billingAddress: {
-            streetAddress: values?.streetAddress,
-            city: values?.city,
-            state: values?.state,
-            country: values?.country,
-            postalZip: values?.postalZip,
-          },
+          billingAddress: formData?.billingAddress,
         }
 
         let addCard = await AddCardApiCall(forCard, session?.accessToken)
 
         if (addCard[0]) {
-          showSuccessAlert("Added Successfully")
+          showSuccessAlert("Added Successfully", "center", 2000)
           resetForm()
 
           setLoading(false)
@@ -208,7 +221,7 @@ export default function ManageMethod({
   const UpdateForm = async (formData) => {
     const finalData = {
       customerID: formData.customerID,
-      id: updateData?.id,
+      Id: updateData?.id,
       publicApiKey: formData.publicApiKey,
       cardNumber: formData.cardNumber,
       firstName: formData.firstName,
@@ -244,26 +257,26 @@ export default function ManageMethod({
           lastName: data?.lastName,
           isDefault: data?.isDefault,
           pgPaymentMethodId: data?.id,
-          billingAddress: {
-            streetAddress: formData?.streetAddress,
-            city: formData?.city,
-            state: formData?.state,
-            country: formData?.country,
-            postalZip: formData?.postalZip,
-          },
+          billingAddress: formData?.billingAddress,
         }
 
-        let updateCard = await UpdateCardApiCall(forCard, session?.accessToken)
+        let updateCard = await UpdateCardApiCall(
+          updateData?.id,
+          forCard,
+          session?.accessToken
+        )
 
         if (updateCard[0]) {
-          showSuccessAlert("Updated Successfully")
+          showSuccessAlert("Updated Successfully", "center", 2000)
           resetForm()
-
+          setUpdateData(null)
+          resetFrom()
           setLoading(false)
           setReload(!reload)
         } else {
           setLoading(false)
-
+          setUpdateData(null)
+          resetFrom()
           showErrorAlert(
             updateCard?.[1] || "Something went wrong",
             "center",
@@ -274,7 +287,8 @@ export default function ManageMethod({
         const errorData = await response.json()
         console.log("Error: " + errorData.message)
         setLoading(false)
-
+        setUpdateData(null)
+        resetFrom()
         showErrorAlert(
           errorData.message || "Something went wrong",
           "center",
@@ -284,7 +298,26 @@ export default function ManageMethod({
     } catch (error) {
       console.log("An error occurred: " + error.message)
       setLoading(false)
+      setUpdateData(null)
+      resetFrom()
       showErrorAlert(error.message || "Something went wrong", "center", 2000)
+    }
+  }
+
+  const UpdateCardApiCall = async (id, data, token) => {
+    try {
+      // Await the result of the AddCardAtSystem function
+      const res = await UpdateCardAtSystem(id, data, token)
+
+      // Return based on the response from the API
+      if (res?.[0]) {
+        return [true] // Success case
+      } else {
+        return [false, res?.[1]] // Error case
+      }
+    } catch (error) {
+      console.error("Error in UpdateCardApiCall:", error)
+      return [false, error.message] // Handle error cases
     }
   }
 
