@@ -173,7 +173,7 @@ export default function PaymentMethod() {
         <div className="grid sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
           {paymentMethods?.map((itm, i) => (
             <div className="flex  gap-4 justify-center " key={`card-${i}`}>
-              <div className="p-4 rounded-xl shadow-lg border border-gray-300 ">
+              <div className="p-4 rounded-xl shadow-lg border border-gray-300 w-full">
                 <div className="flex-grow">
                   <div className="min-h-10 w-14 relative">
                     <Image
