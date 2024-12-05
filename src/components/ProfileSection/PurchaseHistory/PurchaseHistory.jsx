@@ -183,18 +183,45 @@ export default function PurchaseHistory() {
     )
 
     // Add "Terms & Conditions" in blue and underlined
+    // pdf.setTextColor(0, 120, 212) // Blue color
+    // pdf.text("Terms & Conditions", 10 + purchaseTextWidth + 2, 170) // Adjust X-coordinate to reduce gap
+    // const termsTextWidth = pdf.getTextWidth("Terms & Conditions")
+
+    // // Draw underline for "Terms & Conditions"
+    // pdf.setDrawColor(0, 120, 212) // Blue color for the underline
+    // pdf.setLineWidth(0.1)
+    // pdf.line(
+    //   10 + purchaseTextWidth + 2,
+    //   171,
+    //   10 + purchaseTextWidth + 2 + termsTextWidth,
+    //   171
+    // )
+
     pdf.setTextColor(0, 120, 212) // Blue color
+
+    // Add "Terms & Conditions" text
     pdf.text("Terms & Conditions", 10 + purchaseTextWidth + 2, 170) // Adjust X-coordinate to reduce gap
+
+    // Get the width of the "Terms & Conditions" text
     const termsTextWidth = pdf.getTextWidth("Terms & Conditions")
 
     // Draw underline for "Terms & Conditions"
     pdf.setDrawColor(0, 120, 212) // Blue color for the underline
     pdf.setLineWidth(0.1)
     pdf.line(
-      10 + purchaseTextWidth + 2,
-      171,
-      10 + purchaseTextWidth + 2 + termsTextWidth,
-      171
+      10 + purchaseTextWidth + 2, // X-coordinate start
+      171, // Y-coordinate
+      10 + purchaseTextWidth + 2 + termsTextWidth, // X-coordinate end
+      171 // Y-coordinate
+    )
+
+    // Add a clickable link for "Terms & Conditions"
+    pdf.link(
+      10 + purchaseTextWidth + 2, // X-coordinate of the link
+      170 - 3, // Y-coordinate of the link (adjusted to match text position)
+      termsTextWidth, // Width of the link area
+      5, // Height of the link area
+      { url: "https://testsprint360.com/terms-policy" } // URL for the link
     )
 
     // Footer Section
