@@ -1,15 +1,25 @@
 import { GetSubscription } from "@/API/User/Subscription/ProfileSubscription"
 import { showErrorAlert } from "@/components/Alerts/Alert"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
+import useProfile from "@/hook"
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import Avatar from "react-avatar"
 import { FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa"
+import { FaRegEnvelope } from "react-icons/fa6"
+import { HiOutlineDotsVertical } from "react-icons/hi"
+import { IoArrowUp } from "react-icons/io5"
 
 const SubscriptionDetails = () => {
   const [subscription, setSubscription] = useState(null)
   const [reload, setReload] = useState(false)
   const { data: session } = useSession()
   const [loading, setLoading] = useState(false)
+  const [tooltipOpen, setTooltipOpen] = useState(null)
+
+  const { profile } = useProfile()
+
+  const tooltipRef = useRef()
 
   useEffect(() => {
     setLoading(true)
@@ -22,6 +32,31 @@ const SubscriptionDetails = () => {
       }
     })
   }, [reload])
+
+  // useEffect(() => {
+
+  //   const handleClickOutside = (event) => {
+  //     if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
+  //       setTooltipOpen(null)
+  //     }
+  //   }
+
+  //   document.addEventListener("mousedown", handleClickOutside)
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside)
+  //   }
+  // }, [])
+
+  const openTooltip = (id) => {
+    if (tooltipOpen == id) {
+      setTooltipOpen(null)
+    } else {
+      setTooltipOpen(id)
+    }
+  }
+
+  console.log(subscription)
+  console.log(profile)
   return (
     <>
       {loading && <ComponentLoader />}
@@ -44,9 +79,12 @@ const SubscriptionDetails = () => {
                 <span className="text-black ml-2">
                   {subscription?.planFrequency?.frequencyInterval}
                 </span>
-                <span className="text-blue-600 ml-2 cursor-pointer underline">
-                  Change
-                </span>
+                {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
+                  subscription?.plan?.name.toLowerCase() != "free" && (
+                    <span className="text-blue-600 ml-2 cursor-pointer underline" >
+                      Change
+                    </span>
+                  )}
               </p>
               <p>
                 Next Billing Date:
@@ -54,20 +92,49 @@ const SubscriptionDetails = () => {
               </p>
               <p>
                 Price:
-                <span className="text-black ml-2"> $199/user/month</span>
-              </p>
-              <p>
-                Number of Users:
-                <span className="text-black ml-2"> 05</span>
-                <span className="text-blue-600 ml-2 cursor-pointer underline">
-                  Add
+                <span className="text-black ml-2">
+                  {" "}
+                  ${subscription?.planFrequency?.price}/user/
+                  {subscription?.planFrequency?.frequencyInterval
+                    .slice(0, -2)
+                    .toLowerCase()}
                 </span>
               </p>
               <p>
+                Number of Users:
+                <span className="text-black ml-2">
+                  {" "}
+                  {subscription?.teams?.length}
+                </span>
+                {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
+                  subscription?.plan?.name.toLowerCase() != "free" && (
+                    <span className="text-blue-600 ml-2 cursor-pointer underline">
+                      Add
+                    </span>
+                  )}
+              </p>
+              <p>
                 Auto Renew:
-                <span className="text-black ml-2">Yes</span>
+                <span className="text-black ml-2">
+                  {subscription?.autoRenewal ? "Yes" : "No"}
+                </span>
               </p>
             </div>
+            {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
+              subscription?.plan?.name.toLowerCase() != "free" && (
+                <div className="text-[#FF5656] text-sm underline mt-20 cursor-pointer">
+                  Cancel Subscription
+                </div>
+              )}
+
+            {subscription?.plan?.name.toLowerCase() == "free" && (
+              <div className="w-fit text-white text-sm mt-20 flex items-center gap-3 py-2 px-4 bg-[#3AB6FF] rounded-md shadow-2xl">
+                <span>
+                  <IoArrowUp color="white" />
+                </span>
+                <span>Upgrade Plan</span>
+              </div>
+            )}
           </section>
 
           {/* Right Column - User Management */}
@@ -79,65 +146,147 @@ const SubscriptionDetails = () => {
               <div className="flex flex-col items-center">
                 <FaUser className="text-gray-500" size={22} />
                 <p className="text-gray-500 text-base">Users Limit</p>
-                <p className="text-xl font-semibold">5</p>
+                <p className="text-xl font-semibold">
+                  {subscription?.numberOfUsers}
+                </p>
               </div>
               <div className="border-l h-12 border-gray-300"></div>
               <div className="flex flex-col items-center">
                 <FaUserPlus className="text-gray-500" size={24} />
                 <p className="text-gray-500 text-base">Joined</p>
-                <p className="text-xl font-semibold">4</p>
+                <p className="text-xl font-semibold">
+                  {subscription?.teams?.length}
+                </p>
               </div>
               <div className="border-l h-12 border-gray-300"></div>
               <div className="flex flex-col items-center">
                 <FaUserMinus className="text-gray-500" size={24} />
                 <p className="text-gray-500 text-base">Free</p>
-                <p className="text-xl font-semibold">1</p>
+                <p className="text-xl font-semibold">
+                  {subscription?.numberOfUsers - subscription?.teams?.length}
+                </p>
               </div>
             </div>
-
             <section className="space-y-3">
               {/* Users List */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="bg-blue-500 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold">
-                    JS
-                  </div>
-                  <span className="ml-3 text-gray-700 text-xs">
-                    john_smith@gmail.com
-                  </span>
-                </div>
-                <span className="text-xs text-gray-500">Owner</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="bg-blue-500 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold">
-                    KT
-                  </div>
-                  <span className="ml-3 text-gray-700 text-xs">
-                    kelly.test@gmail.com
-                  </span>
-                </div>
-                <span className="text-xs text-gray-500">Team Member</span>
-              </div>
+              {subscription?.teams?.map((member) => {
+                console.log(member)
+                let position
+                if (subscription?.pgCustomerId === member?.pgCustomerId) {
+                  position = "Owner"
+                } else {
+                  if (member?.active) {
+                    position = "Team Member"
+                  } else {
+                    position = "Invite Sent"
+                  }
+                }
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="border-2 border-dashed border-gray-400 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center font-bold">
-                    <FaUser />
+                return (
+                  <div
+                    className="flex items-center justify-between gap-x-4"
+                    key={member?.id}
+                  >
+                    <div className="flex items-center">
+                      {/* <div className="bg-blue-500 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold">
+                      JS
+                    </div> */}
+                      {member?.active ? (
+                        <Avatar
+                          size="33"
+                          round={true}
+                          name={`${member?.firstName} ${member?.lastName}`}
+                          color="#3b82f6"
+                          fgColor="white"
+                          className="font-bold"
+                        />
+                      ) : (
+                        <div className="border-2 border-dashed border-gray-400 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center font-bold">
+                          <FaUser />
+                        </div>
+                      )}
+
+                      <span className="ml-3 text-gray-700 text-xs">
+                        {member?.username}
+                      </span>
+                    </div>
+                    <div className="flex gap-x-4 items-center ">
+                      <span
+                        className={`text-xs ${
+                          member?.active ? "text-gray-500" : "text-[#82D955]"
+                        }  `}
+                      >
+                        {position}
+                      </span>
+                      <div
+                        className={`relative ${
+                          profile?.user?.pgCustomerId ===
+                            subscription?.pgCustomerId &&
+                          subscription?.plan?.name.toLowerCase() != "free"
+                            ? ""
+                            : "invisible"
+                        }`}
+                      >
+                        <HiOutlineDotsVertical
+                          className={`cursor-pointer ${
+                            profile?.user?.pgCustomerId === member?.pgCustomerId
+                              ? "invisible"
+                              : ""
+                          } `}
+                          onClick={() => openTooltip(member?.id)}
+                        />
+
+                        {tooltipOpen && tooltipOpen == member?.id && (
+                          <div
+                            ref={tooltipRef}
+                            className="z-10 absolute left-1/2 top-[150%]  transform -translate-x-1/2  px-5 py-4 text-sm bg-white rounded-md text-center"
+                            style={{
+                              boxShadow:
+                                "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                            }}
+                          >
+                            <p className="text-[#FF5656] text-xs">Unassign</p>
+                            {!member?.active && (
+                              <p className="text-[#3AB6FF] text-xs text-nowrap mt-2">
+                                Resend Invite
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <span className="ml-3 text-gray-700 text-xs">
-                    josh_brueckner@gmail.com
-                  </span>
-                </div>
-                <span className="text-xs text-[#82D955]">Invite Sent</span>
-              </div>
+                )
+              })}
             </section>
-
-            <div className="flex justify-end">
-              <button className="mt-8 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-[10px] px-8 rounded-md">
-                Leave Plan
-              </button>
-            </div>
+            {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
+              subscription?.numberOfUsers - subscription?.teams?.length > 0 &&
+              subscription?.plan?.name.toLowerCase() != "free" && (
+                <div className="flex flex-wrap sm:flex-nowrap justify-center sm:justify-between  gap-4 mt-7">
+                  <div
+                    className={`relative flex items-center border  border-gray-300 rounded-lg p-2 w-full`}
+                  >
+                    <FaRegEnvelope color="#A6A6A6" />
+                    <input
+                      autoComplete="off"
+                      type="text"
+                      placeholder="email@company.com"
+                      className="flex-grow px-3 py-1 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div className="shadow-xl rounded-md bg-[#3AB6FF] font-semibold text-sm text-white py-2 px-5 w-fit text-nowrap flex justify-center items-center ">
+                    Send Invite
+                  </div>
+                </div>
+              )}
+            {profile?.user?.pgCustomerId != subscription?.pgCustomerId &&
+              subscription?.plan?.name.toLowerCase() != "free" && (
+                <div className="flex justify-end">
+                  <button className="mt-8 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-[10px] px-8 rounded-md">
+                    Leave Plan
+                  </button>
+                </div>
+              )}
           </section>
         </div>
       </div>
