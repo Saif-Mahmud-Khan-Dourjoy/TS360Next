@@ -1,8 +1,15 @@
-import { GetSubscription } from "@/API/User/Subscription/ProfileSubscription"
+import {
+  CancelSubs,
+  GetSubscription,
+} from "@/API/User/Subscription/ProfileSubscription"
 import { showErrorAlert } from "@/components/Alerts/Alert"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
 import useProfile from "@/hook"
+import { useFormik } from "formik"
+import * as Yup from "yup"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+
 import { useEffect, useRef, useState } from "react"
 import Avatar from "react-avatar"
 import { FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa"
@@ -20,6 +27,8 @@ const SubscriptionDetails = () => {
   const { profile } = useProfile()
 
   const tooltipRef = useRef()
+
+  const router = useRouter()
 
   useEffect(() => {
     setLoading(true)
@@ -57,6 +66,45 @@ const SubscriptionDetails = () => {
 
   console.log(subscription)
   console.log(profile)
+
+  const updateSubscription = () => {
+    router.push("/subscription-update")
+  }
+  const cancelSubs = () => {
+    setLoading(true)
+    CancelSubs(subscription?.id, session?.accessToken).then((res) => {
+      setLoading(false)
+      if (res?.[0]) {
+        setReload(!reload)
+      } else {
+        showErrorAlert(res?.[1], "center", 2000)
+      }
+    })
+  }
+
+   const { handleSubmit, handleChange, values, touched, errors, handleBlur } =
+     useFormik({
+       initialValues: {
+         email: "",
+       },
+       validationSchema: Yup.object({
+         email: Yup.string()
+           .required("Email is required")
+           .test(
+             "domain-check",
+             `Must end with ${session?.user?.userName?.split("@")[1]}`,
+             (value) => {
+               return value?.endsWith(
+                 `${session?.user?.userName?.split("@")[1]}`
+               )
+             }
+           )
+           .email("Invalid email"),
+       }),
+       onSubmit: (values) => {
+         console.log("Form submitted with values:", values)
+       },
+     })
   return (
     <>
       {loading && <ComponentLoader />}
@@ -81,7 +129,10 @@ const SubscriptionDetails = () => {
                 </span>
                 {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
                   subscription?.plan?.name.toLowerCase() != "free" && (
-                    <span className="text-blue-600 ml-2 cursor-pointer underline" >
+                    <span
+                      className="text-blue-600 ml-2 cursor-pointer underline"
+                      onClick={() => updateSubscription()}
+                    >
                       Change
                     </span>
                   )}
@@ -108,7 +159,10 @@ const SubscriptionDetails = () => {
                 </span>
                 {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
                   subscription?.plan?.name.toLowerCase() != "free" && (
-                    <span className="text-blue-600 ml-2 cursor-pointer underline">
+                    <span
+                      className="text-blue-600 ml-2 cursor-pointer underline"
+                      onClick={() => updateSubscription()}
+                    >
                       Add
                     </span>
                   )}
@@ -122,7 +176,10 @@ const SubscriptionDetails = () => {
             </div>
             {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
               subscription?.plan?.name.toLowerCase() != "free" && (
-                <div className="text-[#FF5656] text-sm underline mt-20 cursor-pointer">
+                <div
+                  className="text-[#FF5656] text-sm underline mt-20 cursor-pointer"
+                  onClick={() => cancelSubs()}
+                >
                   Cancel Subscription
                 </div>
               )}
@@ -262,27 +319,44 @@ const SubscriptionDetails = () => {
             {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
               subscription?.numberOfUsers - subscription?.teams?.length > 0 &&
               subscription?.plan?.name.toLowerCase() != "free" && (
-                <div className="flex flex-wrap sm:flex-nowrap justify-center sm:justify-between  gap-4 mt-7">
-                  <div
-                    className={`relative flex items-center border  border-gray-300 rounded-lg p-2 w-full`}
-                  >
-                    <FaRegEnvelope color="#A6A6A6" />
-                    <input
-                      autoComplete="off"
-                      type="text"
-                      placeholder="email@company.com"
-                      className="flex-grow px-3 py-1 focus:outline-none text-sm"
-                    />
-                  </div>
-                  <div className="shadow-xl rounded-md bg-[#3AB6FF] font-semibold text-sm text-white py-2 px-5 w-fit text-nowrap flex justify-center items-center ">
-                    Send Invite
-                  </div>
-                </div>
+                <>
+                  <form onSubmit={handleSubmit}>
+                    <div className="flex flex-wrap sm:flex-nowrap justify-center sm:justify-between gap-4 mt-7">
+                      <div
+                        className={`relative flex items-center border border-gray-300 rounded-lg p-2 w-full`}
+                      >
+                        <FaRegEnvelope color="#A6A6A6" />
+                        <input
+                          autoComplete="off"
+                          type="text"
+                          placeholder="email@company.com"
+                          className="flex-grow px-3 py-1 focus:outline-none text-sm"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          name="email"
+                          value={values?.email}
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="shadow-xl rounded-md bg-[#3AB6FF] font-semibold text-sm text-white py-2 px-5 w-fit text-nowrap flex justify-center items-center"
+                      >
+                        Send Invite
+                      </button>
+                    </div>
+                    <p className="text-red-500 text-[12px] mt-1">
+                      {touched?.email && errors?.email}
+                    </p>
+                  </form>
+                </>
               )}
             {profile?.user?.pgCustomerId != subscription?.pgCustomerId &&
               subscription?.plan?.name.toLowerCase() != "free" && (
                 <div className="flex justify-end">
-                  <button className="mt-8 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-[10px] px-8 rounded-md">
+                  <button
+                    type="submit"
+                    className="mt-8 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-[10px] px-8 rounded-md"
+                  >
                     Leave Plan
                   </button>
                 </div>

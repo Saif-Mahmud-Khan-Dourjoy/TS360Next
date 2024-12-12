@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import EditProfileMain from "./EditProfile/EditProfileMain"
 import Common from "./Common"
 import PurchaseHistory from "./PurchaseHistory/PurchaseHistory"
@@ -12,6 +12,14 @@ export default function ProfileRelated() {
   const [selectedTab, setSelectedTab] = useState("PROFILE")
   const { error, loading, profile } = useProfile()
 
+  useEffect(() => {
+    const selectedTab = localStorage.getItem("selectedTab")
+    if (selectedTab) {
+      setSelectedTab(selectedTab)
+      localStorage.removeItem("selectedTab") // Clean up
+    }
+  }, [])
+
   if (error) {
     return (
       <div className="h-[52vh] flex justify-center items-center text-red-500 text-lg font-bold">
@@ -19,7 +27,7 @@ export default function ProfileRelated() {
       </div>
     )
   }
-  console.log(profile)
+
   return (
     <>
       {loading && <ComponentLoader />}
