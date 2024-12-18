@@ -58,3 +58,96 @@ export const CancelSubs = async (id, token) => {
       }
     })
 }
+
+export const AddNewUsers = async (id, data, token) => {
+  return axios
+    .post(
+      `${Config?.baseApi}/subscription/subscription/${id}/add-new-users`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+    .then((res) => {
+      return [res?.data]
+    })
+    .catch((error) => {
+      console.error(error)
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
+      }
+    })
+}
+
+export const UnassignUser = async (id, userId, token) => {
+  return axios
+    .post(
+      `${Config?.baseApi}/subscription/subscription/${id}/remove-user/${userId}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+    .then((res) => {
+      return [true]
+    })
+    .catch((error) => {
+      console.error(error)
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
+      }
+    })
+}
+
+export const ResendEmail = async (subscriptionId, userId, token) => {
+  return axios
+    .post(
+      `${Config?.baseApi}/subscription/subscription/${subscriptionId}/resend/${userId}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
+    .then((res) => {
+      return [true]
+    })
+    .catch((error) => {
+      console.error(error)
+      if (error.response) {
+        // Request made and server responded
+        return [false, error.response.data.message]
+      } else if (error.request) {
+        // The request was made but no response was received
+        return [false, error.message]
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return [false, error.message]
+      }
+    })
+}
