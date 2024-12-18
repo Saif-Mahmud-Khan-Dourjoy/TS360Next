@@ -203,13 +203,17 @@ export const SubscriptionAdd = async (data, token) => {
 
 export const CompletePayment = async (data, token) => {
   return axios
-    .post(`${Config?.baseApi}/subscription/payment/complete`, data, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: "Bearer " + token,
-      },
-    })
+    .post(
+      `${Config?.baseApi}/subscription/subscription/${data}/create-and-activate`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    )
     .then((res) => {
       return [res?.data]
     })

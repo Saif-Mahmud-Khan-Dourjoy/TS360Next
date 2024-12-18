@@ -17,8 +17,9 @@ export default async function ComparePlan() {
 
   const { header, data } = tableData
   const sortedColumns = sortedHeader.filter((col) => header?.includes(col))
-  const remainingColumns = header.filter((col) => !sortedHeader?.includes(col))
-  const finalColumns = [...sortedColumns, ...remainingColumns]
+  const remainingColumns = header?.filter((col) => !sortedHeader?.includes(col))
+  const remainingColumns2 = remainingColumns ? remainingColumns : []
+  const finalColumns = [...sortedColumns, ...remainingColumns2]
 
   return (
     <div className="mt-20">
@@ -49,7 +50,7 @@ export default async function ComparePlan() {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => (
+              {data?.map((row, index) => (
                 <tr
                   key={`plan-feature-row-${index}`}
                   className={`even:bg-[#F6F6F6]`}

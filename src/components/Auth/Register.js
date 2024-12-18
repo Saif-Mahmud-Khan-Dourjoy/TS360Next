@@ -18,6 +18,7 @@ import "/public/css/slickSlider.css"
 import CustomModal from "../Custom/Modal"
 import LoaderModal from "../Custom/Loader"
 import { text } from "@fortawesome/fontawesome-svg-core"
+import {FiEye, FiEyeOff} from "react-icons/fi"
 
 // import ReactFlagsSelect from "react-flags-select";
 const settings = {
@@ -237,7 +238,6 @@ export default function Register() {
   return (
     <>
 
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
       <div className="py-8 lg:px-24 px-7 ">
         <Link href="/">
           <div className="font-medium text-xl cursor-pointer flex items-center gap-1">
@@ -480,9 +480,11 @@ export default function Register() {
                         onBlur={handleBlur}
                         name="password"
                       />
-                      <i className ={`fa ${!isPasswordVisible?"fa-eye":"fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                      <i className ={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
                         onClick={togglePasswordVisibility} id="eyeIcon"
-                      ></i>
+                      >
+                        {!isPasswordVisible? <FiEye size={20}/>:<FiEyeOff size={20}/>}
+                      </i>
                     </div>
                     <p className="text-red-500 text-[12px] mt-1">
                       {touched?.password && errors.password}
@@ -516,9 +518,11 @@ export default function Register() {
                         onBlur={handleBlur}
                         name="confirmPassword"
                       />
-                      <i className ={`fa ${!isConfirmPasswordVisible?"fa-eye":"fa-eye-slash"} absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
+                      <i className ={` absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer`}
                           onClick={toggleConfirmPasswordVisibility} id="eyeIcon"
-                      ></i>
+                      >
+                        {!isConfirmPasswordVisible? <FiEye size={20}/>:<FiEyeOff size={20}/>}
+                      </i>
                     </div>
                     <p className="text-red-500 text-[12px] mt-1">
                       {touched?.confirmPassword && errors.confirmPassword}
