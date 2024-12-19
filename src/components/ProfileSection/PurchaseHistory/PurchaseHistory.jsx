@@ -97,7 +97,11 @@ export default function PurchaseHistory() {
     pdf.setFont("helvetica", "bold")
 
     pdf.setTextColor(0, 0, 0)
-    pdf.text("Kevin Holtz", 10, 63)
+    pdf.text(
+      `${order?.userInfo?.firstName} ${order?.userInfo?.lastName}`,
+      10,
+      63
+    )
     pdf.setFont("helvetica", "normal")
     pdf.setTextColor(129, 129, 129)
     const address = `${
@@ -108,7 +112,7 @@ export default function PurchaseHistory() {
     pdf.text(`${address}`, 10, 70)
     pdf.text(`${order?.billingAddress?.country ?? ""}`, 10, 76)
     pdf.setFontSize(10)
-    pdf.text("kevin.holtz@gmail.com", 10, 85)
+    pdf.text(`${order?.userInfo?.username}`, 10, 85)
     pdf.setFontSize(11)
     pdf.setTextColor(0, 0, 0)
     pdf.setFont("helvetica", "bold")

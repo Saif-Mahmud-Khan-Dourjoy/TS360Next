@@ -46,15 +46,17 @@ export default function UserSection({
   }, [suggestionIndex])
 
   useEffect(() => {
-    console.log(session?.user?.id)
-    SameOrgSuggestion(session?.user?.id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        console.log(res?.[0])
-        setSuggestionEmp(res?.[0])
-        setFilteredEmp(res?.[0])
-      }
-    })
-  }, [])
+    if(session?.user){
+      SameOrgSuggestion(session?.user?.id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          console.log(res?.[0])
+          setSuggestionEmp(res?.[0])
+          setFilteredEmp(res?.[0])
+        }
+      })
+    }
+    
+  }, [session])
 
   useEffect(() => {
     const filteredEmpNew = suggestionEmp.filter(

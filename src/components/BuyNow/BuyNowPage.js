@@ -72,28 +72,30 @@ export default function BuyNowPage() {
 
   useEffect(() => {
     setIsLoaderOpen(true)
-    GetPlanById(planId, session?.accessToken).then((res) => {
-      setIsLoaderOpen(false)
-      if (res?.[0]) {
-        console.log(res?.[0])
-        setPlanFrequency(res?.[0]?.planFrequency)
-        setPlanName(res?.[0]?.name)
-        setSelectedCycle(
-          res?.[0]?.planFrequency?.length > 0
-            ? res?.[0]?.planFrequency?.[0]
-            : {}
-        )
+   if (planId && session?.accessToken) {
+     GetPlanById(planId, session?.accessToken).then((res) => {
+       setIsLoaderOpen(false)
+       if (res?.[0]) {
+         console.log(res?.[0])
+         setPlanFrequency(res?.[0]?.planFrequency)
+         setPlanName(res?.[0]?.name)
+         setSelectedCycle(
+           res?.[0]?.planFrequency?.length > 0
+             ? res?.[0]?.planFrequency?.[0]
+             : {}
+         )
 
-        setStartingPrice(parseFloat(res?.[0]?.startingPrice))
+         setStartingPrice(parseFloat(res?.[0]?.startingPrice))
 
-        if (parseFloat(res?.[0]?.startingPrice) > 0) {
-          setAutoRenew(true)
-        }
-      } else {
-        openModal("error", res?.[1] || "Something went wrong")
-      }
-    })
-  }, [])
+         if (parseFloat(res?.[0]?.startingPrice) > 0) {
+           setAutoRenew(true)
+         }
+       } else {
+         openModal("error", res?.[1] || "Something went wrong")
+       }
+     })
+   }
+  }, [planId, session])
 
   useEffect(() => {
     const plan = { ...selectedCycle }

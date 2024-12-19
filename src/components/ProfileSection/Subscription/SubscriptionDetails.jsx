@@ -49,7 +49,7 @@ const SubscriptionDetails = () => {
         setTeams(sortedUserList)
       } else {
         setSubscription(null)
-        showErrorAlert("You have no subscription", "center", 2000)
+        // showErrorAlert("You have no subscription", "center", 2000)
       }
     })
   }, [reload])
@@ -435,6 +435,16 @@ const SubscriptionDetails = () => {
                     >
                       Leave Plan
                     </button>
+                  </div>
+                )}
+
+              {profile?.user?.pgCustomerId === subscription?.pgCustomerId &&
+                subscription?.plan?.name.toLowerCase() == "free" && (
+                  <div
+                    className="text-[#FF5656] text-sm underline mt-20 cursor-pointer text-end"
+                    onClick={() => cancelSubs()}
+                  >
+                    Cancel Subscription
                   </div>
                 )}
             </section>
