@@ -9,6 +9,7 @@ import Select from "react-select"
 import ReCAPTCHA from "react-google-recaptcha"
 import Image from "next/image"
 import { showErrorAlert, showSuccessAlert } from "@/components/Alerts/Alert"
+import { AddCardAtSystem, UpdateCardAtSystem } from "@/API/User/Subscription/SubscriptionOperation"
 const customStyles = (error = null) => ({
   control: (provided, state) => ({
     ...provided,
@@ -223,7 +224,7 @@ export default function ManageMethod({
   const UpdateForm = async (formData) => {
     const finalData = {
       customerID: formData.customerID,
-      Id: updateData?.id,
+      Id: updateData?.pgPaymentMethodId,
       publicApiKey: formData.publicApiKey,
       cardNumber: formData.cardNumber,
       firstName: formData.firstName,
@@ -368,6 +369,8 @@ export default function ManageMethod({
     setFieldValue("expirationMonth", month)
     setFieldValue("expirationYear", year)
   }
+
+  console.log(updateData)
 
   return (
     <div className="">
