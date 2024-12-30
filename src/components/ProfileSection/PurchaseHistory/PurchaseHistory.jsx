@@ -22,7 +22,8 @@ export default function PurchaseHistory() {
       if (res?.[0]) {
         setPurchaseHistory(res?.[0])
       } else {
-        showErrorAlert(res?.[1], "center", 2000)
+        // showErrorAlert(res?.[1], "center", 2000)
+        setPurchaseHistory([]);
       }
     })
   }, [])

@@ -19,6 +19,26 @@ import { showErrorAlert } from "@/components/Alerts/Alert"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
 import CustomModal from "@/components/Custom/Modal"
 import NotFoundData from "../../../../public/nodatafound.png"
+import jwt from "jsonwebtoken"
+
+const validateToken = (token) => {
+  try {
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
+
+    const decoded = jwt.decode(token, { complete: true })
+    const exp = decoded?.payload?.exp
+
+    if (!exp) {
+      console.log("Expiration time not found in token payload")
+      return false
+    }
+
+    return exp > currentTimeInSeconds
+  } catch (error) {
+    console.error("Error validating token:", error)
+    return false
+  }
+}
 
 export default function AllVideo() {
   const [isOpen, setOpen] = useState(false)
@@ -53,22 +73,38 @@ export default function AllVideo() {
     router.push(`/admin/demo-video/manage-video?id=${id}`)
   }
   const toggleVisibility = async (id) => {
-    ToggleVisibility(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    console.log(isValid)
+    if (!isValid) {
+      signOut({ redirect: false }).then(() => {
+        router.push("/login")
+      })
+    } else {
+      ToggleVisibility(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
   const deleteVideo = async (id) => {
-    VideoDelete(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    console.log(isValid)
+    if (!isValid) {
+      signOut({ redirect: false }).then(() => {
+        router.push("/login")
+      })
+    } else {
+      VideoDelete(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
 
   const openModal = (type, message) => {

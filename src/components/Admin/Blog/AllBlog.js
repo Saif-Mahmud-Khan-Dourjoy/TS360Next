@@ -7,7 +7,7 @@ import { FaRegStar } from "react-icons/fa"
 import { IoEyeOutline } from "react-icons/io5"
 import { MdOutlineModeEdit, MdOutlineDeleteOutline } from "react-icons/md"
 import BlogImage3 from "../../../../public/Blog/BlogImage3.jpg"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import noImage from "../../../../public/Blog/noImage.png"
 import {
   BlogDelete,
@@ -21,6 +21,26 @@ import NotFoundData from "../../../../public/nodatafound.png"
 import moment from "moment"
 import CustomModal from "@/components/Custom/Modal"
 import { showErrorAlert } from "@/components/Alerts/Alert"
+import jwt from "jsonwebtoken"
+
+const validateToken = (token) => {
+  try {
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
+
+    const decoded = jwt.decode(token, { complete: true })
+    const exp = decoded?.payload?.exp
+
+    if (!exp) {
+      console.log("Expiration time not found in token payload")
+      return false
+    }
+
+    return exp > currentTimeInSeconds
+  } catch (error) {
+    console.error("Error validating token:", error)
+    return false
+  }
+}
 
 export default function AllBlog() {
   const router = useRouter()
@@ -61,32 +81,56 @@ export default function AllBlog() {
     }
   }
   const toggleVisibility = async (id) => {
-    ToggleVisibility(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    console.log(isValid)
+    if (!isValid) {
+      signOut({ redirect: false }).then(() => {
+        router.push("/login")
+      })
+    } else {
+      ToggleVisibility(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
 
   const makeFeatured = async (id) => {
-    MakeFeatured(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session?.accessToken) // Synchronous validation
+
+    if (!isValid) {
+      signOut({ redirect: false }).then(() => {
+        router.push("/login")
+      })
+    } else {
+      MakeFeatured(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
   const deleteBlog = async (id) => {
-    BlogDelete(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session?.accessToken) // Synchronous validation
+
+    if (!isValid) {
+      signOut({ redirect: false }).then(() => {
+        router.push("/login")
+      })
+    } else {
+      BlogDelete(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
 
   const openModal = (type, message) => {

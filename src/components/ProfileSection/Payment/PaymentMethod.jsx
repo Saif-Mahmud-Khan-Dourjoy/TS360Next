@@ -17,6 +17,26 @@ import ManageMethod from "./ManageMethod"
 import moment from "moment"
 import ManagePaymentModal from "./ManagePaymentModal"
 
+
+const validateToken = (token) => {
+  try {
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
+
+    const decoded = jwt.decode(token, { complete: true })
+    const exp = decoded?.payload?.exp
+
+    if (!exp) {
+      console.log("Expiration time not found in token payload")
+      return false
+    }
+
+    return exp > currentTimeInSeconds
+  } catch (error) {
+    console.error("Error validating token:", error)
+    return false
+  }
+}
+
 export default function PaymentMethod() {
   const { profile } = useProfile()
   const [reload, setReload] = useState(false)
@@ -76,7 +96,8 @@ export default function PaymentMethod() {
             setPaymentMethods(res?.[0])
             console.log(res?.[0])
           } else {
-            showErrorAlert(res?.[1], "center", 2000)
+            setPaymentMethods([])
+            // showErrorAlert(res?.[1], "center", 2000)
           }
         }
       )
