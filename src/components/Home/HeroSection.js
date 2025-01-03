@@ -17,7 +17,7 @@ export default function HeroSection() {
                 More Automation, Less Hassle
               </div>
               <div className="text-xl sm:text-2xl font-semibold gradient-text text-center md:text-left">
-                Expected Launch December 2024!
+                Alpha Launch coming soon!!
               </div>
               <div className="mt-4 sm:gap-x-3 flex sm:flex-row flex-col gap-y-3 justify-center items-center md:justify-start">
                 <button
@@ -31,7 +31,6 @@ export default function HeroSection() {
                   onClick={() => router.push("/pricing")}
                   type="button"
                   className="text-white bg-[#82D955] hover:bg-[#6fbc49] focus:outline-none  font-medium rounded-full text-sm md:text-xl px-7 md:px-10 lg:px-[27px] xl:px-10  py-[14px] lg:py-2.5 text-center me-2 mb-2 shadow-homeButtom"
-                  
                 >
                   Start Free Trial
                 </button>

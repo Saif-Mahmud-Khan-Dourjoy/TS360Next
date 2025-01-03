@@ -10,6 +10,7 @@ import ReCAPTCHA from "react-google-recaptcha"
 import Image from "next/image"
 import { showErrorAlert, showSuccessAlert } from "@/components/Alerts/Alert"
 import { AddCardAtSystem, UpdateCardAtSystem } from "@/API/User/Subscription/SubscriptionOperation"
+import { useSession } from "next-auth/react"
 const customStyles = (error = null) => ({
   control: (provided, state) => ({
     ...provided,
@@ -52,6 +53,7 @@ export default function ManageMethod({
   const [recaptchaToken, setRecaptchaToken] = useState(null)
   const [stateOptions, setStateOptions] = useState([])
   const [isVerified, setIsVerified] = useState(false)
+  const { data: session } = useSession()
 
   console.log(updateData)
 
@@ -309,7 +311,7 @@ export default function ManageMethod({
 
   const UpdateCardApiCall = async (id, data, token) => {
     try {
-      // Await the result of the AddCardAtSystem function
+      // Await the result of the UpdateCardAtSystem function
       const res = await UpdateCardAtSystem(id, data, token)
 
       // Return based on the response from the API
