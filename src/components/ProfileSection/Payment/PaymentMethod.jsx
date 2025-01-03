@@ -76,7 +76,9 @@ export default function PaymentMethod() {
             setPaymentMethods(res?.[0])
             console.log(res?.[0])
           } else {
-            showErrorAlert(res?.[1], "center", 2000)
+            // showErrorAlert(res?.[1], "center", 2000)
+             setPaymentMethods([]);
+
           }
         }
       )
