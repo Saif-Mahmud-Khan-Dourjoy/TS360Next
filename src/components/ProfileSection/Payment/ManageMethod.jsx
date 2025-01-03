@@ -253,6 +253,7 @@ export default function ManageMethod({
       if (response.ok) {
         const data = await response.json()
         const forCard = {
+          id:updateData?.id,
           maskedCardNumber: data?.maskedCardNumber,
           cardType: data?.cardType,
           expirationMonth: data?.expirationMonth,
