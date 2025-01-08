@@ -61,7 +61,7 @@ export default function AllBlog() {
     }
   }
   const toggleVisibility = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
 
     if (!isValid) {
       signOut({ callbackUrl: "/login" })
@@ -77,7 +77,7 @@ export default function AllBlog() {
   }
 
   const makeFeatured = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
 
     if (!isValid) {
       signOut({ callbackUrl: "/login" })
@@ -92,7 +92,7 @@ export default function AllBlog() {
     }
   }
   const deleteBlog = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
 
     if (!isValid) {
       signOut({ callbackUrl: "/login" })

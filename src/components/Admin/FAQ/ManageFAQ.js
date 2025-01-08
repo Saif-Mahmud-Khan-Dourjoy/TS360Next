@@ -103,7 +103,7 @@ export default function ManageFAQ() {
         .required("Location is required"),
     }),
     onSubmit: (values) => {
-      const isValid = validateToken(session?.accessToken) // Synchronous validation
+      const isValid = validateToken(session) // Synchronous validation
 
       if (!isValid) {
         signOut({ callbackUrl: "/login" })

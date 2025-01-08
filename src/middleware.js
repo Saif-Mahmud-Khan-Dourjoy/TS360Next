@@ -5,7 +5,8 @@ import { validateToken } from "./lib/tokenValidation"
 export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
-  console.log("token value", token)
+  const authCheck = checkAuth(req, token)
+  if (authCheck) return authCheck
 
   if (req.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/home", req.url))
@@ -27,9 +28,6 @@ export async function middleware(req) {
     return NextResponse.redirect(new URL(`/demo-video/All`, req.url))
   }
 
-  const authCheck = checkAuth(req, token)
-  if (authCheck) return authCheck
-
   const headers = new Headers(req.headers)
   const domain = req.nextUrl.hostname
   const queryParams = req.nextUrl.searchParams
@@ -48,7 +46,6 @@ const checkAuth = (req, token) => {
     const isValid = validateToken(token)
 
     if (!isValid) {
-      console.log("Token expired or invalid")
       return redirectToLogin(req)
     }
   }
@@ -64,25 +61,6 @@ const checkAuth = (req, token) => {
   }
   return null // Ensure the function returns null if no redirection happens
 }
-
-// const validateToken = (token) => {
-//   try {
-//     const currentTimeInSeconds = Math.floor(Date.now() / 1000)
-
-//     const decoded = jwt.decode(token?.accessToken, { complete: true })
-//     const exp = decoded?.payload?.exp
-
-//     if (!exp) {
-//       console.log("Expiration time not found in token payload")
-//       return false
-//     }
-
-//     return exp > currentTimeInSeconds
-//   } catch (error) {
-//     console.error("Error validating token:", error)
-//     return false
-//   }
-// }
 
 const redirectToLogin = (req) => {
   const response = NextResponse.redirect(new URL("/login", req.url))
@@ -104,7 +82,6 @@ const redirectToLogin = (req) => {
     sameSite: "lax",
   })
 
-  console.log("Session cookies cleared.")
   return response
 }
 

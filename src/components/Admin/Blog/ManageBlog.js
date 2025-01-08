@@ -127,37 +127,34 @@ export default function CreateBlog() {
         .required("Tag is required"),
     }),
     onSubmit: (values) => {
-      const isValid = validateToken(session?.accessToken) // Synchronous validation
+      const isValid = validateToken(session) // Synchronous validation
 
       if (!isValid) {
         signOut({ callbackUrl: "/login" })
+      } else {
+        const blogContent = {
+          title: values.title,
+          description: values.description,
+          blogCategories: values.blogCategories,
+          timeRequiredToRead: values.timeRequiredToRead,
+          visible: values.visible,
+          featured: values.featured,
+          tags: values.tags,
+        }
+
+        if (id) {
+          blogContent.id = Number(id)
+        }
+        if (!values.coverImage) {
+          blogContent.coverImagePath = coverImagePrevious
+        }
+
+        if (status == "PUBLISHED") {
+          handleFormUpdate(blogContent)
+        } else {
+          handleFormSubmit(blogContent)
+        }
       }
-      else{
-          const blogContent = {
-            title: values.title,
-            description: values.description,
-            blogCategories: values.blogCategories,
-            timeRequiredToRead: values.timeRequiredToRead,
-            visible: values.visible,
-            featured: values.featured,
-            tags: values.tags,
-          }
-
-          if (id) {
-            blogContent.id = Number(id)
-          }
-          if (!values.coverImage) {
-            blogContent.coverImagePath = coverImagePrevious
-          }
-
-          if (status == "PUBLISHED") {
-            handleFormUpdate(blogContent)
-          } else {
-            handleFormSubmit(blogContent)
-          }
-
-      }
-    
     },
   })
 

@@ -55,7 +55,7 @@ export default function AllVideo() {
     router.push(`/admin/demo-video/manage-video?id=${id}`)
   }
   const toggleVisibility = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
 
     if (!isValid) {
       signOut({ callbackUrl: "/login" })
@@ -70,7 +70,7 @@ export default function AllVideo() {
     }
   }
   const deleteVideo = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
 
     if (!isValid) {
       signOut({ callbackUrl: "/login" })

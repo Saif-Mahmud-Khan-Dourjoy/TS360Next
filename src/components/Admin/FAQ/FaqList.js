@@ -19,7 +19,6 @@ import Image from "next/image"
 import jwt from "jsonwebtoken"
 import { validateToken } from "@/lib/tokenValidation"
 
-
 export default function FaqList() {
   const [tab, setTab] = useState("ALL")
   const [reload, setReload] = useState(false)
@@ -33,7 +32,7 @@ export default function FaqList() {
   const [id, setId] = useState(null)
 
   useEffect(() => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
     console.log(isValid)
 
     if (!isValid) {
@@ -102,7 +101,7 @@ export default function FaqList() {
     router.push(`/admin/faq/manage-faq?id=${id}`)
   }
   const toggleVisibility = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
     console.log(isValid)
     if (!isValid) {
       signOut({ callbackUrl: "/login" })
@@ -117,7 +116,7 @@ export default function FaqList() {
     }
   }
   const deleteFAQ = async (id) => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
+    const isValid = validateToken(session) // Synchronous validation
     console.log(isValid)
     if (!isValid) {
       signOut({ callbackUrl: "/login" })
