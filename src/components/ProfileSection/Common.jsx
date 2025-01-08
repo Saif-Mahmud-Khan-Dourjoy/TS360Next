@@ -40,11 +40,9 @@ export default function Common({ selectedTab, setSelectedTab }) {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
     console.log(isValid)
 
-     if (!isValid) {
-       signOut({ redirect: false }).then(() => {
-         router.push("/login")
-       })
-     }
+    if (!isValid) {
+      signOut({ callbackUrl: "/login" })
+    }
   }, [session?.accessToken, selectedTab]) // Add dependencies as required
 
   return (
