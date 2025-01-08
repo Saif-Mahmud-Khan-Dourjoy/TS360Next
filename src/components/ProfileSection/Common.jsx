@@ -11,6 +11,7 @@ const validateToken = (token) => {
 
     const decoded = jwt.decode(token, { complete: true })
     const exp = decoded?.payload?.exp
+    console.log("Expiration time:", exp)
 
     if (!exp) {
       console.log("Expiration time not found in token payload")
@@ -41,9 +42,9 @@ export default function Common({ selectedTab, setSelectedTab }) {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
     console.log(isValid)
 
-    if (!isValid) {
-      signOut({ callbackUrl: "/login" })
-    }
+    // if (!isValid) {
+    //   signOut({ callbackUrl: "/login" })
+    // }
   }, [session?.accessToken, selectedTab]) // Add dependencies as required
 
   return (
