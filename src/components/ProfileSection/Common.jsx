@@ -39,12 +39,15 @@ export default function Common({ selectedTab, setSelectedTab }) {
   ]
 
   useEffect(() => {
-    const isValid = validateToken(session?.accessToken) // Synchronous validation
-    console.log(isValid)
+    if (session?.accessToken) {
+      const isValid = validateToken(session?.accessToken) // Synchronous validation
+      console.log(isValid)
+      if (!isValid) {
+        signOut({ callbackUrl: "/login" })
+      }
+    }
 
-    // if (!isValid) {
-    //   signOut({ callbackUrl: "/login" })
-    // }
+  
   }, [session?.accessToken, selectedTab]) // Add dependencies as required
 
   return (
