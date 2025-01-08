@@ -85,15 +85,26 @@ const validateToken = (token) => {
 }
 
 const redirectToLogin = (req) => {
-  const response = NextResponse.next()
+  const response = NextResponse.redirect(new URL("/login", req.url))
 
-  response.cookies.delete("next-auth.session-token")
-  response.cookies.delete("__Secure-next-auth.session-token")
+  // Clear session cookies
+  response.cookies.set("next-auth.session-token", "", {
+    path: "/",
+    maxAge: 0, // Expire immediately
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  })
 
-  if (!req.nextUrl.pathname.includes("/login")) {
-    return NextResponse.redirect(new URL("/login", req.url))
-  }
+  response.cookies.set("__Secure-next-auth.session-token", "", {
+    path: "/",
+    maxAge: 0, // Expire immediately
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  })
 
+  console.log("Session cookies cleared.")
   return response
 }
 
