@@ -14,11 +14,13 @@ import {
   ToggleVisibility,
   VideoDelete,
 } from "@/API/Admin/VideoApi"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { showErrorAlert } from "@/components/Alerts/Alert"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
 import CustomModal from "@/components/Custom/Modal"
 import NotFoundData from "../../../../public/nodatafound.png"
+import jwt from "jsonwebtoken"
+import { validateToken } from "@/lib/tokenValidation"
 
 export default function AllVideo() {
   const [isOpen, setOpen] = useState(false)
@@ -53,22 +55,34 @@ export default function AllVideo() {
     router.push(`/admin/demo-video/manage-video?id=${id}`)
   }
   const toggleVisibility = async (id) => {
-    ToggleVisibility(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session) // Synchronous validation
+
+    if (!isValid) {
+      signOut({ callbackUrl: "/login" })
+    } else {
+      ToggleVisibility(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
   const deleteVideo = async (id) => {
-    VideoDelete(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session) // Synchronous validation
+
+    if (!isValid) {
+      signOut({ callbackUrl: "/login" })
+    } else {
+      VideoDelete(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
 
   const openModal = (type, message) => {

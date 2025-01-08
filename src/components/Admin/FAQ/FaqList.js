@@ -10,12 +10,15 @@ import React, { useEffect, useState } from "react"
 import { FaRegStar } from "react-icons/fa"
 import { IoEyeOutline } from "react-icons/io5"
 import { MdOutlineModeEdit, MdOutlineDeleteOutline } from "react-icons/md"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
 import CustomModal from "@/components/Custom/Modal"
 
 import NotFoundData from "../../../../public/nodatafound.png"
 import Image from "next/image"
+import jwt from "jsonwebtoken"
+import { validateToken } from "@/lib/tokenValidation"
+
 export default function FaqList() {
   const [tab, setTab] = useState("ALL")
   const [reload, setReload] = useState(false)
@@ -27,6 +30,15 @@ export default function FaqList() {
   const [modalType, setModalType] = useState("success")
   const [modalMessage, setModalMessage] = useState("Operation was successful!")
   const [id, setId] = useState(null)
+
+  useEffect(() => {
+    const isValid = validateToken(session) // Synchronous validation
+    console.log(isValid)
+
+    if (!isValid) {
+      signOut({ callbackUrl: "/login" })
+    }
+  }, [session?.accessToken, tab]) // Add dependencies as required
 
   useEffect(() => {
     setLoader(true)
@@ -89,22 +101,34 @@ export default function FaqList() {
     router.push(`/admin/faq/manage-faq?id=${id}`)
   }
   const toggleVisibility = async (id) => {
-    ToggleFAQVisibility(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session) // Synchronous validation
+    console.log(isValid)
+    if (!isValid) {
+      signOut({ callbackUrl: "/login" })
+    } else {
+      ToggleFAQVisibility(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
   const deleteFAQ = async (id) => {
-    FAQDelete(id, session?.accessToken).then((res) => {
-      if (res?.[0]) {
-        setReload(!reload)
-      } else {
-        showErrorAlert(res?.[1], "center", 2000)
-      }
-    })
+    const isValid = validateToken(session) // Synchronous validation
+    console.log(isValid)
+    if (!isValid) {
+      signOut({ callbackUrl: "/login" })
+    } else {
+      FAQDelete(id, session?.accessToken).then((res) => {
+        if (res?.[0]) {
+          setReload(!reload)
+        } else {
+          showErrorAlert(res?.[1], "center", 2000)
+        }
+      })
+    }
   }
   return (
     <>

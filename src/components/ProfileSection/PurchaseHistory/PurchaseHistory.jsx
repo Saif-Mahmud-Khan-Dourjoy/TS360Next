@@ -23,7 +23,8 @@ export default function PurchaseHistory() {
         setPurchaseHistory(res?.[0])
       } else {
         // showErrorAlert(res?.[1], "center", 2000)
-         setPurchaseHistory([])
+      
+        setPurchaseHistory([]);
       }
     })
   }, [])

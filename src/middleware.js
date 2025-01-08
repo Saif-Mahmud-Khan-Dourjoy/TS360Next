@@ -1,20 +1,10 @@
 import { NextResponse } from "next/server"
 import { getToken } from "next-auth/jwt"
+import { validateToken } from "./lib/tokenValidation"
 
 export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
-  // if (req.nextUrl.pathname === "/") {
-  //   if (!token) {
-  //     return NextResponse.redirect(new URL("/home", req.url));
-  //   } else {
-  //     if (token.role == "ADMIN") {
-  //       return NextResponse.redirect(new URL("/admin/blog", req.url));
-  //     } else {
-  //       return NextResponse.redirect(new URL("/home", req.url));
-  //     }
-  //   }
-  // }
   const authCheck = checkAuth(req, token)
   if (authCheck) return authCheck
 
@@ -51,6 +41,14 @@ export async function middleware(req) {
 
 const checkAuth = (req, token) => {
   const pathsToCheck = ["buy-now", "profile"]
+
+  if (token) {
+    const isValid = validateToken(token)
+
+    if (!isValid) {
+      return redirectToLogin(req)
+    }
+  }
   if (req.nextUrl.pathname.includes("admin")) {
     if (!token || token?.role != "ADMIN") {
       return NextResponse.redirect(new URL("/login", req.url))
@@ -62,4 +60,33 @@ const checkAuth = (req, token) => {
     }
   }
   return null // Ensure the function returns null if no redirection happens
+}
+
+const redirectToLogin = (req) => {
+  const response = NextResponse.redirect(new URL("/login", req.url))
+
+  // Clear session cookies
+  response.cookies.set("next-auth.session-token", "", {
+    path: "/",
+    maxAge: 0, // Expire immediately
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  })
+
+  response.cookies.set("__Secure-next-auth.session-token", "", {
+    path: "/",
+    maxAge: 0, // Expire immediately
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  })
+
+  return response
+}
+
+export const config = {
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|public|login).*)", // Exclude public routes
+  ],
 }
