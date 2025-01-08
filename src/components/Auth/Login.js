@@ -39,6 +39,7 @@ export default function Login() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const redirectTo = searchParams.get("redirect")
 
+  console.log("session value",session)
   useEffect(() => {
     if (session) {
       if (redirectTo) {

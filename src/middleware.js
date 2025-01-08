@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken"
 export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
+  console.log("token value", token)
+
   if (req.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/home", req.url))
   }

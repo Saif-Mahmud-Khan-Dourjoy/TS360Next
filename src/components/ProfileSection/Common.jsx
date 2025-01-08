@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken"
 import { useRouter } from "next/navigation"
 
 const validateToken = (token) => {
+  console.log("Validating token:", token)
   try {
     const currentTimeInSeconds = Math.floor(Date.now() / 1000)
 
