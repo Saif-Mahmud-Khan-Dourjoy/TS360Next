@@ -17,25 +17,9 @@ import CustomModal from "@/components/Custom/Modal"
 import NotFoundData from "../../../../public/nodatafound.png"
 import Image from "next/image"
 import jwt from "jsonwebtoken"
+import { validateToken } from "@/lib/tokenValidation"
 
-const validateToken = (token) => {
-  try {
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
 
-    const decoded = jwt.decode(token, { complete: true })
-    const exp = decoded?.payload?.exp
-
-    if (!exp) {
-      console.log("Expiration time not found in token payload")
-      return false
-    }
-
-    return exp > currentTimeInSeconds
-  } catch (error) {
-    console.error("Error validating token:", error)
-    return false
-  }
-}
 export default function FaqList() {
   const [tab, setTab] = useState("ALL")
   const [reload, setReload] = useState(false)
@@ -53,9 +37,7 @@ export default function FaqList() {
     console.log(isValid)
 
     if (!isValid) {
-      signOut({ redirect: false }).then(() => {
-        router.push("/login")
-      })
+      signOut({ callbackUrl: "/login" })
     }
   }, [session?.accessToken, tab]) // Add dependencies as required
 
@@ -123,9 +105,7 @@ export default function FaqList() {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
     console.log(isValid)
     if (!isValid) {
-      signOut({ redirect: false }).then(() => {
-        router.push("/login")
-      })
+      signOut({ callbackUrl: "/login" })
     } else {
       ToggleFAQVisibility(id, session?.accessToken).then((res) => {
         if (res?.[0]) {
@@ -140,9 +120,7 @@ export default function FaqList() {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
     console.log(isValid)
     if (!isValid) {
-      signOut({ redirect: false }).then(() => {
-        router.push("/login")
-      })
+      signOut({ callbackUrl: "/login" })
     } else {
       FAQDelete(id, session?.accessToken).then((res) => {
         if (res?.[0]) {

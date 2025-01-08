@@ -24,8 +24,9 @@ import {
   TagSuggestions,
   UpdateBlog,
 } from "@/API/Admin/BlogApi"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { showErrorAlert, showSuccessAlert } from "@/components/Alerts/Alert"
+import { validateToken } from "@/lib/tokenValidation"
 const ReactQuillComponent = dynamic(() => import("./ClientOnlyQuill.js"), {
   ssr: false,
 })
@@ -126,28 +127,37 @@ export default function CreateBlog() {
         .required("Tag is required"),
     }),
     onSubmit: (values) => {
-      const blogContent = {
-        title: values.title,
-        description: values.description,
-        blogCategories: values.blogCategories,
-        timeRequiredToRead: values.timeRequiredToRead,
-        visible: values.visible,
-        featured: values.featured,
-        tags: values.tags,
-      }
+      const isValid = validateToken(session?.accessToken) // Synchronous validation
 
-      if (id) {
-        blogContent.id = Number(id)
+      if (!isValid) {
+        signOut({ callbackUrl: "/login" })
       }
-      if (!values.coverImage) {
-        blogContent.coverImagePath = coverImagePrevious
-      }
+      else{
+          const blogContent = {
+            title: values.title,
+            description: values.description,
+            blogCategories: values.blogCategories,
+            timeRequiredToRead: values.timeRequiredToRead,
+            visible: values.visible,
+            featured: values.featured,
+            tags: values.tags,
+          }
 
-      if (status == "PUBLISHED") {
-        handleFormUpdate(blogContent)
-      } else {
-        handleFormSubmit(blogContent)
+          if (id) {
+            blogContent.id = Number(id)
+          }
+          if (!values.coverImage) {
+            blogContent.coverImagePath = coverImagePrevious
+          }
+
+          if (status == "PUBLISHED") {
+            handleFormUpdate(blogContent)
+          } else {
+            handleFormSubmit(blogContent)
+          }
+
       }
+    
     },
   })
 

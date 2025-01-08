@@ -21,27 +21,7 @@ import NotFoundData from "../../../../public/nodatafound.png"
 import moment from "moment"
 import CustomModal from "@/components/Custom/Modal"
 import { showErrorAlert } from "@/components/Alerts/Alert"
-import jwt from "jsonwebtoken"
-
-const validateToken = (token) => {
-  try {
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
-
-    const decoded = jwt.decode(token, { complete: true })
-    const exp = decoded?.payload?.exp
-
-    if (!exp) {
-      console.log("Expiration time not found in token payload")
-      return false
-    }
-
-    return exp > currentTimeInSeconds
-  } catch (error) {
-    console.error("Error validating token:", error)
-    return false
-  }
-}
-
+import { validateToken } from "@/lib/tokenValidation"
 export default function AllBlog() {
   const router = useRouter()
   const { data: session } = useSession()
@@ -82,11 +62,9 @@ export default function AllBlog() {
   }
   const toggleVisibility = async (id) => {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
-    console.log(isValid)
+
     if (!isValid) {
-      signOut({ redirect: false }).then(() => {
-        router.push("/login")
-      })
+      signOut({ callbackUrl: "/login" })
     } else {
       ToggleVisibility(id, session?.accessToken).then((res) => {
         if (res?.[0]) {
@@ -102,9 +80,7 @@ export default function AllBlog() {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
 
     if (!isValid) {
-      signOut({ redirect: false }).then(() => {
-        router.push("/login")
-      })
+      signOut({ callbackUrl: "/login" })
     } else {
       MakeFeatured(id, session?.accessToken).then((res) => {
         if (res?.[0]) {
@@ -119,9 +95,7 @@ export default function AllBlog() {
     const isValid = validateToken(session?.accessToken) // Synchronous validation
 
     if (!isValid) {
-      signOut({ redirect: false }).then(() => {
-        router.push("/login")
-      })
+      signOut({ callbackUrl: "/login" })
     } else {
       BlogDelete(id, session?.accessToken).then((res) => {
         if (res?.[0]) {

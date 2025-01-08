@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { getToken } from "next-auth/jwt"
-import jwt from "jsonwebtoken"
+import { validateToken } from "./lib/tokenValidation"
 
 export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
@@ -65,24 +65,24 @@ const checkAuth = (req, token) => {
   return null // Ensure the function returns null if no redirection happens
 }
 
-const validateToken = (token) => {
-  try {
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
+// const validateToken = (token) => {
+//   try {
+//     const currentTimeInSeconds = Math.floor(Date.now() / 1000)
 
-    const decoded = jwt.decode(token?.accessToken, { complete: true })
-    const exp = decoded?.payload?.exp
+//     const decoded = jwt.decode(token?.accessToken, { complete: true })
+//     const exp = decoded?.payload?.exp
 
-    if (!exp) {
-      console.log("Expiration time not found in token payload")
-      return false
-    }
+//     if (!exp) {
+//       console.log("Expiration time not found in token payload")
+//       return false
+//     }
 
-    return exp > currentTimeInSeconds
-  } catch (error) {
-    console.error("Error validating token:", error)
-    return false
-  }
-}
+//     return exp > currentTimeInSeconds
+//   } catch (error) {
+//     console.error("Error validating token:", error)
+//     return false
+//   }
+// }
 
 const redirectToLogin = (req) => {
   const response = NextResponse.redirect(new URL("/login", req.url))

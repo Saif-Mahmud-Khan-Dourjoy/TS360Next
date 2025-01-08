@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation"
 import { FaAngleLeft } from "react-icons/fa6"
 import { MdOutlineTextFields } from "react-icons/md"
 import { BiCategoryAlt } from "react-icons/bi"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useSearchParams } from "next/navigation"
 import { AddNewFAQ, GetFAQById, UpdateFAQ } from "@/API/Admin/FAQApi"
 import { showErrorAlert, showSuccessAlert } from "@/components/Alerts/Alert"
 import ComponentLoader from "@/components/Custom/ComponentLoader"
+import { validateToken } from "@/lib/tokenValidation"
 
 const items = [
   { value: "WEB", label: "Web Tech Support" },
@@ -102,19 +103,25 @@ export default function ManageFAQ() {
         .required("Location is required"),
     }),
     onSubmit: (values) => {
-      const faqContent = {
-        title: values.title,
-        content: values.content,
-        visible: values.visible,
-        projectTypes: values.projectTypes,
-      }
+      const isValid = validateToken(session?.accessToken) // Synchronous validation
 
-      if (id) {
-        faqContent.id = id
-
-        handleFormUpdate(faqContent)
+      if (!isValid) {
+        signOut({ callbackUrl: "/login" })
       } else {
-        handleFormSubmit(faqContent)
+        const faqContent = {
+          title: values.title,
+          content: values.content,
+          visible: values.visible,
+          projectTypes: values.projectTypes,
+        }
+
+        if (id) {
+          faqContent.id = id
+
+          handleFormUpdate(faqContent)
+        } else {
+          handleFormSubmit(faqContent)
+        }
       }
     },
   })

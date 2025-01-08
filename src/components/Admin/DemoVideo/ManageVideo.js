@@ -15,7 +15,7 @@ import {
   UpdateVideo,
   VideoCategory,
 } from "@/API/Admin/VideoApi"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import makeAnimated from "react-select/animated"
@@ -23,6 +23,7 @@ import { showErrorAlert, showSuccessAlert } from "@/components/Alerts/Alert"
 const animatedComponents = makeAnimated()
 import { useRouter } from "next/navigation"
 import { useSearchParams } from "next/navigation"
+import { validateToken } from "@/lib/tokenValidation"
 
 const allowedFileTypes = ["JPG", "PNG", "jpg", "png", "jpeg", "JPEG", "jpeg"]
 const customStyles = (error) => ({
@@ -183,24 +184,30 @@ export default function ManageVideo() {
         .required("Category is required"),
     }),
     onSubmit: (values) => {
-      const videoContent = {
-        title: values.title,
-        description: values.description,
-        url: values.url,
-        uniqueValue: values.uniqueValue,
-        visible: values.visible,
-        videoCategories: values.videoCategories,
-      }
+      const isValid = validateToken(session?.accessToken) // Synchronous validation
 
-      if (id) {
-        videoContent.id = id
-        if (!values.thumbnail) {
-          videoContent.thumbnailPath = thumbnailPrevious
+      if (!isValid) {
+        signOut({ callbackUrl: "/login" })
+      } else {
+        const videoContent = {
+          title: values.title,
+          description: values.description,
+          url: values.url,
+          uniqueValue: values.uniqueValue,
+          visible: values.visible,
+          videoCategories: values.videoCategories,
         }
 
-        handleFormUpdate(videoContent)
-      } else {
-        handleFormSubmit(videoContent)
+        if (id) {
+          videoContent.id = id
+          if (!values.thumbnail) {
+            videoContent.thumbnailPath = thumbnailPrevious
+          }
+
+          handleFormUpdate(videoContent)
+        } else {
+          handleFormSubmit(videoContent)
+        }
       }
     },
   })

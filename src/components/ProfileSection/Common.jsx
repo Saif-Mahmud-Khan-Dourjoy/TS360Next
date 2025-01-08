@@ -1,29 +1,8 @@
 import useProfile from "@/hook"
 import { signOut, useSession } from "next-auth/react"
 import React, { useEffect } from "react"
-import jwt from "jsonwebtoken"
 import { useRouter } from "next/navigation"
-
-const validateToken = (token) => {
-  console.log("Validating token:", token)
-  try {
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000)
-
-    const decoded = jwt.decode(token, { complete: true })
-    const exp = decoded?.payload?.exp
-    console.log("Expiration time:", exp)
-
-    if (!exp) {
-      console.log("Expiration time not found in token payload")
-      return false
-    }
-
-    return exp > currentTimeInSeconds
-  } catch (error) {
-    console.error("Error validating token:", error)
-    return false
-  }
-}
+import { validateToken } from "@/lib/tokenValidation"
 
 export default function Common({ selectedTab, setSelectedTab }) {
   const { profile } = useProfile()
@@ -41,13 +20,11 @@ export default function Common({ selectedTab, setSelectedTab }) {
   useEffect(() => {
     if (session?.accessToken) {
       const isValid = validateToken(session?.accessToken) // Synchronous validation
-      console.log(isValid)
+
       if (!isValid) {
         signOut({ callbackUrl: "/login" })
       }
     }
-
-  
   }, [session?.accessToken, selectedTab]) // Add dependencies as required
 
   return (
