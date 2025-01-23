@@ -68,33 +68,34 @@ export default function BuyNowPage() {
   const [planEndDate, setPlanEndDate] = useState()
   const [reference, setReference] = useState(null)
   const [amount, setAmount] = useState(0)
+  const [tax, setTax] = useState(0)
   const [amountWithTax, setAmountWithTax] = useState(0)
 
   useEffect(() => {
     setIsLoaderOpen(true)
-   if (planId && session?.accessToken) {
-     GetPlanById(planId, session?.accessToken).then((res) => {
-       setIsLoaderOpen(false)
-       if (res?.[0]) {
-         console.log(res?.[0])
-         setPlanFrequency(res?.[0]?.planFrequency)
-         setPlanName(res?.[0]?.name)
-         setSelectedCycle(
-           res?.[0]?.planFrequency?.length > 0
-             ? res?.[0]?.planFrequency?.[0]
-             : {}
-         )
+    if (planId && session?.accessToken) {
+      GetPlanById(planId, session?.accessToken).then((res) => {
+        setIsLoaderOpen(false)
+        if (res?.[0]) {
+          console.log(res?.[0])
+          setPlanFrequency(res?.[0]?.planFrequency)
+          setPlanName(res?.[0]?.name)
+          setSelectedCycle(
+            res?.[0]?.planFrequency?.length > 0
+              ? res?.[0]?.planFrequency?.[0]
+              : {}
+          )
 
-         setStartingPrice(parseFloat(res?.[0]?.startingPrice))
+          setStartingPrice(parseFloat(res?.[0]?.startingPrice))
 
-         if (parseFloat(res?.[0]?.startingPrice) > 0) {
-           setAutoRenew(true)
-         }
-       } else {
-         openModal("error", res?.[1] || "Something went wrong")
-       }
-     })
-   }
+          if (parseFloat(res?.[0]?.startingPrice) > 0) {
+            setAutoRenew(true)
+          }
+        } else {
+          openModal("error", res?.[1] || "Something went wrong")
+        }
+      })
+    }
   }, [planId, session])
 
   useEffect(() => {
@@ -210,8 +211,11 @@ export default function BuyNowPage() {
     SubscriptionAdd(data, session?.accessToken).then((res) => {
       setIsLoaderOpen(false)
       if (res?.[0]) {
+        debugger
         setIsDetailsSubmit(true)
-        setReference(res?.[0]?.id)
+        setReference(res?.[0]?.subscriptionId)
+        setTax(res?.[0]?.tax)
+        setAmountWithTax(res?.[0]?.tax + amount)
       } else {
         openModal("error", res?.[1] || "Something went wrong")
       }
@@ -244,7 +248,6 @@ export default function BuyNowPage() {
     })
   }
 
-  
   return (
     <>
       <div className="">
@@ -353,7 +356,9 @@ export default function BuyNowPage() {
                 setPlanEndDate={setPlanEndDate}
                 createPayment={createPayment}
                 setAmount={setAmount}
-                setAmountWithTax={setAmountWithTax}
+                tax={tax}
+                amountWithTax={amountWithTax}
+                
               />
             </div>
           </div>
@@ -383,7 +388,9 @@ export default function BuyNowPage() {
               setPlanEndDate={setPlanEndDate}
               createPayment={createPayment}
               setAmount={setAmount}
-              setAmountWithTax={setAmountWithTax}
+              tax={tax}
+              amountWithTax={amountWithTax}
+             
             />
           </OrderSummaryModal>
         )}

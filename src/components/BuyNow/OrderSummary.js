@@ -18,19 +18,18 @@ export default function OrderSummary({
   setPlanEndDate,
   createPayment,
   setAmount,
-  setAmountWithTax,
+  tax,
+  amountWithTax
+  
 }) {
   const [total, setTotal] = useState(0)
-  const [tax, setTax] = useState(0)
-  const [totalWithTax, setTotalWithTax] = useState(0)
+ 
   useEffect(() => {
     let total = selectedCycle?.price * totalUser?.length
-    let tax = total * (5 / 100)
+  
     setTotal(total)
     setAmount(total)
-    setTax(tax)
-    setTotalWithTax(total + tax)
-    setAmountWithTax(total + tax)
+    
   }, [selectedCycle, totalUser])
   const ChangeCycle = (e) => {
     const current_cycle = planFrequency?.filter((plan, index) => {
@@ -119,7 +118,7 @@ export default function OrderSummary({
         )}
         <div className="mt-3 border-b-2"></div>
         <div className="mt-8 flex justify-between text-[#2F2F2F] font-medium">
-          <div className="">1x TS360 Professional Plan Subscription</div>
+          <div className="">1x TS360 {planName} Plan Subscription</div>
           <div>${total}</div>
         </div>
         <div className="mt-1 flex gap-2">
@@ -163,7 +162,7 @@ export default function OrderSummary({
             <div className="mt-5 border-b-2"></div>
             <div className="mt-5 flex justify-between text-[#2F2F2F] ">
               <div className="font-medium">Total</div>
-              <div className="font-bold">${totalWithTax?.toFixed(2)}</div>
+              <div className="font-bold">${amountWithTax?.toFixed(2)}</div>
             </div>
           </>
         )}
